@@ -1,0 +1,9 @@
+1 - check cbos for validation
+2 - context menu to add delimiter
+3 - option to change delimiter
+4 - see why progress bar is not working
+5 - colors and styles to status bar stuff
+6 - see directories / solutions / projects from main menu
+7 - in setting event change instead of click
+8 - Initialize more ordered
+9 - add message label in status bar (or elsewhere)

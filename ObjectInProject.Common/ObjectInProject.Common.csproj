@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{91A2AE62-0650-4E8D-88EF-6D0543A2D9AE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ObjectInProject.Common</RootNamespace>
+    <AssemblyName>ObjectInProject.Common</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="General.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3dParty\General.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataTypes\EditorInformation.cs" />
+    <Compile Include="DataTypes\ExtendedSearchedLine.cs" />
+    <Compile Include="DataTypes\FileOrigin.cs" />
+    <Compile Include="DataTypes\FileSearchResult.cs" />
+    <Compile Include="DataTypes\FileSearchResults.cs" />
+    <Compile Include="DataTypes\MessageObject.cs" />
+    <Compile Include="DataTypes\SearchedFile.cs" />
+    <Compile Include="DataTypes\SearchedFilesList.cs" />
+    <Compile Include="DataTypes\SearchedLine.cs" />
+    <Compile Include="DataTypes\SearchProject.cs" />
+    <Compile Include="DataTypes\SearchProjects.cs" />
+    <Compile Include="DataTypes\SearchResult.cs" />
+    <Compile Include="DataTypes\TagObject.cs" />
+    <Compile Include="Enums\CrudAction.cs" />
+    <Compile Include="Enums\Editors.cs" />
+    <Compile Include="Enums\IoAction.cs" />
+    <Compile Include="Enums\SearchLogic.cs" />
+    <Compile Include="Enums\SearchProjectType.cs" />
+    <Compile Include="Enums\TagObjectType.cs" />
+    <Compile Include="ObjectInProjects.Constants.cs" />
+    <Compile Include="ObjectInProjects.DataTypes.cs" />
+    <Compile Include="ObjectInProjects.Delegates.cs" />
+    <Compile Include="ObjectInProjects.Utils.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
