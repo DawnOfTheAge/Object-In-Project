@@ -586,19 +586,19 @@ namespace ObjectInProject.Gui
 
             try
             {
-                btnFind.Location = new Point(10, 50);
-                txtFind.Location = new Point(btnFind.Left + btnFind.Width + 20, 55);
-                lvResults.Location = new Point(10, btnFind.Top + btnFind.Height + 20);
-                chkCaseSensitive.Location = new Point(txtFind.Left, txtFind.Top + txtFind.Height + 5);
-                lblFileTypeFilters.Location = new Point(chkCaseSensitive.Left + chkCaseSensitive.Width + 10, chkCaseSensitive.Top);
-                cboFileTypeFilters.Location = new Point(lblFileTypeFilters.Left+ lblFileTypeFilters.Width + 5, lblFileTypeFilters.Top - 2);
-
                 lvResults.Height = Height - lvResults.Top - 90;
 
                 txtFind.Width = (Width / 3) * 2;
                 lvResults.Width = Width - lvResults.Left - 50;
 
-                btnLoadSearchedItemsFromFile.Location = new Point(txtFind.Left + txtFind.Width + 5, 50);
+                txtFind.Location = new Point(10, 50);
+                btnFind.Location = new Point(txtFind.Left + txtFind.Width + 10, txtFind.Top -  (btnFind.Height / 3));
+                btnClear.Location = new Point(btnFind.Left + btnFind.Width + 10, btnFind.Top);
+                btnLoadSearchedItemsFromFile.Location = new Point(btnClear.Left + btnClear.Width + 20, btnClear.Top + (btnLoadSearchedItemsFromFile.Height / 2));
+                lvResults.Location = new Point(10, txtFind.Top + txtFind.Height + 30);
+                chkCaseSensitive.Location = new Point(txtFind.Left, txtFind.Top + txtFind.Height + 5);
+                lblFileTypeFilters.Location = new Point(chkCaseSensitive.Left + chkCaseSensitive.Width + 10, chkCaseSensitive.Top);
+                cboFileTypeFilters.Location = new Point(lblFileTypeFilters.Left+ lblFileTypeFilters.Width + 5, lblFileTypeFilters.Top - 2);
             }
             catch (Exception ex)
             {
@@ -712,7 +712,9 @@ namespace ObjectInProject.Gui
         }
 
         #endregion
-        
+
+        #region Initializations
+
         private bool InitializeGui(out string result)
         {
             #region Data Members
@@ -737,12 +739,12 @@ namespace ObjectInProject.Gui
 
                 #endregion
 
-                frmMain_Resize(null, null);
-
                 if (!InitializeStatusStrip(out result))
                 {
                     return false;
                 }
+
+                frmMain_Resize(null, null);
 
                 return true;
             }
@@ -925,6 +927,10 @@ namespace ObjectInProject.Gui
             }
         }
 
+        #endregion
+
+        #region Events
+
         private void ChangeSearchJob_Click(object sender, EventArgs e)
         {
             #region Data Members
@@ -991,6 +997,58 @@ namespace ObjectInProject.Gui
             }
         }
         
+        private void chkCaseSensitive_CheckedChanged(object sender, EventArgs e)
+        {
+            #region Data Members
+
+            string method = MethodBase.GetCurrentMethod().Name;
+
+            #endregion
+
+            try
+            {
+                if (m_ActiveSearchProject != null)
+                {
+                    m_ActiveSearchProject.CaseSensitive = chkCaseSensitive.Checked;
+                }
+            }
+            catch (Exception ex)
+            {
+                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                MessageBox.Show(ex.Message, "Case Sensitive Change Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    
+        private void txtFind_KeyDown(object sender, KeyEventArgs e)
+        {
+            string method = MethodBase.GetCurrentMethod().Name;
+
+            if (e.KeyCode == Keys.Enter)
+            {
+                btnFind_Click(null, null);
+
+                txtFind.Items.Add(txtFind.Text);
+            }
+        }
+
+        private void cboSearchType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string method = MethodBase.GetCurrentMethod().Name;
+
+            if (cboSearchType.Text == "AND")
+            {
+                m_SearchType = ContainsAll;
+            }
+            else
+            {
+                m_SearchType = ContainsAtLeastOneOf;
+            }
+        }
+
+        #endregion
+
+        #region List View
+
         private bool BuildListView(out string result)
         {
             string method = MethodBase.GetCurrentMethod().Name;
@@ -1049,6 +1107,69 @@ namespace ObjectInProject.Gui
             }
         }
          
+        private void lvResults_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            #region Data Members
+
+            string method = MethodBase.GetCurrentMethod().Name;
+            string message;
+
+            #endregion
+
+            try
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    if (lvResults.SelectedItems != null)
+                    {
+                        int sourceFilePathIndex;
+                        int lineNumberIndex;
+
+                        switch (m_ActiveSearchProject.Type)
+                        {
+                            case SearchProjectType.DirectoriesProject:
+                                sourceFilePathIndex = 3;
+                                lineNumberIndex = 2;
+                                break;
+
+                            case SearchProjectType.SolutionsProject:
+                                sourceFilePathIndex = 4;
+                                lineNumberIndex = 3;
+                                break;
+
+                            default:
+                                return;
+                        }
+
+                        string sourceFilePath = lvResults.SelectedItems[0].SubItems[sourceFilePathIndex].Text;
+
+                        int lineNumber = (int.TryParse(lvResults.SelectedItems[0].SubItems[lineNumberIndex].Text, out lineNumber)) ? lineNumber : Constants.NONE;
+
+                        if (!File.Exists(sourceFilePath))
+                        {
+                            message = "Source File '" + sourceFilePath + "' Does Not Exist";
+
+                            Audit(message, method, AuditSeverity.Error, Log.LINE());
+                            MessageBox.Show(message, "Failed Openning File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            return;
+                        }
+
+                        OpenFileAtLine(sourceFilePath, lineNumber);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                MessageBox.Show(ex.Message, "Failed Openning File", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #endregion
+
+        #region Buttons
+        
         private void btnFind_Click(object sender, EventArgs e)
         {
             #region Data Members
@@ -1173,88 +1294,23 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void lvResults_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void btnClear_Click(object sender, EventArgs e)
         {
             #region Data Members
 
             string method = MethodBase.GetCurrentMethod().Name;
-            string message;
 
             #endregion
 
             try
             {
-                if (e.Button == MouseButtons.Left)
-                {
-                    if (lvResults.SelectedItems != null)
-                    {
-                        int sourceFilePathIndex;
-                        int lineNumberIndex;
-
-                        switch (m_ActiveSearchProject.Type)
-                        {
-                            case SearchProjectType.DirectoriesProject:
-                                sourceFilePathIndex = 3;
-                                lineNumberIndex = 2;
-                                break;
-
-                            case SearchProjectType.SolutionsProject:
-                                sourceFilePathIndex = 4;
-                                lineNumberIndex = 3;
-                                break;
-
-                            default:
-                                return;
-                        }
-
-                        string sourceFilePath = lvResults.SelectedItems[0].SubItems[sourceFilePathIndex].Text;
-
-                        int lineNumber = (int.TryParse(lvResults.SelectedItems[0].SubItems[lineNumberIndex].Text, out lineNumber)) ? lineNumber : Constants.NONE;
-
-                        if (!File.Exists(sourceFilePath))
-                        {
-                            message = "Source File '" + sourceFilePath + "' Does Not Exist";
-
-                            Audit(message, method, AuditSeverity.Error, Log.LINE());
-                            MessageBox.Show(message, "Failed Openning File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                            return;
-                        }
-
-                        OpenFileAtLine(sourceFilePath, lineNumber);
-                    }
-                }
+                txtFind.Text = string.Empty;
+                lvResults.Items.Clear();    
             }
             catch (Exception ex)
             {
                 Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
-                MessageBox.Show(ex.Message, "Failed Openning File", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void txtFind_KeyDown(object sender, KeyEventArgs e)
-        {
-            string method = MethodBase.GetCurrentMethod().Name;
-
-            if (e.KeyCode == Keys.Enter)
-            {
-                btnFind_Click(null, null);
-
-                txtFind.Items.Add(txtFind.Text);
-            }
-        }
-
-        private void cboSearchType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            string method = MethodBase.GetCurrentMethod().Name;
-
-            if (cboSearchType.Text == "AND")
-            {
-                m_SearchType = ContainsAll;
-            }
-            else
-            {
-                m_SearchType = ContainsAtLeastOneOf;
+                MessageBox.Show(ex.Message, "Clear Searched Results Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -1316,28 +1372,8 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void chkCaseSensitive_CheckedChanged(object sender, EventArgs e)
-        {
-            #region Data Members
+        #endregion
 
-            string method = MethodBase.GetCurrentMethod().Name;
-
-            #endregion
-
-            try
-            {
-                if (m_ActiveSearchProject != null)
-                {
-                    m_ActiveSearchProject.CaseSensitive = chkCaseSensitive.Checked;
-                }
-            }
-            catch (Exception ex)
-            {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
-                MessageBox.Show(ex.Message, "Case Sensitive Change Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        
         #endregion
 
         #region Utils
@@ -1841,6 +1877,6 @@ namespace ObjectInProject.Gui
             Log.Audit(message, fileName, assemblyName, module, method, auditSeverity, line);
         }
 
-        #endregion
+        #endregion        
     }
 }

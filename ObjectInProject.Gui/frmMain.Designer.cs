@@ -57,6 +57,7 @@
             this.chkCaseSensitive = new System.Windows.Forms.CheckBox();
             this.cboFileTypeFilters = new System.Windows.Forms.ComboBox();
             this.lblFileTypeFilters = new System.Windows.Forms.Label();
+            this.btnClear = new System.Windows.Forms.Button();
             this.mnuMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -112,9 +113,12 @@
             // 
             // btnFind
             // 
-            this.btnFind.Location = new System.Drawing.Point(12, 40);
+            this.btnFind.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources.Refresh;
+            this.btnFind.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnFind.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnFind.Location = new System.Drawing.Point(832, 26);
             this.btnFind.Name = "btnFind";
-            this.btnFind.Size = new System.Drawing.Size(65, 33);
+            this.btnFind.Size = new System.Drawing.Size(60, 60);
             this.btnFind.TabIndex = 4;
             this.btnFind.Text = "Find";
             this.btnFind.UseVisualStyleBackColor = true;
@@ -135,7 +139,7 @@
             this.txtFind.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.txtFind.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.txtFind.FormattingEnabled = true;
-            this.txtFind.Location = new System.Drawing.Point(83, 47);
+            this.txtFind.Location = new System.Drawing.Point(12, 47);
             this.txtFind.Name = "txtFind";
             this.txtFind.Size = new System.Drawing.Size(814, 21);
             this.txtFind.TabIndex = 18;
@@ -143,13 +147,15 @@
             // 
             // btnLoadSearchedItemsFromFile
             // 
+            this.btnLoadSearchedItemsFromFile.BackColor = System.Drawing.SystemColors.Window;
+            this.btnLoadSearchedItemsFromFile.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources._3Dots;
+            this.btnLoadSearchedItemsFromFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnLoadSearchedItemsFromFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoadSearchedItemsFromFile.Location = new System.Drawing.Point(903, 40);
+            this.btnLoadSearchedItemsFromFile.Location = new System.Drawing.Point(964, 38);
             this.btnLoadSearchedItemsFromFile.Name = "btnLoadSearchedItemsFromFile";
             this.btnLoadSearchedItemsFromFile.Size = new System.Drawing.Size(40, 33);
             this.btnLoadSearchedItemsFromFile.TabIndex = 23;
-            this.btnLoadSearchedItemsFromFile.Text = "...";
-            this.btnLoadSearchedItemsFromFile.UseVisualStyleBackColor = true;
+            this.btnLoadSearchedItemsFromFile.UseVisualStyleBackColor = false;
             this.btnLoadSearchedItemsFromFile.Click += new System.EventHandler(this.btnLoadSearchedItemsFromFile_Click);
             // 
             // statusStrip
@@ -301,7 +307,7 @@
             // chkCaseSensitive
             // 
             this.chkCaseSensitive.AutoSize = true;
-            this.chkCaseSensitive.Location = new System.Drawing.Point(83, 72);
+            this.chkCaseSensitive.Location = new System.Drawing.Point(12, 72);
             this.chkCaseSensitive.Name = "chkCaseSensitive";
             this.chkCaseSensitive.Size = new System.Drawing.Size(96, 17);
             this.chkCaseSensitive.TabIndex = 29;
@@ -312,7 +318,7 @@
             // cboFileTypeFilters
             // 
             this.cboFileTypeFilters.FormattingEnabled = true;
-            this.cboFileTypeFilters.Location = new System.Drawing.Point(271, 70);
+            this.cboFileTypeFilters.Location = new System.Drawing.Point(200, 70);
             this.cboFileTypeFilters.Name = "cboFileTypeFilters";
             this.cboFileTypeFilters.Size = new System.Drawing.Size(244, 21);
             this.cboFileTypeFilters.TabIndex = 30;
@@ -320,17 +326,31 @@
             // lblFileTypeFilters
             // 
             this.lblFileTypeFilters.AutoSize = true;
-            this.lblFileTypeFilters.Location = new System.Drawing.Point(185, 73);
+            this.lblFileTypeFilters.Location = new System.Drawing.Point(114, 73);
             this.lblFileTypeFilters.Name = "lblFileTypeFilters";
             this.lblFileTypeFilters.Size = new System.Drawing.Size(80, 13);
             this.lblFileTypeFilters.TabIndex = 31;
             this.lblFileTypeFilters.Text = "File Type Filters";
+            // 
+            // btnClear
+            // 
+            this.btnClear.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources.Clear;
+            this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnClear.Location = new System.Drawing.Point(898, 26);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(60, 60);
+            this.btnClear.TabIndex = 32;
+            this.btnClear.Text = "Clear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1133, 660);
+            this.Controls.Add(this.btnClear);
             this.Controls.Add(this.lblFileTypeFilters);
             this.Controls.Add(this.cboFileTypeFilters);
             this.Controls.Add(this.chkCaseSensitive);
@@ -386,6 +406,7 @@
         private System.Windows.Forms.CheckBox chkCaseSensitive;
         private System.Windows.Forms.ComboBox cboFileTypeFilters;
         private System.Windows.Forms.Label lblFileTypeFilters;
+        private System.Windows.Forms.Button btnClear;
     }
 }
 
