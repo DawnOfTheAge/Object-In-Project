@@ -46,18 +46,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\CsFile.cs" />
     <Compile Include="DataTypes\EditorInformation.cs" />
     <Compile Include="DataTypes\ExtendedSearchedLine.cs" />
     <Compile Include="DataTypes\FileOrigin.cs" />
     <Compile Include="DataTypes\FileSearchResult.cs" />
     <Compile Include="DataTypes\FileSearchResults.cs" />
     <Compile Include="DataTypes\MessageObject.cs" />
+    <Compile Include="DataTypes\Project.cs" />
     <Compile Include="DataTypes\SearchedFile.cs" />
     <Compile Include="DataTypes\SearchedFilesList.cs" />
     <Compile Include="DataTypes\SearchedLine.cs" />
     <Compile Include="DataTypes\SearchProject.cs" />
     <Compile Include="DataTypes\SearchProjects.cs" />
     <Compile Include="DataTypes\SearchResult.cs" />
+    <Compile Include="DataTypes\Solution.cs" />
     <Compile Include="DataTypes\TagObject.cs" />
     <Compile Include="Enums\CrudAction.cs" />
     <Compile Include="Enums\Editors.cs" />
@@ -66,7 +69,6 @@
     <Compile Include="Enums\SearchProjectType.cs" />
     <Compile Include="Enums\TagObjectType.cs" />
     <Compile Include="ObjectInProjects.Constants.cs" />
-    <Compile Include="ObjectInProjects.DataTypes.cs" />
     <Compile Include="ObjectInProjects.Delegates.cs" />
     <Compile Include="ObjectInProjects.Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

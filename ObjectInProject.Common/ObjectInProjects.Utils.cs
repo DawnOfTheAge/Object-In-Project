@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace ObjectInProject.Common
@@ -139,7 +136,7 @@ namespace ObjectInProject.Common
 
         public static string EditorToString(Editors editor)
         {
-            string result = "";
+            string result;
 
             switch (editor)
             {
@@ -171,6 +168,14 @@ namespace ObjectInProject.Common
                     result = "Visual Studio 2017";
                     break;
 
+                case Editors.VisualStudio2019:
+                    result = "Visual Studio 2019";
+                    break;
+
+                case Editors.VisualStudio2022:
+                    result = "Visual Studio 2022";
+                    break;
+
                 default:
                     result = "Notepad";
                     break;
@@ -181,7 +186,7 @@ namespace ObjectInProject.Common
 
         public static Editors EditorToEnum(string editor)
         {
-            Editors result = Editors.Unknown;
+            Editors result;
 
             switch (editor)
             {
@@ -227,6 +232,11 @@ namespace ObjectInProject.Common
                 case "Visual Studio 2019":
                 case "VisualStudio2019":
                     result = Editors.VisualStudio2019;
+                    break;
+
+                case "Visual Studio 2022":
+                case "VisualStudio2022":
+                    result = Editors.VisualStudio2022;
                     break;
 
                 default:
