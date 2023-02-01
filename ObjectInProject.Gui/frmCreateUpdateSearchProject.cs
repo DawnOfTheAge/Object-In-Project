@@ -9,12 +9,6 @@ namespace ObjectInProject.Gui
 {
     public partial class FrmCreateUpdateSearchProject : Form
     {
-        #region Local Constants
-
-        private static string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
-
-        #endregion
-
         #region Events
 
         public event CreateUpdateSearchProjectReply Reply;
