@@ -1016,11 +1016,18 @@ namespace ObjectInProject.Gui
         {
             string method = MethodBase.GetCurrentMethod().Name;
 
-            if (e.KeyCode == Keys.Enter)
+            try
             {
-                BtnFind_Click(null, null);
+                if (e.KeyCode == Keys.Enter)
+                {
+                    BtnFind_Click(null, null);
 
-                txtFind.Items.Add(txtFind.Text);
+                    txtFind.Items.Add(txtFind.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
             }
         }
 
@@ -1095,6 +1102,7 @@ namespace ObjectInProject.Gui
             catch (Exception ex)
             {
                 MessageBox.Show("Build Listview Failure. " + ex.Message, "GUI Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1382,7 +1390,7 @@ namespace ObjectInProject.Gui
                 switch (EDITOR_USED)
                 {
                     case Editors.Notepad:
-                        if (!OpenWithNotepad(file, line, out result))
+                        if (!OpenWithNotepad(file, out result))
                         {
                             Audit(result, method, LINE(), AuditSeverity.Warning);
                             MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -1487,7 +1495,7 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private bool OpenWithNotepad(string file, int line, out string result)
+        private bool OpenWithNotepad(string file, out string result)
         {
             #region Data Members            
 
@@ -1910,7 +1918,7 @@ namespace ObjectInProject.Gui
                 }
                 else
                 {
-                    if (configuration.AuditSettings.AuditOn)
+                    if (m_Configuration.AuditSettings.AuditOn)
                     {
                         dgvAudit.Rows.Insert(0, new string[] { dateTime, auditSeverity.ToString(), module, method, line.ToString(), message });
                         dgvAudit.Rows[0].DefaultCellStyle.BackColor = SeverityColor(auditSeverity);

@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataTypes\AuditProperties.cs" />
     <Compile Include="DataTypes\CsFile.cs" />
     <Compile Include="DataTypes\EditorInformation.cs" />
     <Compile Include="DataTypes\ExtendedSearchedLine.cs" />

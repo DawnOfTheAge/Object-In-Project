@@ -1,21 +1,15 @@
-﻿using ObjectInProject.Common;
+﻿using Newtonsoft.Json;
+using ObjectInProject.Common;
+using ObjectInProject.Gui;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ObjectInProject.Gui;
-using Newtonsoft.Json;
 
 namespace ObjectInProject.Tests.ProjectsExplorer
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
         #region Data Members
 
@@ -27,7 +21,7 @@ namespace ObjectInProject.Tests.ProjectsExplorer
 
         #region Constructor
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -36,7 +30,7 @@ namespace ObjectInProject.Tests.ProjectsExplorer
 
         #region Startup
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             try
             {
@@ -62,7 +56,7 @@ namespace ObjectInProject.Tests.ProjectsExplorer
 
                 frmSearchProjectsTree searchProjectsTree = new frmSearchProjectsTree(m_Configuration, 
                                                                                      new List<Editors>() { Editors.Notepad, Editors.NotepadPlusPlus});
-                searchProjectsTree.Message += SearchProjectsTree_Message;
+                searchProjectsTree.Reply += SearchProjectsTree_Message;
                 searchProjectsTree.Show();
             }
             catch (Exception ex)
@@ -75,17 +69,15 @@ namespace ObjectInProject.Tests.ProjectsExplorer
 
         #region Gui
 
-        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+        private void FrmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            string result;
-
             try
             {
                 DialogResult dialogResult = MessageBox.Show("Save Configuration?", "Save Configuration On Exit", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                 if (dialogResult == DialogResult.Yes)
                 {
-                    SaveConfiguration(out result);
+                    SaveConfiguration(out string result);
                 }
             }
             catch (Exception ex)

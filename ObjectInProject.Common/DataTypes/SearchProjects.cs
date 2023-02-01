@@ -26,6 +26,8 @@ namespace ObjectInProject.Common
             set;
         }
 
+        public AuditProperties AuditSettings { get; set; }
+
         #endregion
 
         #region Constructors

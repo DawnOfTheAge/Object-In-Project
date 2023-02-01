@@ -1,7 +1,7 @@
 ﻿
 namespace ObjectInProject.Tests.ProjectsExplorer
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -38,8 +38,8 @@ namespace ObjectInProject.Tests.ProjectsExplorer
             this.ClientSize = new System.Drawing.Size(303, 58);
             this.Name = "frmMain";
             this.Text = "Projects Explorer Test";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.ResumeLayout(false);
 
         }

@@ -58,8 +58,21 @@
             this.cboFileTypeFilters = new System.Windows.Forms.ComboBox();
             this.lblFileTypeFilters = new System.Windows.Forms.Label();
             this.btnClear = new System.Windows.Forms.Button();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.dgvAudit = new System.Windows.Forms.DataGridView();
+            this.colDateTime = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSeverity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colModule = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMethod = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colLine = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mnuMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
+            this.splitContainer.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAudit)).BeginInit();
             this.SuspendLayout();
             // 
             // mnuMain
@@ -116,7 +129,7 @@
             this.btnFind.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources.Refresh;
             this.btnFind.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnFind.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFind.Location = new System.Drawing.Point(832, 26);
+            this.btnFind.Location = new System.Drawing.Point(832, 10);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(60, 60);
             this.btnFind.TabIndex = 4;
@@ -127,9 +140,9 @@
             // lvResults
             // 
             this.lvResults.HideSelection = false;
-            this.lvResults.Location = new System.Drawing.Point(12, 95);
+            this.lvResults.Location = new System.Drawing.Point(12, 79);
             this.lvResults.Name = "lvResults";
-            this.lvResults.Size = new System.Drawing.Size(1109, 415);
+            this.lvResults.Size = new System.Drawing.Size(1109, 325);
             this.lvResults.TabIndex = 6;
             this.lvResults.UseCompatibleStateImageBehavior = false;
             this.lvResults.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LvResults_MouseDoubleClick);
@@ -139,7 +152,7 @@
             this.txtFind.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.txtFind.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.txtFind.FormattingEnabled = true;
-            this.txtFind.Location = new System.Drawing.Point(12, 47);
+            this.txtFind.Location = new System.Drawing.Point(12, 31);
             this.txtFind.Name = "txtFind";
             this.txtFind.Size = new System.Drawing.Size(814, 21);
             this.txtFind.TabIndex = 18;
@@ -151,7 +164,7 @@
             this.btnLoadSearchedItemsFromFile.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources._3Dots;
             this.btnLoadSearchedItemsFromFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnLoadSearchedItemsFromFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoadSearchedItemsFromFile.Location = new System.Drawing.Point(964, 38);
+            this.btnLoadSearchedItemsFromFile.Location = new System.Drawing.Point(964, 22);
             this.btnLoadSearchedItemsFromFile.Name = "btnLoadSearchedItemsFromFile";
             this.btnLoadSearchedItemsFromFile.Size = new System.Drawing.Size(40, 33);
             this.btnLoadSearchedItemsFromFile.TabIndex = 23;
@@ -307,7 +320,7 @@
             // chkCaseSensitive
             // 
             this.chkCaseSensitive.AutoSize = true;
-            this.chkCaseSensitive.Location = new System.Drawing.Point(12, 72);
+            this.chkCaseSensitive.Location = new System.Drawing.Point(12, 56);
             this.chkCaseSensitive.Name = "chkCaseSensitive";
             this.chkCaseSensitive.Size = new System.Drawing.Size(96, 17);
             this.chkCaseSensitive.TabIndex = 29;
@@ -318,7 +331,7 @@
             // cboFileTypeFilters
             // 
             this.cboFileTypeFilters.FormattingEnabled = true;
-            this.cboFileTypeFilters.Location = new System.Drawing.Point(200, 70);
+            this.cboFileTypeFilters.Location = new System.Drawing.Point(200, 54);
             this.cboFileTypeFilters.Name = "cboFileTypeFilters";
             this.cboFileTypeFilters.Size = new System.Drawing.Size(244, 21);
             this.cboFileTypeFilters.TabIndex = 30;
@@ -326,7 +339,7 @@
             // lblFileTypeFilters
             // 
             this.lblFileTypeFilters.AutoSize = true;
-            this.lblFileTypeFilters.Location = new System.Drawing.Point(114, 73);
+            this.lblFileTypeFilters.Location = new System.Drawing.Point(114, 57);
             this.lblFileTypeFilters.Name = "lblFileTypeFilters";
             this.lblFileTypeFilters.Size = new System.Drawing.Size(80, 13);
             this.lblFileTypeFilters.TabIndex = 31;
@@ -337,7 +350,7 @@
             this.btnClear.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources.Clear;
             this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(898, 26);
+            this.btnClear.Location = new System.Drawing.Point(898, 10);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(60, 60);
             this.btnClear.TabIndex = 32;
@@ -345,20 +358,85 @@
             this.btnClear.UseVisualStyleBackColor = true;
             this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
+            // splitContainer
+            // 
+            this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer.Name = "splitContainer";
+            this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.lvResults);
+            this.splitContainer.Panel1.Controls.Add(this.btnClear);
+            this.splitContainer.Panel1.Controls.Add(this.btnFind);
+            this.splitContainer.Panel1.Controls.Add(this.lblFileTypeFilters);
+            this.splitContainer.Panel1.Controls.Add(this.txtFind);
+            this.splitContainer.Panel1.Controls.Add(this.cboFileTypeFilters);
+            this.splitContainer.Panel1.Controls.Add(this.btnLoadSearchedItemsFromFile);
+            this.splitContainer.Panel1.Controls.Add(this.chkCaseSensitive);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.dgvAudit);
+            this.splitContainer.Size = new System.Drawing.Size(1133, 612);
+            this.splitContainer.SplitterDistance = 444;
+            this.splitContainer.TabIndex = 33;
+            // 
+            // dgvAudit
+            // 
+            this.dgvAudit.AllowUserToAddRows = false;
+            this.dgvAudit.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAudit.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colDateTime,
+            this.colSeverity,
+            this.colModule,
+            this.colMethod,
+            this.colLine,
+            this.colMessage});
+            this.dgvAudit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvAudit.Location = new System.Drawing.Point(0, 0);
+            this.dgvAudit.Name = "dgvAudit";
+            this.dgvAudit.Size = new System.Drawing.Size(1133, 164);
+            this.dgvAudit.TabIndex = 1;
+            // 
+            // colDateTime
+            // 
+            this.colDateTime.HeaderText = "Date/Time";
+            this.colDateTime.Name = "colDateTime";
+            // 
+            // colSeverity
+            // 
+            this.colSeverity.HeaderText = "Severity";
+            this.colSeverity.Name = "colSeverity";
+            // 
+            // colModule
+            // 
+            this.colModule.HeaderText = "Module";
+            this.colModule.Name = "colModule";
+            // 
+            // colMethod
+            // 
+            this.colMethod.HeaderText = "Method";
+            this.colMethod.Name = "colMethod";
+            // 
+            // colLine
+            // 
+            this.colLine.HeaderText = "Line";
+            this.colLine.Name = "colLine";
+            // 
+            // colMessage
+            // 
+            this.colMessage.HeaderText = "Message";
+            this.colMessage.Name = "colMessage";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1133, 660);
-            this.Controls.Add(this.btnClear);
-            this.Controls.Add(this.lblFileTypeFilters);
-            this.Controls.Add(this.cboFileTypeFilters);
-            this.Controls.Add(this.chkCaseSensitive);
+            this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.btnLoadSearchedItemsFromFile);
-            this.Controls.Add(this.txtFind);
-            this.Controls.Add(this.lvResults);
-            this.Controls.Add(this.btnFind);
             this.Controls.Add(this.mnuMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuMain;
@@ -371,6 +449,12 @@
             this.mnuMain.PerformLayout();
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
+            this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel1.PerformLayout();
+            this.splitContainer.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
+            this.splitContainer.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAudit)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -407,6 +491,14 @@
         private System.Windows.Forms.ComboBox cboFileTypeFilters;
         private System.Windows.Forms.Label lblFileTypeFilters;
         private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.SplitContainer splitContainer;
+        private System.Windows.Forms.DataGridView dgvAudit;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDateTime;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSeverity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colModule;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMethod;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colLine;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colMessage;
     }
 }
 
