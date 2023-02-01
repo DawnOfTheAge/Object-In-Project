@@ -2,20 +2,21 @@
 using ObjectInProject.Search;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ObjectInProject.Tests.File
 {
     public partial class frmMain : Form
     {
+        #region Data Members
+
+        private SearchUtils searchUtils;
+
+        #endregion
+
         #region Constructor
 
         public frmMain()
@@ -27,7 +28,7 @@ namespace ObjectInProject.Tests.File
 
         #region Startup
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             Location = Cursor.Position;
 
@@ -37,13 +38,15 @@ namespace ObjectInProject.Tests.File
             rbOr.Checked = false;
 
             txtTokens.Text = "ttl , ad";
+
+            searchUtils = new SearchUtils();
         }
 
         #endregion
 
         #region Gui
 
-        private void btnFilePath_Click(object sender, EventArgs e)
+        private void BtnFilePath_Click(object sender, EventArgs e)
         {
             try
             {
@@ -64,7 +67,7 @@ namespace ObjectInProject.Tests.File
             }
         }
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private void BtnSearch_Click(object sender, EventArgs e)
         {
             try
             {
@@ -77,18 +80,14 @@ namespace ObjectInProject.Tests.File
                     return;
                 }
 
-                string result;                
-
                 List<string> lTokens = txtTokens.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                SearchedFile searchedFile;
-
-                if (!SearchUtils.SearchInFile(new FileOrigin(string.Empty, txtFilePath.Text),
+                if (!searchUtils.SearchInFile(new FileOrigin(string.Empty, txtFilePath.Text),
                                               lTokens,
                                               (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
                                               chkCaseSensitive.Checked,
-                                              out searchedFile,
-                                              out result))
+                                              out SearchedFile searchedFile,
+                                              out string result))
 
                 {
                     MessageBox.Show(result, $"Failed Searching File '{txtFilePath.Text}'", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -116,7 +115,7 @@ namespace ObjectInProject.Tests.File
             }
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        private void BtnClear_Click(object sender, EventArgs e)
         {
             dgvResults.Rows.Clear();
         }

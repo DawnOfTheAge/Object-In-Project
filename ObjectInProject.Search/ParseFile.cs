@@ -1,12 +1,8 @@
-﻿using General.Common;
-using Microsoft.Build.Construction;
+﻿using Microsoft.Build.Construction;
 using ObjectInProject.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectInProject.Search
 {
@@ -125,13 +121,13 @@ namespace ObjectInProject.Search
                 while (goOn)
                 {
                     startFileIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_PROPERTY, projectFileTextIndex);
-                    if (startFileIndex == Constants.NONE)
+                    if (startFileIndex == ObjectInProjectConstants.NONE)
                     {
                         break;
                     }
 
                     endFileIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_FILE_EXTENSION, startFileIndex);
-                    if (endFileIndex == Constants.NONE)
+                    if (endFileIndex == ObjectInProjectConstants.NONE)
                     {
                         break;
                     }
@@ -193,13 +189,13 @@ namespace ObjectInProject.Search
                 while (goOn)
                 {
                     startFileIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY, projectFileTextIndex);
-                    if (startFileIndex == Constants.NONE)
+                    if (startFileIndex == ObjectInProjectConstants.NONE)
                     {
                         break;
                     }
 
                     endFileIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION, startFileIndex);
-                    if (endFileIndex == Constants.NONE)
+                    if (endFileIndex == ObjectInProjectConstants.NONE)
                     {
                         break;
                     }
@@ -219,13 +215,13 @@ namespace ObjectInProject.Search
                 while (goOn)
                 {
                     startFileIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY, projectFileTextIndex);
-                    if (startFileIndex == Constants.NONE)
+                    if (startFileIndex == ObjectInProjectConstants.NONE)
                     {
                         break;
                     }
 
                     endFileIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION, startFileIndex);
-                    if (endFileIndex == Constants.NONE)
+                    if (endFileIndex == ObjectInProjectConstants.NONE)
                     {
                         break;
                     }

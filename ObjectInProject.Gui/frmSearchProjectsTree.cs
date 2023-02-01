@@ -1,37 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using General.Common;
-using General.Log;
-using ObjectInProject.Common;
+﻿using ObjectInProject.Common;
 using ObjectInProject.Utils;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace ObjectInProject.Gui
 {
     public partial class frmSearchProjectsTree : Form
     {
-        #region Local Constants
-
-        private static string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
-
-        #endregion
-
         #region Events
 
-        public event EventMessage Message;
+        public event EventMessage Reply;
+        public event AuditMessage Message;
 
         #endregion
 
         #region Data Members 
 
-        private List<Editors> activeEditors;
+        private readonly List<Editors> activeEditors;
             
         private SearchProjects searchProjects;
 
@@ -61,15 +48,13 @@ namespace ObjectInProject.Gui
 
         #region Startup & Close
 
-        private void frmSolutionsTree_Load(object sender, EventArgs e)
+        private void FrmSolutionsTree_Load(object sender, EventArgs e)
         {
-            string result;
-
             try
             {
                 Location = Cursor.Position;
 
-                if (!CreateContextMenus(out result))
+                if (!CreateContextMenus(out string result))
                 {
                     MessageBox.Show(result, "Create Context Menu Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
@@ -94,14 +79,11 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void frmSearchProjectsTree_FormClosed(object sender, FormClosedEventArgs e)
+        private void FrmSearchProjectsTree_FormClosed(object sender, FormClosedEventArgs e)
         {
-            string result;
-
             try
             {
-                SearchProjects inSearchProjects;
-                if (!OnMessage((new MessageObject(IoAction.Keep, searchProjects)), out inSearchProjects, out result))
+                if (!OnReply((new MessageObject(IoAction.Keep, searchProjects)), out SearchProjects inSearchProjects, out string result))
                 {
                     MessageBox.Show(result, "Form Closed Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -179,8 +161,6 @@ namespace ObjectInProject.Gui
 
         private bool CreateContextMenus(out string result)
         {
-            result = string.Empty;
-
             try
             {
                 if (!CreateRootContextMenu(out result))
@@ -226,8 +206,10 @@ namespace ObjectInProject.Gui
 
             try
             {
-                rootContextMenu = new ContextMenu();
-                rootContextMenu.Tag = null;
+                rootContextMenu = new ContextMenu
+                {
+                    Tag = null
+                };
                 rootContextMenu.MenuItems.Add("Reload Search Projects", ReloadSearchProjectsHandler);
                 rootContextMenu.MenuItems.Add("Save Search Projects", SaveSearchProjectsHandler);
                 rootContextMenu.MenuItems.Add("-");
@@ -252,9 +234,11 @@ namespace ObjectInProject.Gui
             result = string.Empty;
 
             try
-            {                
-                solutionsSearchProjectContextMenu = new ContextMenu();
-                solutionsSearchProjectContextMenu.Tag = SearchProjectType.SolutionsProject;
+            {
+                solutionsSearchProjectContextMenu = new ContextMenu
+                {
+                    Tag = SearchProjectType.SolutionsProject
+                };
 
                 solutionsSearchProjectContextMenu.MenuItems.Add("Add Solutions Search Project", CreateSearchProjectHandler);
                 solutionsSearchProjectContextMenu.MenuItems.Add("Delete All Solutions Search Projects", DeleteAllSearchProjectsHandler);
@@ -276,9 +260,11 @@ namespace ObjectInProject.Gui
             result = string.Empty;
 
             try
-            {                
-                directoriesSearchProjectContextMenu = new ContextMenu();
-                directoriesSearchProjectContextMenu.Tag = SearchProjectType.DirectoriesProject;
+            {
+                directoriesSearchProjectContextMenu = new ContextMenu
+                {
+                    Tag = SearchProjectType.DirectoriesProject
+                };
 
                 directoriesSearchProjectContextMenu.MenuItems.Add("Add Directories Search Project", CreateSearchProjectHandler);
                 directoriesSearchProjectContextMenu.MenuItems.Add("Delete All Directories Search Projects", DeleteAllSearchProjectsHandler);
@@ -300,9 +286,11 @@ namespace ObjectInProject.Gui
             result = string.Empty;
 
             try
-            {                
-                solutionsUpdateDeleteSearchProjectContextMenu = new ContextMenu();
-                solutionsUpdateDeleteSearchProjectContextMenu.Tag = SearchProjectType.SolutionsProject;
+            {
+                solutionsUpdateDeleteSearchProjectContextMenu = new ContextMenu
+                {
+                    Tag = SearchProjectType.SolutionsProject
+                };
 
                 solutionsUpdateDeleteSearchProjectContextMenu.MenuItems.Add("Set Search Project As Active", SetSearchProjectAsActiveHandler);
                 solutionsUpdateDeleteSearchProjectContextMenu.MenuItems.Add("-");
@@ -326,9 +314,11 @@ namespace ObjectInProject.Gui
             result = string.Empty;
 
             try
-            {                
-                directoriesUpdateDeleteSearchProjectContextMenu = new ContextMenu();
-                directoriesUpdateDeleteSearchProjectContextMenu.Tag = SearchProjectType.DirectoriesProject;
+            {
+                directoriesUpdateDeleteSearchProjectContextMenu = new ContextMenu
+                {
+                    Tag = SearchProjectType.DirectoriesProject
+                };
 
                 directoriesUpdateDeleteSearchProjectContextMenu.MenuItems.Add("Set Search Project As Active", SetSearchProjectAsActiveHandler);
                 directoriesUpdateDeleteSearchProjectContextMenu.MenuItems.Add("-");
@@ -355,18 +345,15 @@ namespace ObjectInProject.Gui
             {
                 TreeNode tn = tvSearchProjects.SelectedNode;
                 string searchProjectName = tn.Text;
-                string result;
 
-                if (!searchProjects.SetAsActive(searchProjectName, out result))
+                if (!searchProjects.SetAsActive(searchProjectName, out string result))
                 {
                     MessageBox.Show(result, $"Set As Active Search Project Failure '{searchProjectName}'", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     return;
                 }
 
-                SearchProjects inSearchProjects;
-
-                if (!OnMessage((new MessageObject(IoAction.Keep, searchProjects)), out inSearchProjects, out result))
+                if (!OnReply((new MessageObject(IoAction.Keep, searchProjects)), out SearchProjects inSearchProjects, out result))
                 {
                     MessageBox.Show(result, "Save Search Projects Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -388,11 +375,7 @@ namespace ObjectInProject.Gui
         {
             try
             {
-                string result;
-
-                SearchProjects inSearchProjects;
-
-                if (!OnMessage((new MessageObject(IoAction.KeepAndSave, searchProjects)), out inSearchProjects, out result))
+                if (!OnReply((new MessageObject(IoAction.KeepAndSave, searchProjects)), out SearchProjects inSearchProjects, out string result))
                 {
                     MessageBox.Show(result, "Save Search Projects Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -407,11 +390,7 @@ namespace ObjectInProject.Gui
         {
             try
             {
-                string result;
-
-                SearchProjects inSearchProjects;
-
-                if (!OnMessage((new MessageObject(IoAction.Reload)), out inSearchProjects, out result))
+                if (!OnReply((new MessageObject(IoAction.Reload)), out SearchProjects inSearchProjects, out string result))
                 {
                     MessageBox.Show(result, "Reload Search Projects Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
@@ -436,7 +415,7 @@ namespace ObjectInProject.Gui
                 ContextMenu cm = (ContextMenu)(mi.Parent);
                 projectType = (SearchProjectType)(cm.Tag);
 
-                frmCreateUpdateSearchProject createUpdateSearchProject = new frmCreateUpdateSearchProject(CrudAction.Create, 
+                FrmCreateUpdateSearchProject createUpdateSearchProject = new FrmCreateUpdateSearchProject(CrudAction.Create, 
                                                                                                           projectType,
                                                                                                           activeEditors);
                 createUpdateSearchProject.Reply += CreateUpdateSearchProject_Reply;
@@ -458,17 +437,15 @@ namespace ObjectInProject.Gui
 
                 TreeNode tn = tvSearchProjects.SelectedNode;
                 string searchProjectName = tn.Text;
-                string result;
 
-                SearchProject searchProject;
-                if (!searchProjects.GetByName(searchProjectName, out searchProject, out result))
+                if (!searchProjects.GetByName(searchProjectName, out SearchProject searchProject, out string result))
                 {
                     MessageBox.Show(result, $"Update Search Project Failure '{searchProjectName}'", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     return;
                 }
 
-                frmCreateUpdateSearchProject updateSearchProject = new frmCreateUpdateSearchProject(CrudAction.Update, 
+                FrmCreateUpdateSearchProject updateSearchProject = new FrmCreateUpdateSearchProject(CrudAction.Update, 
                                                                                                     searchProject,
                                                                                                     activeEditors);
                 updateSearchProject.Reply += CreateUpdateSearchProject_Reply;
@@ -490,7 +467,6 @@ namespace ObjectInProject.Gui
 
                 TreeNode tn = tvSearchProjects.SelectedNode;
                 string searchProjectName = tn.Text;
-                string result;
 
                 DialogResult dialogResult = MessageBox.Show("Delete Search Project '" + searchProjectName + "'?",
                                                             "Delete Search Project",
@@ -501,7 +477,7 @@ namespace ObjectInProject.Gui
                     return;
                 }
 
-                if (!searchProjects.Delete(searchProjectName, out result))
+                if (!searchProjects.Delete(searchProjectName, out string result))
                 {
                     MessageBox.Show(result, $"Delete Search Project Failure '{searchProjectName}'", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
@@ -523,8 +499,6 @@ namespace ObjectInProject.Gui
 
         private void DeleteAllSearchProjectsHandler(object sender, EventArgs e)
         {
-            string result;
-
             try
             {
                 MenuItem mi = (MenuItem)sender;
@@ -559,7 +533,7 @@ namespace ObjectInProject.Gui
                     return;
                 }
 
-                if (!searchProjects.DeleteAll(projectType, out result))
+                if (!searchProjects.DeleteAll(projectType, out string result))
                 {
                     MessageBox.Show(result, $"{deleteQuestionString} Failure", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
@@ -581,8 +555,6 @@ namespace ObjectInProject.Gui
 
         private void UnsetActiveSearchProjectHandler(object sender, EventArgs e)
         {
-            string result;
-
             try
             {
                 DialogResult dialogResult = MessageBox.Show("Are You Sure?",
@@ -594,11 +566,10 @@ namespace ObjectInProject.Gui
                     return;
                 }
 
-                searchProjects.ActiveSearchProjectIndex = Constants.NONE;
-                searchProjects.ActiveSearchProjectRealIndex = Constants.NONE;
+                searchProjects.ActiveSearchProjectIndex = ObjectInProjectConstants.NONE;
+                searchProjects.ActiveSearchProjectRealIndex = ObjectInProjectConstants.NONE;
 
-                SearchProjects inSearchProjects;
-                if (!OnMessage((new MessageObject(IoAction.Keep, searchProjects)), out inSearchProjects, out result))
+                if (!OnReply((new MessageObject(IoAction.Keep, searchProjects)), out SearchProjects inSearchProjects, out string result))
                 {
                     MessageBox.Show(result, "Form Closed Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -624,37 +595,32 @@ namespace ObjectInProject.Gui
 
         private bool CreateUpdateSearchProject_Reply(CrudAction crudAction, SearchProject searchProject, out string result)
         {
-            result = string.Empty;
-
             try
             {
                 if (searchProject != null)
                 {
-                    int searchProjectIndex;
-
                     switch (crudAction)
                     {
                         case CrudAction.Create:
-                            if (!searchProjects.Add(searchProject, out searchProjectIndex, out result))
+                            if (!searchProjects.Add(searchProject, out int searchProjectIndex, out result))
                             {
                                 return false;
                             }
                             break;
-                        
+
                         case CrudAction.Update:
                             if (!searchProjects.Update(searchProject, out result))
                             {
                                 return false;
                             }
                             break;
-                        
+
                         default:
-                            result = $"Wrong CRUD Action [{crudAction.ToString()}]";
+                            result = $"Wrong CRUD Action [{crudAction}]";
                             return false;
                     }
 
-                    SearchProjects inSearchProjects;
-                    if (!OnMessage((new MessageObject(IoAction.Keep, searchProjects)), out inSearchProjects, out result))
+                    if (!OnReply((new MessageObject(IoAction.Keep, searchProjects)), out SearchProjects inSearchProjects, out result))
                     {
                         return false;
                     }
@@ -760,8 +726,10 @@ namespace ObjectInProject.Gui
                 return false;
             }
         }
+        
+        #region Events Handlers
 
-        private bool OnMessage(MessageObject message, out SearchProjects searchProjects, out string result)
+        private bool OnReply(MessageObject message, out SearchProjects searchProjects, out string result)
         {
             result = string.Empty;
 
@@ -769,10 +737,9 @@ namespace ObjectInProject.Gui
 
             try
             {
-                if (Message != null)
+                if (Reply != null)
                 {
-                    object objectSearchProjects;
-                    if (!Message(message, out objectSearchProjects, out result))
+                    if (!Reply(message, out object objectSearchProjects, out result))
                     {
                         MessageBox.Show(result, "Send Message Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
@@ -792,14 +759,30 @@ namespace ObjectInProject.Gui
             }
         }
 
+        public void OnMessage(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            Message?.Invoke(message, method, module, line, auditSeverity);
+        }
+
+        #endregion
+
         #region Audit
 
-        private static void Audit(string message, string method, AuditSeverity auditSeverity, int line)
+        private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
         {
-            string assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-            string fileName = Log.FILE();
+            OnMessage(message, method, module, line, auditSeverity);
+        }
 
-            Log.Audit(message, fileName, assemblyName, module, method, auditSeverity, line);
+        private void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        {
+            string module = "Search Projects Tree";
+
+            Audit(message, method, module, line, auditSeverity);
+        }
+
+        public static int LINE([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return lineNumber;
         }
 
         #endregion

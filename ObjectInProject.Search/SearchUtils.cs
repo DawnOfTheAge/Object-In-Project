@@ -1,7 +1,4 @@
-﻿using General.Common;
-using General.Common.Utils;
-using General.Log;
-using ObjectInProject.Common;
+﻿using ObjectInProject.Common;
 using ObjectInProject.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,18 +8,18 @@ using System.Reflection;
 
 namespace ObjectInProject.Search
 {
-    public static class SearchUtils
+    public class SearchUtils
     {
-        #region Local Constants
+        #region Events
 
-        private static readonly string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
+        public event AuditMessage Message;
 
         #endregion
 
-        public static bool FindToken(string token,
-                                     SearchProject configuration,
-                                     out List<SearchResult> serachResults,
-                                     out string result)
+        public bool FindToken(string token,
+                              SearchProject configuration,
+                              out List<SearchResult> serachResults,
+                              out string result)
         {
             #region Data Members
 
@@ -77,7 +74,7 @@ namespace ObjectInProject.Search
 
                             if (configuration.NoTests)
                             {
-                                if (solution.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                if (solution.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                 {
                                     continue;
                                 }
@@ -91,7 +88,7 @@ namespace ObjectInProject.Search
 
                                     if (configuration.NoTests)
                                     {
-                                        if (project.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                        if (project.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                         {
                                             continue;
                                         }
@@ -105,7 +102,7 @@ namespace ObjectInProject.Search
 
                                             if (configuration.NoTests)
                                             {
-                                                if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                                if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                                 {
                                                     continue;
                                                 }
@@ -124,7 +121,7 @@ namespace ObjectInProject.Search
                                                         line = line.ToLower();
                                                     }
 
-                                                    if (line.IndexOf(token) != Constants.NONE)
+                                                    if (line.IndexOf(token) != ObjectInProjectConstants.NONE)
                                                     {
                                                         SearchResult searchResult = new SearchResult(Path.GetFileName(solution.Name),
                                                                                                      Path.GetFileName(project.Name),
@@ -161,16 +158,16 @@ namespace ObjectInProject.Search
 
                             if (!Directory.Exists(currentDirectory))
                             {
-                                Audit($"Directory '{currentDirectory}' Does Not Exist", method, Log.LINE(), AuditSeverity.Information);
+                                Audit($"Directory '{currentDirectory}' Does Not Exist", method, LINE(), AuditSeverity.Information);
 
                                 continue;
                             }
 
                             if (configuration.NoTests)
                             {
-                                if (currentDirectory.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                if (currentDirectory.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                 {
-                                    Audit($"Directory '{currentDirectory}' Has 'test' In It", method, Log.LINE(), AuditSeverity.Information);
+                                    Audit($"Directory '{currentDirectory}' Has 'test' In It", method, LINE(), AuditSeverity.Information);
 
                                     continue;
                                 }
@@ -189,7 +186,7 @@ namespace ObjectInProject.Search
 
                                 Audit($"For Extension[{currentFileExtension}] {allFiles.Count} Files Found", 
                                       method, 
-                                      Log.LINE(), 
+                                      LINE(), 
                                       AuditSeverity.Information);
 
                                 //SearchInListOfFiles(allFiles, )
@@ -252,16 +249,16 @@ namespace ObjectInProject.Search
             {
                 result = e.Message;
 
-                Audit(result, method, Log.LINE(), AuditSeverity.Error);
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
         }
 
-        public static bool FindTokens(List<string> tokens,
-                                      SearchProject configuration,
-                                      out List<SearchResult> searchResults, 
-                                      out string result)
+        public bool FindTokens(List<string> tokens,
+                               SearchProject configuration,
+                               out List<SearchResult> searchResults, 
+                               out string result)
         {
             #region Data Members
 
@@ -337,7 +334,7 @@ namespace ObjectInProject.Search
             }
         }
 
-        private static bool GetSearchResults(SearchedFilesList searchedFilesList, out List<SearchResult> searchResults, out string result)
+        private bool GetSearchResults(SearchedFilesList searchedFilesList, out List<SearchResult> searchResults, out string result)
         {
             result = string.Empty;
 
@@ -373,11 +370,11 @@ namespace ObjectInProject.Search
             }
         }
 
-        private static bool GetFilesList(SearchProjectType type, 
-                                         List<string> paths, 
-                                         string searchPattern, 
-                                         out List<FileOrigin> listOfFiles, 
-                                         out string result)
+        private bool GetFilesList(SearchProjectType type, 
+                                  List<string> paths, 
+                                  string searchPattern, 
+                                  out List<FileOrigin> listOfFiles, 
+                                  out string result)
         {
             listOfFiles = null;
 
@@ -416,7 +413,7 @@ namespace ObjectInProject.Search
 
         #region Files For Soulution Project
 
-        private static bool GetSolutionshsFilesList(List<string> solutions, out List<FileOrigin> listOfFiles, out string result)
+        private bool GetSolutionshsFilesList(List<string> solutions, out List<FileOrigin> listOfFiles, out string result)
         {
             result = string.Empty;
 
@@ -490,7 +487,7 @@ namespace ObjectInProject.Search
 
         #region Files For Directory Project 
 
-        private static bool GetPathsFilesList(List<string> paths, string searchPattern, out List<FileOrigin> listOfFiles, out string result)
+        private bool GetPathsFilesList(List<string> paths, string searchPattern, out List<FileOrigin> listOfFiles, out string result)
         {
             result = string.Empty;
 
@@ -531,7 +528,7 @@ namespace ObjectInProject.Search
             }
         }
 
-        private static bool GetPathFilesList(string path, string searchPattern, out List<FileOrigin> listOfFiles, out string result)
+        private bool GetPathFilesList(string path, string searchPattern, out List<FileOrigin> listOfFiles, out string result)
         {
             result = string.Empty;
 
@@ -577,12 +574,12 @@ namespace ObjectInProject.Search
 
         #region Search In List Of Files
 
-        public static bool SearchInListOfFiles(List<FileOrigin> files,
-                                               List<string> tokens,
-                                               SearchLogic searchLogic,
-                                               bool caseSensitive,
-                                               out SearchedFilesList searchedFilesList,
-                                               out string result)
+        public bool SearchInListOfFiles(List<FileOrigin> files,
+                                        List<string> tokens,
+                                        SearchLogic searchLogic,
+                                        bool caseSensitive,
+                                        out SearchedFilesList searchedFilesList,
+                                        out string result)
         {
             result = string.Empty;
 
@@ -628,12 +625,12 @@ namespace ObjectInProject.Search
 
         #region Search File
 
-        public static bool SearchInFile(FileOrigin file, 
-                                        List<string> tokens, 
-                                        SearchLogic searchLogic, 
-                                        bool caseSensitive, 
-                                        out SearchedFile searchedFile, 
-                                        out string result)
+        public bool SearchInFile(FileOrigin file, 
+                                 List<string> tokens, 
+                                 SearchLogic searchLogic, 
+                                 bool caseSensitive, 
+                                 out SearchedFile searchedFile, 
+                                 out string result)
         {
             searchedFile = null;
 
@@ -700,7 +697,7 @@ namespace ObjectInProject.Search
 
         #region Search Line
 
-        public static bool SearchInLine(string line, List<string> tokens, SearchLogic searchLogic, bool caseSensitive, out string result)
+        public bool SearchInLine(string line, List<string> tokens, SearchLogic searchLogic, bool caseSensitive, out string result)
         {
             try
             {
@@ -727,7 +724,7 @@ namespace ObjectInProject.Search
             }
         }
 
-        private static bool SearchInLineAnd(string line, List<string> tokens, bool caseSensitive, out string result)
+        private bool SearchInLineAnd(string line, List<string> tokens, bool caseSensitive, out string result)
         {            
             result = string.Empty;
 
@@ -771,7 +768,7 @@ namespace ObjectInProject.Search
             }
         }
 
-        private static bool SearchInLineOr(string line, List<string> tokens, bool caseSensitive, out string result)
+        private bool SearchInLineOr(string line, List<string> tokens, bool caseSensitive, out string result)
         {            
             result = string.Empty;
 
@@ -817,14 +814,32 @@ namespace ObjectInProject.Search
 
         #endregion
 
+        #region Events Handlers
+
+        public void OnMessage(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            Message?.Invoke(message, method, module, line, auditSeverity);
+        }
+
+        #endregion
+
         #region Audit
 
-        private static void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
         {
-            string assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-            string fileName = Log.FILE();
+            OnMessage(message, method, module, line, auditSeverity);
+        }
 
-            Log.Audit(message, fileName, assemblyName, module, method, auditSeverity, line);
+        private void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        {
+            string module = "Search Utils";
+
+            Audit(message, method, module, line, auditSeverity);
+        }
+
+        public static int LINE([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return lineNumber;
         }
 
         #endregion

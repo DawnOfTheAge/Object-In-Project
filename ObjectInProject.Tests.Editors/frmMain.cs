@@ -1,34 +1,27 @@
-﻿using Microsoft.Win32;
+﻿using ObjectInProject.Common;
+using ObjectInProject.EditorsInformation;
+using ObjectInProject.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using ObjectInProject.Common;
-using ObjectInProject.EditorsInformation;
 using System.IO;
 using System.Reflection;
-using ObjectInProject.Utils;
+using System.Windows.Forms;
 
 namespace ObjectInProject.Tests.Editors
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
         #region Data Members
 
         private List<EditorInformation> editors;
 
+        private VisualStudiosInstalled visualStudiosInstalled;
+
         #endregion
 
         #region Constructor
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -37,11 +30,13 @@ namespace ObjectInProject.Tests.Editors
 
         #region Startup
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             try
             {
-                Location = Cursor.Position;                
+                Location = Cursor.Position;     
+                
+                visualStudiosInstalled = new VisualStudiosInstalled();
             }
             catch (Exception ex)
             {
@@ -53,13 +48,11 @@ namespace ObjectInProject.Tests.Editors
 
         #region Gui
 
-        private void btnFind_Click(object sender, EventArgs e)
+        private void BtnFind_Click(object sender, EventArgs e)
         {
             try
             {
-                string result;
-                
-                if (!VisualStudiosInstalled.GetVisualStudiosInstalled(out editors, out result))
+                if (!visualStudiosInstalled.GetVisualStudiosInstalled(out editors, out string result))
                 {
                     MessageBox.Show(result, "Get Visual Studios Installed Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -81,39 +74,39 @@ namespace ObjectInProject.Tests.Editors
             }
         }
 
-        private void btnNotepadExists_Click(object sender, EventArgs e)
+        private void BtnNotepadExists_Click(object sender, EventArgs e)
         {
             string message;
 
-            if (!VisualStudiosInstalled.NotepadPlusPlusExists())
+            if (!visualStudiosInstalled.NotepadPlusPlusExists())
             {
-                message = $"'{VisualStudiosInstalled.NOTEPAD_STRING}' Does Not Exist";
+                message = $"'{EditorsInformationConstants.NOTEPAD_STRING}' Does Not Exist";
             }
             else
             {
-                message = $"'{VisualStudiosInstalled.NOTEPAD_STRING}' Exists";
+                message = $"'{EditorsInformationConstants.NOTEPAD_STRING}' Exists";
             }
 
             MessageBox.Show(message);
         }
 
-        private void btnNotepadPlusPlusExists_Click(object sender, EventArgs e)
+        private void BtnNotepadPlusPlusExists_Click(object sender, EventArgs e)
         {
             string message;
 
-            if (!VisualStudiosInstalled.NotepadPlusPlusExists())
+            if (!visualStudiosInstalled.NotepadPlusPlusExists())
             {
-                message = $"'{VisualStudiosInstalled.NOTEPAD_PLUS_PLUS_STRING}' Does Not Exist";
+                message = $"'{EditorsInformationConstants.NOTEPAD_PLUS_PLUS_STRING}' Does Not Exist";
             }
             else
             {
-                message = $"'{VisualStudiosInstalled.NOTEPAD_PLUS_PLUS_STRING}' Exists";
+                message = $"'{EditorsInformationConstants.NOTEPAD_PLUS_PLUS_STRING}' Exists";
             }
 
             MessageBox.Show(message);
         }
 
-        private void btnFilePath_Click(object sender, EventArgs e)
+        private void BtnFilePath_Click(object sender, EventArgs e)
         {
             try
             {
@@ -134,7 +127,7 @@ namespace ObjectInProject.Tests.Editors
             }
         }
 
-        private void btnOpenFile_Click(object sender, EventArgs e)
+        private void BtnOpenFile_Click(object sender, EventArgs e)
         {
             try
             {
@@ -149,7 +142,7 @@ namespace ObjectInProject.Tests.Editors
 
                 editor = EditorUtils.EditorToEnum(dgvFiles.Rows[dgvFiles.SelectedRows[0].Index].Cells[0].Value.ToString());
 
-                if (!VisualStudiosInstalled.OpenFileAtLine(txtFilePath.Text, (int)nudLine.Value, editor, out string result))
+                if (!visualStudiosInstalled.OpenFileAtLine(txtFilePath.Text, (int)nudLine.Value, editor, out string result))
                 {
                     MessageBox.Show($"Failed Opening File [{txtFilePath.Text}] At Line [{nudLine.Value}] With Editor [{editor}]", 
                                     "Open File Error", 

@@ -1,6 +1,4 @@
-﻿using General.Common;
-using General.Log;
-using Microsoft.Build.Construction;
+﻿using Microsoft.Build.Construction;
 using Newtonsoft.Json;
 using ObjectInProject.Common;
 using ObjectInProject.EditorsInformation;
@@ -57,6 +55,10 @@ namespace ObjectInProject.Gui
 
         private SearchDelegate m_SearchType;
 
+        private SearchUtils searchUtils;
+
+        private VisualStudiosInstalled visualStudiosInstalled;
+
         #endregion
 
         #region Delegates
@@ -91,7 +93,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Warning, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Warning);
                 MessageBox.Show(ex.Message, "Error Closing Object In Project", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -110,13 +112,13 @@ namespace ObjectInProject.Gui
 
                 if (!Initialize(out string result))
                 {
-                    Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
                     MessageBox.Show(result, "Initialize Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Warning, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Warning);
                 MessageBox.Show(ex.Message, "Initialize Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -149,16 +151,17 @@ namespace ObjectInProject.Gui
                 m_numberOfFiles = 0;
                 m_numberOfTestFiles = 0;
 
-                string path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-                Log.LogPath = $"{path}";
+                string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
                 #endregion
 
-                if (!VisualStudiosInstalled.GetVisualStudiosInstalled(out m_VisualStudio, out result))
+                searchUtils = new SearchUtils();
+
+                visualStudiosInstalled = new VisualStudiosInstalled();
+                if (!visualStudiosInstalled.GetVisualStudiosInstalled(out m_VisualStudio, out result))
                 {
                     result = string.Format("Visual Studios Detection Failure. {0}.", result);
-                    Audit(result, method, AuditSeverity.Information, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Information);
                 }
 
                 if (LoadConfiguration(out result))
@@ -195,7 +198,7 @@ namespace ObjectInProject.Gui
                                     }
                                     else
                                     {
-                                        Audit(result, method, AuditSeverity.Information, Log.LINE());
+                                        Audit(result, method, LINE(), AuditSeverity.Information);
                                         result = string.Format("Path '{0}' Does Not Exist", directory);
 
                                         return false;
@@ -218,7 +221,7 @@ namespace ObjectInProject.Gui
 
                                         if (!ParseSolutionFileText(currentSolutionFile, solutionFileText, out solution, out result))
                                         {
-                                            Audit(result, method, AuditSeverity.Information, Log.LINE());
+                                            Audit(result, method, LINE(), AuditSeverity.Information);
                                             result = string.Format("Solution File '{0}' Parse Error", currentSolutionFile);
 
                                             return false;
@@ -236,7 +239,7 @@ namespace ObjectInProject.Gui
                             default:
                                 message = "Wrong Search Type";
 
-                                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                                Audit(message, method, LINE(), AuditSeverity.Error);
                                 result = string.Format("Initialization Error. {0}.", message);
 
                                 return false;
@@ -246,7 +249,7 @@ namespace ObjectInProject.Gui
                 else
                 {
                     result = string.Format("Initialize Error. {0}.", result);
-                    Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
                 }
@@ -255,7 +258,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 result = string.Format("Initialize Error. {0}.",ex.Message);
 
                 return false;
@@ -296,7 +299,7 @@ namespace ObjectInProject.Gui
                     }
                     else
                     {
-                        Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                        Audit(result, method, LINE(), AuditSeverity.Warning);
                     }
                 }
 
@@ -304,7 +307,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception e)
             {
-                Audit(e.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(e.Message, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -346,12 +349,12 @@ namespace ObjectInProject.Gui
                     {
                         result = "File '" + projectFileDataFilename + "' does not exist";
 
-                        Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                        Audit(result, method, LINE(), AuditSeverity.Warning);
 
                         return false;
                     }
 
-                    Audit("Parsing '" + projectFileDataFilename + "' ...", method, AuditSeverity.Information, Log.LINE());
+                    Audit("Parsing '" + projectFileDataFilename + "' ...", method, LINE(), AuditSeverity.Information);
 
                     projectFilePath = Path.GetDirectoryName(projectFileDataFilename);
 
@@ -369,13 +372,13 @@ namespace ObjectInProject.Gui
                             while (goOn)
                             {
                                 startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_PROPERTY, projectFileTextIndex);
-                                if (startCsIndex == Constants.NONE)
+                                if (startCsIndex == ObjectInProjectConstants.NONE)
                                 {
                                     break;
                                 }
 
                                 endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_FILE_EXTENSION, startCsIndex);
-                                if (endCsIndex == Constants.NONE)
+                                if (endCsIndex == ObjectInProjectConstants.NONE)
                                 {
                                     break;
                                 }
@@ -393,7 +396,7 @@ namespace ObjectInProject.Gui
                                     project.Files.Add(csFile);
 
                                     m_numberOfFiles++;
-                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                     {
                                         m_numberOfTestFiles++;
                                     }
@@ -416,13 +419,13 @@ namespace ObjectInProject.Gui
                             while (goOn)
                             {
                                 startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY, projectFileTextIndex);
-                                if (startCsIndex == Constants.NONE)
+                                if (startCsIndex == ObjectInProjectConstants.NONE)
                                 {
                                     break;
                                 }
 
                                 endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION, startCsIndex);
-                                if (endCsIndex == Constants.NONE)
+                                if (endCsIndex == ObjectInProjectConstants.NONE)
                                 {
                                     break;
                                 }
@@ -440,7 +443,7 @@ namespace ObjectInProject.Gui
                                     project.Files.Add(csFile);
 
                                     m_numberOfFiles++;
-                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                     {
                                         m_numberOfTestFiles++;
                                     }
@@ -458,13 +461,13 @@ namespace ObjectInProject.Gui
                             while (goOn)
                             {
                                 startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY, projectFileTextIndex);
-                                if (startCsIndex == Constants.NONE)
+                                if (startCsIndex == ObjectInProjectConstants.NONE)
                                 {
                                     break;
                                 }
 
                                 endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION, startCsIndex);
-                                if (endCsIndex == Constants.NONE)
+                                if (endCsIndex == ObjectInProjectConstants.NONE)
                                 {
                                     break;
                                 }
@@ -482,7 +485,7 @@ namespace ObjectInProject.Gui
                                     project.Files.Add(csFile);
 
                                     m_numberOfFiles++;
-                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != Constants.NONE)
+                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
                                     {
                                         m_numberOfTestFiles++;
                                     }
@@ -511,7 +514,7 @@ namespace ObjectInProject.Gui
             catch (Exception e)
             {
                 result = e.Message;
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -562,7 +565,7 @@ namespace ObjectInProject.Gui
 
             foreach (string item in lText)
             {
-                if (line.IndexOf(item) != Constants.NONE)
+                if (line.IndexOf(item) != ObjectInProjectConstants.NONE)
                 {
                     return true;
                 }
@@ -599,7 +602,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Warning, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Warning);
                 MessageBox.Show(ex.Message, "Error Resizing Form", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -629,11 +632,11 @@ namespace ObjectInProject.Gui
             }
 
             frmSearchProjectsTree searchProjectsTree = new frmSearchProjectsTree(m_Configuration, m_ActiveEditors);
-            searchProjectsTree.Message += SearchProjectsTree_Message;
+            searchProjectsTree.Reply += SearchProjectsTree_Reply;
             searchProjectsTree.Show();
         }
 
-        private bool SearchProjectsTree_Message(object message, out object reply, out string result)
+        private bool SearchProjectsTree_Reply(object message, out object reply, out string result)
         {
             reply = null;
 
@@ -723,7 +726,7 @@ namespace ObjectInProject.Gui
                 if ((m_Configuration == null) || (m_Configuration.SearchProjectsList == null))
                 {
                     result = string.Format("Configuration Error. No Configuration Defined.");
-                    Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
                 }
@@ -743,7 +746,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -778,7 +781,7 @@ namespace ObjectInProject.Gui
                     cboActiveSearchJob.DropDownItems.Add(searchJob.Name, null, ChangeSearchJob_Click);
                 }
 
-                if ((m_Configuration.ActiveSearchProjectIndex != Constants.NONE) &&
+                if ((m_Configuration.ActiveSearchProjectIndex != ObjectInProjectConstants.NONE) &&
                     (m_Configuration.ActiveSearchProjectRealIndex < m_Configuration.SearchProjectsList.Count))
                 {
                     m_ActiveSearchProject = m_Configuration.SearchProjectsList[m_Configuration.ActiveSearchProjectRealIndex];
@@ -795,7 +798,7 @@ namespace ObjectInProject.Gui
                     m_ActiveSearchProject = null;
 
                     result = string.Format("Configuration Error. No Active Search Project Defined.");
-                    Audit(result, method, AuditSeverity.Error, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Error);
 
                     //return false;
                 }
@@ -820,7 +823,7 @@ namespace ObjectInProject.Gui
                 if (!BuildListView(out result))
                 {
                     result = string.Format("Build List View Error. {0}.", result);
-                    Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
                 }
@@ -837,7 +840,7 @@ namespace ObjectInProject.Gui
                 if (!EnsureEditorActive(out result))
                 {
                     result = string.Format("Editor Definition Error. {0}.", result);
-                    Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
                 }
@@ -912,7 +915,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -938,12 +941,12 @@ namespace ObjectInProject.Gui
 
                 if (!m_Configuration.SetAsActive(txtActiveSearchJob.Text, out string result))
                 {
-                    Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
                 }
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
             }
         }
 
@@ -963,7 +966,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE()); ;
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error); ;
             }
         }
 
@@ -983,7 +986,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE()); ;
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error); ;
             }
         }
         
@@ -1004,7 +1007,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Case Sensitive Change Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1133,13 +1136,13 @@ namespace ObjectInProject.Gui
 
                         string sourceFilePath = lvResults.SelectedItems[0].SubItems[sourceFilePathIndex].Text;
 
-                        int lineNumber = (int.TryParse(lvResults.SelectedItems[0].SubItems[lineNumberIndex].Text, out lineNumber)) ? lineNumber : Constants.NONE;
+                        int lineNumber = (int.TryParse(lvResults.SelectedItems[0].SubItems[lineNumberIndex].Text, out lineNumber)) ? lineNumber : ObjectInProjectConstants.NONE;
 
                         if (!File.Exists(sourceFilePath))
                         {
                             message = "Source File '" + sourceFilePath + "' Does Not Exist";
 
-                            Audit(message, method, AuditSeverity.Error, Log.LINE());
+                            Audit(message, method, LINE(), AuditSeverity.Error);
                             MessageBox.Show(message, "Failed Openning File", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             return;
@@ -1151,7 +1154,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Failed Openning File", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1178,7 +1181,7 @@ namespace ObjectInProject.Gui
                 {
                     result = "No Active Search Project Defined";
 
-                    Audit(result, method, AuditSeverity.Information, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Information);
                     MessageBox.Show(result, "Finding Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     return;
@@ -1193,9 +1196,9 @@ namespace ObjectInProject.Gui
                     {
                         //  no delimiter for AND/OR search
 
-                        if (!SearchUtils.FindToken(txtFind.Text, m_ActiveSearchProject, out searchResults, out result))
+                        if (!searchUtils.FindToken(txtFind.Text, m_ActiveSearchProject, out searchResults, out result))
                         {
-                            Audit(result, method, AuditSeverity.Error, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Error);
                             MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
@@ -1206,7 +1209,7 @@ namespace ObjectInProject.Gui
                         string[] delimiter = new string[1];
                         delimiter[0] = searchAndDelimiter;
 
-                        string[] lsText = (txtFind.Text).Split(delimiter, System.StringSplitOptions.RemoveEmptyEntries);
+                        string[] lsText = (txtFind.Text).Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
 
                         List<string> lText = new List<string>();
 
@@ -1215,9 +1218,9 @@ namespace ObjectInProject.Gui
                             lText.Add(lsTextItem);
                         }
 
-                        if (!SearchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
+                        if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
                         {
-                            Audit(result, method, AuditSeverity.Error, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Error);
                             MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
@@ -1265,7 +1268,7 @@ namespace ObjectInProject.Gui
                     {
                         message = "No Results";
 
-                        Audit(message, method, AuditSeverity.Information, Log.LINE());
+                        Audit(message, method, LINE(), AuditSeverity.Information);
                         MessageBox.Show(message, "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
@@ -1273,13 +1276,13 @@ namespace ObjectInProject.Gui
                 {
                     message = "No Text To Search";
 
-                    Audit(message, method, AuditSeverity.Information, Log.LINE());
+                    Audit(message, method, LINE(), AuditSeverity.Information);
                     MessageBox.Show(message, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1299,7 +1302,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Clear Searched Results Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1326,7 +1329,7 @@ namespace ObjectInProject.Gui
                     {
                         if (!FilesUtils.ReadFileLines(openFileDialog.FileName, out List<string> lines, out string result))
                         {
-                            Audit(result, method, AuditSeverity.Error, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Error);
                             MessageBox.Show(result, "Failed Loading List Of Searched Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             return;
@@ -1334,7 +1337,7 @@ namespace ObjectInProject.Gui
 
                         if (lines == null)
                         {
-                            Audit(result, method, AuditSeverity.Error, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Error);
                             MessageBox.Show(result, "List Of Searched Items Is Empty", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             return;
@@ -1354,7 +1357,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Load Searched Items From File Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -1381,7 +1384,7 @@ namespace ObjectInProject.Gui
                     case Editors.Notepad:
                         if (!OpenWithNotepad(file, line, out result))
                         {
-                            Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Warning);
                             MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         break;
@@ -1389,7 +1392,7 @@ namespace ObjectInProject.Gui
                     case Editors.NotepadPlusPlus:
                         if (!OpenWithNotepadPlusPlus(file, line, out result))
                         {
-                            Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Warning);
                             MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         break;
@@ -1399,9 +1402,11 @@ namespace ObjectInProject.Gui
                     case Editors.VisualStudio2013:
                     case Editors.VisualStudio2012:
                     case Editors.VisualStudio2017:
+                    case Editors.VisualStudio2019:
+                    case Editors.VisualStudio2022:
                         if (!OpenWithVisualStudio(file, line, out result))
                         {
-                            Audit(result, method, AuditSeverity.Warning, Log.LINE());
+                            Audit(result, method, LINE(), AuditSeverity.Warning);
                             MessageBox.Show(result, "Failed Openning File '" + file +"' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         break;
@@ -1412,7 +1417,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception e)
             {
-                Audit(e.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(e.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(e.Message);
             }
         }
@@ -1476,7 +1481,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1502,7 +1507,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1530,7 +1535,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1580,7 +1585,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1611,7 +1616,7 @@ namespace ObjectInProject.Gui
                     string runningVisualStudio = process.MainModule.FileVersionInfo.FileDescription;
                     string editorUsed = EditorUtils.EditorToString(EDITOR_USED);
 
-                    if (runningVisualStudio.IndexOf(editorUsed) != Constants.NONE)
+                    if (runningVisualStudio.IndexOf(editorUsed) != ObjectInProjectConstants.NONE)
                     {
                         result = string.Format("Running Visual Studio[{0}] Is Not The Editor Used[{1}]", runningVisualStudio, editorUsed);
 
@@ -1628,7 +1633,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception e)
             {
-                Audit(e.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(e.Message, method, LINE(), AuditSeverity.Error);
                 result = string.Format("Failed Ensuring Editor '{0}' Active. {1}.", EditorUtils.EditorToString(EDITOR_USED), e.Message);
 
                 return false;
@@ -1682,7 +1687,7 @@ namespace ObjectInProject.Gui
                     {
                         message = "Visual Studio Execution File Does Not Exist";
 
-                        Audit(message, method, AuditSeverity.Error, Log.LINE());
+                        Audit(message, method, LINE(), AuditSeverity.Error);
                         result = string.Format("Failed Starting '{0}'. {1}.", EditorUtils.EditorToString(EDITOR_USED), message);
 
                         openFailed = true;
@@ -1698,7 +1703,7 @@ namespace ObjectInProject.Gui
                 {
                     message = "'" + batchFilename + "' does not exist";
 
-                    Audit(message, method, AuditSeverity.Error, Log.LINE());
+                    Audit(message, method, LINE(), AuditSeverity.Error);
                     result = string.Format("Failed Starting '{0}'. {1}.", EditorUtils.EditorToString(EDITOR_USED), message);
 
                     openFailed = true;
@@ -1777,7 +1782,7 @@ namespace ObjectInProject.Gui
                 {
                     result = "'" + m_FullFilename + "' Does Not Exist";
 
-                    Audit(result, method, AuditSeverity.Information, Log.LINE());
+                    Audit(result, method, LINE(), AuditSeverity.Information);
 
                     return false;
                 }
@@ -1791,7 +1796,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1813,7 +1818,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1833,7 +1838,7 @@ namespace ObjectInProject.Gui
             {
                 if (searchProjects == null)
                 {
-                    Audit("Configuration Is Null", method, AuditSeverity.Warning, Log.LINE());
+                    Audit("Configuration Is Null", method, LINE(), AuditSeverity.Warning);
 
                     return false;
                 }
@@ -1847,7 +1852,7 @@ namespace ObjectInProject.Gui
             {
                 result = e.Message;
 
-                Audit(result, method, AuditSeverity.Error, Log.LINE());
+                Audit(result, method, LINE(), AuditSeverity.Error);
 
                 return false;
             }
@@ -1857,14 +1862,94 @@ namespace ObjectInProject.Gui
 
         #region Audit
 
-        private static void Audit(string message, string method, AuditSeverity auditSeverity, int line)
+        private Color SeverityColor(AuditSeverity auditSeverity)
         {
-            string assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-            string fileName = Log.FILE();
+            switch (auditSeverity)
+            {
+                case AuditSeverity.Information:
+                    return Color.SeaShell;
 
-            Log.Audit(message, fileName, assemblyName, module, method, auditSeverity, line);
+                case AuditSeverity.Important:
+                    return Color.Aqua;
+
+                case AuditSeverity.Warning:
+                    return Color.Coral;
+
+                case AuditSeverity.Error:
+                    return Color.Red;
+
+                case AuditSeverity.Critical:
+                    return Color.Purple;
+
+                default:
+                    return Color.FromArgb(0, 0, 0, 0);
+            }
         }
 
-        #endregion        
+        private void Settings_Message(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            try
+            {
+                Audit(message, method, module, line, auditSeverity);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[{DateTime.Now:HH-mm-ss dd-MM-yyyy}]:<{auditSeverity}>:<{module}>:<{method}> {message + ". Error:" + ex.Message}");
+            }
+        }
+
+        private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            string dateTime = DateTime.Now.ToString("HH:mm:ss.fff");
+
+            try
+            {
+                if (InvokeRequired)
+                {
+                    BeginInvoke(new AuditMessage(Audit), message, method, module, line, auditSeverity);
+                }
+                else
+                {
+                    if (configuration.AuditSettings.AuditOn)
+                    {
+                        dgvAudit.Rows.Insert(0, new string[] { dateTime, auditSeverity.ToString(), module, method, line.ToString(), message });
+                        dgvAudit.Rows[0].DefaultCellStyle.BackColor = SeverityColor(auditSeverity);
+
+                        dgvAudit.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+                    }
+                    else
+                    {
+                        if ((auditSeverity == AuditSeverity.Error) || (auditSeverity == AuditSeverity.Warning))
+                        {
+                            MessageBox.Show(message,
+                                            module,
+                                            MessageBoxButtons.OK,
+                                            (auditSeverity == AuditSeverity.Error) ?
+                                            MessageBoxIcon.Error :
+                                            MessageBoxIcon.Warning);
+                        }
+                    }
+
+                    Console.WriteLine($"[{dateTime}]:<{auditSeverity}>:<{module}>:<{method}:{line}> {message}");
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"[{dateTime}]:<{auditSeverity}>:<{module}>:<{method}:{line}> {message + ". Audit Error:" + e.Message}");
+            }
+        }
+
+        private void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        {
+            Audit(message, method, "MOPS Config Tool", line, auditSeverity);
+        }
+
+        public static int LINE([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return lineNumber;
+        }
+
+        #endregion       
     }
 }

@@ -32,10 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="General.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\3dParty\General.Common.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +58,7 @@
     <Compile Include="DataTypes\SearchResult.cs" />
     <Compile Include="DataTypes\Solution.cs" />
     <Compile Include="DataTypes\TagObject.cs" />
+    <Compile Include="Enums\AuditSeverity.cs" />
     <Compile Include="Enums\CrudAction.cs" />
     <Compile Include="Enums\Editors.cs" />
     <Compile Include="Enums\IoAction.cs" />

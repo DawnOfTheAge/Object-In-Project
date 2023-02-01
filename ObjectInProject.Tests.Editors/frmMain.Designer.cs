@@ -1,7 +1,7 @@
 ﻿
 namespace ObjectInProject.Tests.Editors
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -54,7 +54,7 @@ namespace ObjectInProject.Tests.Editors
             this.btnFind.TabIndex = 48;
             this.btnFind.Text = "Find Editors";
             this.btnFind.UseVisualStyleBackColor = true;
-            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
+            this.btnFind.Click += new System.EventHandler(this.BtnFind_Click);
             // 
             // dgvFiles
             // 
@@ -80,7 +80,7 @@ namespace ObjectInProject.Tests.Editors
             this.btnNotepadExists.TabIndex = 49;
             this.btnNotepadExists.Text = "Exists?";
             this.btnNotepadExists.UseVisualStyleBackColor = true;
-            this.btnNotepadExists.Click += new System.EventHandler(this.btnNotepadExists_Click);
+            this.btnNotepadExists.Click += new System.EventHandler(this.BtnNotepadExists_Click);
             // 
             // btnNotepadPlusPlusExists
             // 
@@ -90,7 +90,7 @@ namespace ObjectInProject.Tests.Editors
             this.btnNotepadPlusPlusExists.TabIndex = 50;
             this.btnNotepadPlusPlusExists.Text = "Exists?";
             this.btnNotepadPlusPlusExists.UseVisualStyleBackColor = true;
-            this.btnNotepadPlusPlusExists.Click += new System.EventHandler(this.btnNotepadPlusPlusExists_Click);
+            this.btnNotepadPlusPlusExists.Click += new System.EventHandler(this.BtnNotepadPlusPlusExists_Click);
             // 
             // lblNotepadExists
             // 
@@ -119,7 +119,7 @@ namespace ObjectInProject.Tests.Editors
             this.btnFilePath.TabIndex = 55;
             this.btnFilePath.Text = "...";
             this.btnFilePath.UseVisualStyleBackColor = true;
-            this.btnFilePath.Click += new System.EventHandler(this.btnFilePath_Click);
+            this.btnFilePath.Click += new System.EventHandler(this.BtnFilePath_Click);
             // 
             // txtFilePath
             // 
@@ -162,7 +162,7 @@ namespace ObjectInProject.Tests.Editors
             this.btnOpenFile.TabIndex = 58;
             this.btnOpenFile.Text = "Open File";
             this.btnOpenFile.UseVisualStyleBackColor = true;
-            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
+            this.btnOpenFile.Click += new System.EventHandler(this.BtnOpenFile_Click);
             // 
             // frmMain
             // 
@@ -183,7 +183,7 @@ namespace ObjectInProject.Tests.Editors
             this.Controls.Add(this.dgvFiles);
             this.Name = "frmMain";
             this.Text = "Get Existing Editors Test";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLine)).EndInit();
             this.ResumeLayout(false);

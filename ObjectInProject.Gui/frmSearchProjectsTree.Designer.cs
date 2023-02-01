@@ -49,8 +49,8 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmSearchProjectsTree";
             this.Text = "Search Projects";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmSearchProjectsTree_FormClosed);
-            this.Load += new System.EventHandler(this.frmSolutionsTree_Load);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmSearchProjectsTree_FormClosed);
+            this.Load += new System.EventHandler(this.FrmSolutionsTree_Load);
             this.ResumeLayout(false);
 
         }

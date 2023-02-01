@@ -37,14 +37,6 @@
     <ApplicationIcon>Resources\MultiSearch.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="General.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\3dParty\General.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="General.Log, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\3dParty\General.Log.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Build">
       <HintPath>..\3dParty\Microsoft.Build.dll</HintPath>
     </Reference>

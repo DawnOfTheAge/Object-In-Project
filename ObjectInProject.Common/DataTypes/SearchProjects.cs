@@ -1,5 +1,4 @@
-﻿using General.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ObjectInProject.Common
@@ -35,7 +34,7 @@ namespace ObjectInProject.Common
         {
             SearchProjectsList = new List<SearchProject>();
 
-            ActiveSearchProjectIndex = Constants.NONE;
+            ActiveSearchProjectIndex = ObjectInProjectConstants.NONE;
         }
 
         #endregion
@@ -65,7 +64,7 @@ namespace ObjectInProject.Common
             }
             catch (Exception)
             {
-                return Constants.NONE;
+                return ObjectInProjectConstants.NONE;
             }
         }
 
@@ -75,7 +74,7 @@ namespace ObjectInProject.Common
 
         public bool Add(SearchProject searchProject, out int searchProjectIndex, out string result)
         {
-            searchProjectIndex = Constants.NONE;
+            searchProjectIndex = ObjectInProjectConstants.NONE;
 
             result = string.Empty;
 
@@ -111,7 +110,7 @@ namespace ObjectInProject.Common
 
         public bool Exists(string searchProjectName, out int searchProjectIndex)
         {
-            searchProjectIndex = Constants.NONE;
+            searchProjectIndex = ObjectInProjectConstants.NONE;
 
             if (SearchProjectsList == null)
             {
@@ -133,7 +132,7 @@ namespace ObjectInProject.Common
 
         public bool Exists(int searchProjectIndex, out int realIndex)
         {
-            realIndex = Constants.NONE;
+            realIndex = ObjectInProjectConstants.NONE;
 
             if (SearchProjectsList == null)
             {
@@ -166,8 +165,7 @@ namespace ObjectInProject.Common
                 return false;
             }
 
-            int searchProjetIndex;
-            if (!Exists(searchProjectName, out searchProjetIndex))
+            if (!Exists(searchProjectName, out int searchProjetIndex))
             {
                 result = $"Search Project '{searchProjectName}' Does Not Exist";
 
@@ -199,15 +197,14 @@ namespace ObjectInProject.Common
                     return false;
                 }
 
-                int realIndex;
-                if (!Exists(searchProject.Index, out realIndex))
+                if (!Exists(searchProject.Index, out int realIndex))
                 {
                     result = $"Search Project With Index [{searchProject.Index}] Does Not Exist";
 
                     return false;
                 }
 
-                if (realIndex == Constants.NONE)
+                if (realIndex == ObjectInProjectConstants.NONE)
                 {
                     result = "Index Not Found";
 
@@ -246,15 +243,14 @@ namespace ObjectInProject.Common
                     return false;
                 }
 
-                int realIndex;
-                if (!Exists(searchProjectName, out realIndex))
+                if (!Exists(searchProjectName, out int realIndex))
                 {
                     result = $"Search Project With Name [{searchProjectName}] Does Not Exist";
 
                     return false;
                 }
 
-                if (realIndex == Constants.NONE)
+                if (realIndex == ObjectInProjectConstants.NONE)
                 {
                     result = "Index Not Found";
 
@@ -331,8 +327,7 @@ namespace ObjectInProject.Common
                     return false;
                 }
 
-                int searchProjectRealIndex;
-                if (Exists(searchProjectName, out searchProjectRealIndex))
+                if (Exists(searchProjectName, out int searchProjectRealIndex))
                 {
                     ActiveSearchProjectRealIndex = searchProjectRealIndex;
                     ActiveSearchProjectIndex = SearchProjectsList[searchProjectRealIndex].Index;

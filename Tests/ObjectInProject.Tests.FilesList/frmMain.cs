@@ -2,21 +2,22 @@
 using ObjectInProject.Search;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ObjectInProject.Tests.FilesList
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
+        #region Data Members
+
+        private SearchUtils searchUtils;
+
+        #endregion
+
         #region Constructor
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -25,7 +26,7 @@ namespace ObjectInProject.Tests.FilesList
 
         #region Startup
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             Location = Cursor.Position;
 
@@ -41,13 +42,15 @@ namespace ObjectInProject.Tests.FilesList
             dgvFiles.Rows.Add(@"C:\Temp\Search File Test 2.txt");
 
             dgvFiles.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
+            searchUtils = new SearchUtils();
         }
 
         #endregion
 
         #region Gui
 
-        private void btnSearch_Click(object sender, EventArgs e)
+        private void BtnSearch_Click(object sender, EventArgs e)
         {
             try
             {
@@ -64,7 +67,7 @@ namespace ObjectInProject.Tests.FilesList
 
                 SearchedFilesList searchedFilesList;
 
-                if (!SearchUtils.SearchInListOfFiles(files,
+                if (!searchUtils.SearchInListOfFiles(files,
                                                      lTokens,
                                                      (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
                                                      chkCaseSensitive.Checked,
@@ -105,7 +108,7 @@ namespace ObjectInProject.Tests.FilesList
             }
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        private void BtnClear_Click(object sender, EventArgs e)
         {
             dgvResults.Rows.Clear();
         }

@@ -152,7 +152,7 @@ namespace ObjectInProject.Tests.File
             this.btnFilePath.TabIndex = 30;
             this.btnFilePath.Text = "...";
             this.btnFilePath.UseVisualStyleBackColor = true;
-            this.btnFilePath.Click += new System.EventHandler(this.btnFilePath_Click);
+            this.btnFilePath.Click += new System.EventHandler(this.BtnFilePath_Click);
             // 
             // txtFilePath
             // 
@@ -179,7 +179,7 @@ namespace ObjectInProject.Tests.File
             this.btnSearch.TabIndex = 31;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // btnClear
             // 
@@ -189,7 +189,7 @@ namespace ObjectInProject.Tests.File
             this.btnClear.TabIndex = 32;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
             // frmMain
             // 
@@ -206,7 +206,7 @@ namespace ObjectInProject.Tests.File
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "frmMain";
             this.Text = "Search File Test";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.gbSearchLogic.ResumeLayout(false);
             this.gbSearchLogic.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).EndInit();

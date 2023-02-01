@@ -97,7 +97,7 @@ namespace ObjectInProject.Tests.Line
             this.btnIsIn.TabIndex = 5;
             this.btnIsIn.Text = "Is In?";
             this.btnIsIn.UseVisualStyleBackColor = true;
-            this.btnIsIn.Click += new System.EventHandler(this.btnIsIn_Click);
+            this.btnIsIn.Click += new System.EventHandler(this.BtnIsIn_Click);
             // 
             // lnlTokens
             // 
@@ -141,7 +141,7 @@ namespace ObjectInProject.Tests.Line
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Name = "frmMain";
             this.Text = "Search Line Test";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.gbSearchLogic.ResumeLayout(false);
             this.gbSearchLogic.PerformLayout();
             this.ResumeLayout(false);

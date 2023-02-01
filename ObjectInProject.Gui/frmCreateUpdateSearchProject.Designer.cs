@@ -1,7 +1,7 @@
 ﻿
 namespace ObjectInProject.Gui
 {
-    partial class frmCreateUpdateSearchProject
+    partial class FrmCreateUpdateSearchProject
     {
         /// <summary>
         /// Required designer variable.
@@ -118,7 +118,7 @@ namespace ObjectInProject.Gui
             this.btnSaveSeachProject.TabIndex = 27;
             this.btnSaveSeachProject.Text = "Save Search Project";
             this.btnSaveSeachProject.UseVisualStyleBackColor = true;
-            this.btnSaveSeachProject.Click += new System.EventHandler(this.btnSaveSearchProject_Click);
+            this.btnSaveSeachProject.Click += new System.EventHandler(this.BtnSaveSearchProject_Click);
             // 
             // gbSearchLogic
             // 
@@ -239,7 +239,7 @@ namespace ObjectInProject.Gui
             this.cboEditor.Name = "cboEditor";
             this.cboEditor.Size = new System.Drawing.Size(271, 21);
             this.cboEditor.TabIndex = 14;
-            this.cboEditor.SelectedIndexChanged += new System.EventHandler(this.cboEditor_SelectedIndexChanged);
+            this.cboEditor.SelectedIndexChanged += new System.EventHandler(this.CboEditor_SelectedIndexChanged);
             // 
             // lblFileEditor
             // 
@@ -270,7 +270,7 @@ namespace ObjectInProject.Gui
             this.btnAddSolution.TabIndex = 5;
             this.btnAddSolution.Text = "Add Solution";
             this.btnAddSolution.UseVisualStyleBackColor = true;
-            this.btnAddSolution.Click += new System.EventHandler(this.btnAddSolution_Click);
+            this.btnAddSolution.Click += new System.EventHandler(this.BtnAddSolution_Click);
             // 
             // lstSolutions
             // 
@@ -308,7 +308,7 @@ namespace ObjectInProject.Gui
             this.btnAddDirectory.TabIndex = 6;
             this.btnAddDirectory.Text = "Add Directory";
             this.btnAddDirectory.UseVisualStyleBackColor = true;
-            this.btnAddDirectory.Click += new System.EventHandler(this.btnAddDirectory_Click);
+            this.btnAddDirectory.Click += new System.EventHandler(this.BtnAddDirectory_Click);
             // 
             // frmCreateUpdateSearchProject
             // 
@@ -319,7 +319,7 @@ namespace ObjectInProject.Gui
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "frmCreateUpdateSearchProject";
             this.Text = "Add Search Project";
-            this.Load += new System.EventHandler(this.frmCreateUpdateSearchProject_Load);
+            this.Load += new System.EventHandler(this.FrmCreateUpdateSearchProject_Load);
             this.tabSettings.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
             this.tabPageGeneral.PerformLayout();

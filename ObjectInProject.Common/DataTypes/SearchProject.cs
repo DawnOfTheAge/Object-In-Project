@@ -1,5 +1,4 @@
-﻿using General.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
@@ -86,7 +85,7 @@ namespace ObjectInProject.Common
 
         public SearchProject()
         {
-            Index = Constants.NONE;
+            Index = ObjectInProjectConstants.NONE;
 
             Workspace = new List<string>();
             SolutionsInformation = new List<Solution>();

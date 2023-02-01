@@ -1,7 +1,7 @@
 ﻿
 namespace ObjectInProject.Tests.FilesList
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -59,7 +59,7 @@ namespace ObjectInProject.Tests.FilesList
             this.btnClear.TabIndex = 36;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
             // btnSearch
             // 
@@ -69,7 +69,7 @@ namespace ObjectInProject.Tests.FilesList
             this.btnSearch.TabIndex = 35;
             this.btnSearch.Text = "Search";
             this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnSearch.Click += new System.EventHandler(this.BtnSearch_Click);
             // 
             // gbSearch
             // 
@@ -205,7 +205,7 @@ namespace ObjectInProject.Tests.FilesList
             this.Controls.Add(this.dgvResults);
             this.Name = "frmMain";
             this.Text = "Search Files List Test";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.gbSearch.ResumeLayout(false);
             this.gbSearch.PerformLayout();
             this.gbSearchLogic.ResumeLayout(false);

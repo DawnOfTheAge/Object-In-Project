@@ -1,6 +1,4 @@
-﻿using General.Common;
-using General.Log;
-using ObjectInProject.Common;
+﻿using ObjectInProject.Common;
 using ObjectInProject.Utils;
 using System;
 using System.Collections.Generic;
@@ -11,30 +9,29 @@ using System.Runtime.InteropServices;
 
 namespace ObjectInProject.EditorsInformation
 {
-    public static class VisualStudiosInstalled
+    public class VisualStudiosInstalled
     {
-        #region Local Constants
+        #region Events
 
-        private static string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
+        public event AuditMessage Message;
 
         #endregion
 
-        #region Constants
+        #region Local Constants
 
-        public const string NOTEPAD_STRING = "notepad";
-        public const string NOTEPAD_PLUS_PLUS_STRING = "notepad++";
+        private readonly string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
 
         #endregion
 
         #region Data Members
 
-        private static string m_vsWhereFullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\vswhere.exe";
+        private readonly string m_vsWhereFullPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\vswhere.exe";
 
         #endregion
 
         #region Public Methods
 
-        public static bool GetVisualStudiosInstalled(out List<EditorInformation> lVsStutio, out string result)
+        public bool GetVisualStudiosInstalled(out List<EditorInformation> lVsStutio, out string result)
         {
             lVsStutio = null;
             result = string.Empty;
@@ -43,7 +40,7 @@ namespace ObjectInProject.EditorsInformation
             {
                 #region get all existing visual studio paths using the vsWhere.exe
 
-                if (!vsWhereExists())
+                if (!VsWhereExists())
                 {
                     result = "vswhere.exe missing";
 
@@ -51,12 +48,13 @@ namespace ObjectInProject.EditorsInformation
                 }
 
                 Process process = new Process();
-                ProcessStartInfo startInfo = new ProcessStartInfo();
-
-                startInfo.UseShellExecute = false;
-                startInfo.RedirectStandardOutput = true;
-                startInfo.FileName = m_vsWhereFullPath;
-                startInfo.Arguments = "-all -legacy -property installationPath";
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    FileName = m_vsWhereFullPath,
+                    Arguments = "-all -legacy -property installationPath"
+                };
 
                 process.StartInfo = startInfo;
                 process.Start();
@@ -72,12 +70,12 @@ namespace ObjectInProject.EditorsInformation
 
                     if (NotepadExists())
                     {
-                        lVsStutio.Add(new EditorInformation($"{NOTEPAD_STRING}", Common.Editors.Notepad, true));
+                        lVsStutio.Add(new EditorInformation($"{EditorsInformationConstants.NOTEPAD_STRING}", Common.Editors.Notepad, true));
                     }
 
                     if (NotepadPlusPlusExists())
                     {
-                        lVsStutio.Add(new EditorInformation($"{NOTEPAD_PLUS_PLUS_STRING}", Common.Editors.NotepadPlusPlus, true));
+                        lVsStutio.Add(new EditorInformation($"{EditorsInformationConstants.NOTEPAD_PLUS_PLUS_STRING}", Common.Editors.NotepadPlusPlus, true));
                     }
 
                     foreach (string path in paths)
@@ -123,10 +121,8 @@ namespace ObjectInProject.EditorsInformation
             }
         }
         
-        public  static bool OpenFileAtLine(string file, int line, Editors editor, out string result)
+        public bool OpenFileAtLine(string file, int line, Editors editor, out string result)
         {
-            result = string.Empty;
-
             try
             {
                 if (!File.Exists(file))
@@ -186,13 +182,9 @@ namespace ObjectInProject.EditorsInformation
             }
         }
 
-        public static bool NotepadExists()
+        public bool NotepadExists()
         {
-            string result;
-
-            int processId;
-
-            if (!StartNotepad(out processId, out result))
+            if (!StartNotepad(out int processId, out string result))
             {
                 return false;
             }
@@ -211,13 +203,9 @@ namespace ObjectInProject.EditorsInformation
             }
         }
 
-        public static bool NotepadPlusPlusExists()
+        public bool NotepadPlusPlusExists()
         {
-            string result;
-
-            int processId;
-
-            if (!StartNotepadPlusPlus(out processId, out result))
+            if (!StartNotepadPlusPlus(out int processId, out string result))
             {
                 return false;
             }
@@ -240,7 +228,7 @@ namespace ObjectInProject.EditorsInformation
 
         #region Notepad        
         
-        private static bool StartNotepad(out int processId, out string result)
+        private bool StartNotepad(out int processId, out string result)
         {
             result = string.Empty;
 
@@ -248,7 +236,7 @@ namespace ObjectInProject.EditorsInformation
 
             try
             {
-                Process notepadProcess = Process.Start($"{VisualStudiosInstalled.NOTEPAD_STRING}");
+                Process notepadProcess = Process.Start($"{EditorsInformationConstants.NOTEPAD_STRING}");
 
                 processId = notepadProcess.Id;
 
@@ -291,7 +279,7 @@ namespace ObjectInProject.EditorsInformation
 
         #region Notepad++
 
-        private static bool StartNotepadPlusPlus(out int processId, out string result)
+        private bool StartNotepadPlusPlus(out int processId, out string result)
         {
             result = string.Empty;
 
@@ -299,7 +287,7 @@ namespace ObjectInProject.EditorsInformation
 
             try
             {
-                Process notepadPlusPlusProcess = Process.Start($"{VisualStudiosInstalled.NOTEPAD_PLUS_PLUS_STRING}");
+                Process notepadPlusPlusProcess = Process.Start($"{EditorsInformationConstants.NOTEPAD_PLUS_PLUS_STRING}");
 
                 processId = notepadPlusPlusProcess.Id;
 
@@ -343,48 +331,48 @@ namespace ObjectInProject.EditorsInformation
 
         #region Visual Studio
 
-        private static Editors InquirePath(string finalPath, out string result)
+        private Editors InquirePath(string finalPath, out string result)
         {
             result = string.Empty;
 
             try
             {
-                if (finalPath.IndexOf("2019") != Constants.NONE)
+                if (finalPath.IndexOf("2019") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2019;
                 }
 
-                if (finalPath.IndexOf("2017") != Constants.NONE)
+                if (finalPath.IndexOf("2017") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2017;
                 }
 
-                if (finalPath.IndexOf("8.0") != Constants.NONE)
+                if (finalPath.IndexOf("8.0") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2005;
                 }
 
-                if (finalPath.IndexOf("9.0") != Constants.NONE)
+                if (finalPath.IndexOf("9.0") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2008;
                 }
 
-                if (finalPath.IndexOf("10.0") != Constants.NONE)
+                if (finalPath.IndexOf("10.0") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2010;
                 }
 
-                if (finalPath.IndexOf("11.0") != Constants.NONE)
+                if (finalPath.IndexOf("11.0") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2012;
                 }
 
-                if (finalPath.IndexOf("12.0") != Constants.NONE)
+                if (finalPath.IndexOf("12.0") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2013;
                 }
 
-                if (finalPath.IndexOf("14.0") != Constants.NONE)
+                if (finalPath.IndexOf("14.0") != ObjectInProjectConstants.NONE)
                 {
                     return Editors.VisualStudio2015;
                 }
@@ -401,7 +389,7 @@ namespace ObjectInProject.EditorsInformation
             }
         }
 
-        private static bool vsWhereExists()
+        private bool VsWhereExists()
         {
             try
             {
@@ -418,7 +406,7 @@ namespace ObjectInProject.EditorsInformation
             }
         }
 
-        private static bool OpenWithVisualStudio(string file, int line, Editors editor, out string result)
+        private bool OpenWithVisualStudio(string file, int line, Editors editor, out string result)
         {
             #region Data Members
 
@@ -498,7 +486,7 @@ namespace ObjectInProject.EditorsInformation
 
         #endregion
 
-        private static bool KillProcess(int processId, out string result)
+        private bool KillProcess(int processId, out string result)
         {
             result = string.Empty;
 
@@ -528,14 +516,32 @@ namespace ObjectInProject.EditorsInformation
             }
         }
 
+        #region Events Handlers
+
+        public void OnMessage(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            Message?.Invoke(message, method, module, line, auditSeverity);
+        }
+
+        #endregion
+
         #region Audit
 
-        private static void Audit(string message, string method, AuditSeverity auditSeverity, int line)
+        private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
         {
-            string assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-            string fileName = Log.FILE();
+            OnMessage(message, method, module, line, auditSeverity);
+        }
 
-            Log.Audit(message, fileName, assemblyName, module, method, auditSeverity, line);
+        private void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        {
+            string module = "Visual Studios Installed";
+
+            Audit(message, method, module, line, auditSeverity);
+        }
+
+        public static int LINE([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return lineNumber;
         }
 
         #endregion

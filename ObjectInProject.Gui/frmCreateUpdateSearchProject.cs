@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using General.Common;
-using General.Log;
-using ObjectInProject.Common;
+﻿using ObjectInProject.Common;
 using ObjectInProject.Utils;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace ObjectInProject.Gui
 {
-    public partial class frmCreateUpdateSearchProject : Form
+    public partial class FrmCreateUpdateSearchProject : Form
     {
         #region Local Constants
 
@@ -26,6 +18,7 @@ namespace ObjectInProject.Gui
         #region Events
 
         public event CreateUpdateSearchProjectReply Reply;
+        public event AuditMessage Message;
 
         #endregion
 
@@ -47,7 +40,7 @@ namespace ObjectInProject.Gui
 
         #region Constructor
 
-        public frmCreateUpdateSearchProject(CrudAction inCrudAction, SearchProjectType inProjectType, List<Editors> inActiveEditors)
+        public FrmCreateUpdateSearchProject(CrudAction inCrudAction, SearchProjectType inProjectType, List<Editors> inActiveEditors)
         {
             InitializeComponent();
 
@@ -56,7 +49,7 @@ namespace ObjectInProject.Gui
             activeEditors = inActiveEditors;
         }
 
-        public frmCreateUpdateSearchProject(CrudAction inCrudAction, SearchProject inSearchProject, List<Editors> inActiveEditors)
+        public FrmCreateUpdateSearchProject(CrudAction inCrudAction, SearchProject inSearchProject, List<Editors> inActiveEditors)
         {
             InitializeComponent();
 
@@ -71,7 +64,7 @@ namespace ObjectInProject.Gui
 
         #region Startup
 
-        private void frmCreateUpdateSearchProject_Load(object sender, EventArgs e)
+        private void FrmCreateUpdateSearchProject_Load(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -93,7 +86,7 @@ namespace ObjectInProject.Gui
                         tabSettings.TabPages.Remove(tabPageSolutionsList);
 
                         removeMenu = new ContextMenu();
-                        removeMenu.MenuItems.Add("Remove", mnuRemoveDirectory);
+                        removeMenu.MenuItems.Add("Remove", MnuRemoveDirectory);
                         lstDirectories.ContextMenu = removeMenu;
                         break;
 
@@ -102,7 +95,7 @@ namespace ObjectInProject.Gui
                         tabSettings.TabPages.Remove(tabPageDirectoriesList);
 
                         removeMenu = new ContextMenu();
-                        removeMenu.MenuItems.Add("Remove", mnuRemoveSolution);
+                        removeMenu.MenuItems.Add("Remove", MnuRemoveSolution);
                         lstSolutions.ContextMenu = removeMenu;
                         break;
 
@@ -119,7 +112,7 @@ namespace ObjectInProject.Gui
 
                 if ((activeEditors == null) || (activeEditors.Count == 0))
                 {
-                    Audit("No Active Editors", method, AuditSeverity.Warning, Log.LINE());
+                    Audit("No Active Editors", method, LINE(), AuditSeverity.Warning);
                     MessageBox.Show("No Active Editors", "Failed On Settings Startup", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                     return;
@@ -133,8 +126,10 @@ namespace ObjectInProject.Gui
                 switch (crudAction)
                 {
                     case CrudAction.Create:
-                        searchProject = new SearchProject();
-                        searchProject.Type = projectType;
+                        searchProject = new SearchProject
+                        {
+                            Type = projectType
+                        };
 
                         cboEditor.Text = cboEditor.Items[0].ToString();
 
@@ -184,7 +179,7 @@ namespace ObjectInProject.Gui
             {
                 message = ex.Message;
 
-                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                Audit(message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(message, "Failed On Settings Startup", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -212,7 +207,7 @@ namespace ObjectInProject.Gui
             return false;
         }
 
-        private void btnSaveSearchProject_Click(object sender, EventArgs e)
+        private void BtnSaveSearchProject_Click(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -259,7 +254,7 @@ namespace ObjectInProject.Gui
             {
                 message = ex.Message;
 
-                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                Audit(message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(message, "Failed Adding Search Job", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -268,7 +263,7 @@ namespace ObjectInProject.Gui
 
         #region Search Logic
 
-        private void rbAndLogicSearch_CheckedChanged(object sender, EventArgs e)
+        private void RbAndLogicSearch_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -289,12 +284,12 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Search Logic Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
 
-        private void rbOrLogicSearch_CheckedChanged(object sender, EventArgs e)
+        private void RbOrLogicSearch_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -315,7 +310,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Search Logic Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -324,7 +319,7 @@ namespace ObjectInProject.Gui
 
         #region Search Types
 
-        private void rbSolutionsProjectsSearch_CheckedChanged(object sender, EventArgs e)
+        private void RbSolutionsProjectsSearch_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -345,12 +340,12 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Search Type Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
 
-        private void rbAllFilesSearch_CheckedChanged(object sender, EventArgs e)
+        private void RbAllFilesSearch_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -371,7 +366,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Search Type Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -380,7 +375,7 @@ namespace ObjectInProject.Gui
 
         #region Discard files with 'test'
 
-        private void chkNoTest_CheckedChanged(object sender, EventArgs e)
+        private void ChkNoTest_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -401,7 +396,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "No Test Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -410,7 +405,7 @@ namespace ObjectInProject.Gui
 
         #region Case Sensitive
 
-        private void chkCaseSensitiveSearch_CheckedChanged(object sender, EventArgs e)
+        private void ChkCaseSensitiveSearch_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -431,7 +426,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Case Sensitive Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -440,7 +435,7 @@ namespace ObjectInProject.Gui
 
         #region Editor
 
-        private void cboEditor_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboEditor_SelectedIndexChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -454,7 +449,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception ex)
             {
-                Audit(ex.Message, method, AuditSeverity.Error, Log.LINE());
+                Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Editor Pick Error", MessageBoxButtons.OK, MessageBoxIcon.Error); ;
             }
         }
@@ -468,7 +463,7 @@ namespace ObjectInProject.Gui
                 Editors editor = EditorUtils.EditorToEnum(editorString);
 
                 int index = cboEditor.Items.IndexOf(editor.ToString());
-                if (index == Constants.NONE)
+                if (index == ObjectInProjectConstants.NONE)
                 {
                     index = cboEditor.Items.IndexOf(Editors.Notepad);
                 }
@@ -487,7 +482,7 @@ namespace ObjectInProject.Gui
 
         #region Solutions
 
-        private void btnAddSolution_Click(object sender, EventArgs e)
+        private void BtnAddSolution_Click(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -521,12 +516,12 @@ namespace ObjectInProject.Gui
             {
                 message = ex.Message;
 
-                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                Audit(message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(message, "Failed Adding Solution", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void mnuRemoveSolution(object sender, EventArgs e)
+        private void MnuRemoveSolution(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -546,7 +541,7 @@ namespace ObjectInProject.Gui
 
                 if (dr == DialogResult.Yes)
                 {
-                    if (lstSolutions.SelectedIndex != Constants.NONE)
+                    if (lstSolutions.SelectedIndex != ObjectInProjectConstants.NONE)
                     {
                         lstSolutions.Items.RemoveAt(lstSolutions.SelectedIndex);
                     }
@@ -563,7 +558,7 @@ namespace ObjectInProject.Gui
             {
                 message = ex.Message;
 
-                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                Audit(message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(message, "Failed Removing Solution From Solutions List", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -572,7 +567,7 @@ namespace ObjectInProject.Gui
 
         #region Directories
 
-        private void btnAddDirectory_Click(object sender, EventArgs e)
+        private void BtnAddDirectory_Click(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -604,12 +599,12 @@ namespace ObjectInProject.Gui
             {
                 message = ex.Message;
 
-                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                Audit(message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(message, "Failed Adding Directory", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void mnuRemoveDirectory(object sender, EventArgs e)
+        private void MnuRemoveDirectory(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -629,7 +624,7 @@ namespace ObjectInProject.Gui
 
                 if (dr == DialogResult.Yes)
                 {
-                    if (lstDirectories.SelectedIndex != Constants.NONE)
+                    if (lstDirectories.SelectedIndex != ObjectInProjectConstants.NONE)
                     {
                         lstDirectories.Items.RemoveAt(lstDirectories.SelectedIndex);
                     }
@@ -646,21 +641,39 @@ namespace ObjectInProject.Gui
             {
                 message = ex.Message;
 
-                Audit(message, method, AuditSeverity.Error, Log.LINE());
+                Audit(message, method, LINE(), AuditSeverity.Error);
                 MessageBox.Show(ex.Message, "Failed Removing Directory From Directories List", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         #endregion
 
+        #region Events Handlers
+
+        public void OnMessage(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            Message?.Invoke(message, method, module, line, auditSeverity);
+        }
+
+        #endregion
+
         #region Audit
 
-        private static void Audit(string message, string method, AuditSeverity auditSeverity, int line)
+        private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
         {
-            string assemblyName = Assembly.GetExecutingAssembly().GetName().Name;
-            string fileName = Log.FILE();
+            OnMessage(message, method, module, line, auditSeverity);
+        }
 
-            Log.Audit(message, fileName, assemblyName, module, method, auditSeverity, line);
+        private void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        {
+            string module = "Create / Update Search Project";
+
+            Audit(message, method, module, line, auditSeverity);
+        }
+
+        public static int LINE([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return lineNumber;
         }
 
         #endregion

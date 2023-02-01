@@ -2,18 +2,19 @@
 using ObjectInProject.Search;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ObjectInProject.Tests.Line
 {
     public partial class frmMain : Form
     {
+        #region Data Members
+
+        private SearchUtils searchUtils;
+
+        #endregion
+
         #region Constructor
 
         public frmMain()
@@ -25,7 +26,7 @@ namespace ObjectInProject.Tests.Line
 
         #region Startup
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             Location = Cursor.Position;
 
@@ -36,13 +37,15 @@ namespace ObjectInProject.Tests.Line
 
             txtLine.Text = "Yosef Had A Little Lamb";
             txtTokens.Text = "ttl , ad";
+
+            searchUtils = new SearchUtils();
         }
 
         #endregion
 
         #region Gui
 
-        private void btnIsIn_Click(object sender, EventArgs e)
+        private void BtnIsIn_Click(object sender, EventArgs e)
         {
             try
             {
@@ -64,7 +67,7 @@ namespace ObjectInProject.Tests.Line
 
                 List<string> lTokens = tokens.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                bool exists = SearchUtils.SearchInLine(txtLine.Text,
+                bool exists = searchUtils.SearchInLine(txtLine.Text,
                                                        lTokens,
                                                        (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
                                                        chkCaseSensitive.Checked,
