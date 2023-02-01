@@ -1,29 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectInProject.Common
+﻿namespace ObjectInProject.Common
 {
     public class SearchResult
-    {
-        public SearchResult(string solution, string project, string file, int line, string fullPath)
-        {
-            Solution = solution;
-            Project = project;
-            File = file;
-            Line = line;
-            FullPath = fullPath;
-        }
-
-        public SearchResult(string directory, string file, int line, string fullPath)
-        {
-            Directoty = directory;
-            File = file;
-            Line = line;
-            FullPath = fullPath;
-        }
+    {        
+        #region Properties
 
         public string Solution
         {
@@ -59,6 +38,29 @@ namespace ObjectInProject.Common
         {
             get;
             set;
+        } 
+
+        #endregion
+
+        #region Constructors
+
+        public SearchResult(string solution, string project, string file, int line, string fullPath)
+        {
+            Solution = solution;
+            Project = project;
+            File = file;
+            Line = line;
+            FullPath = fullPath;
         }
+
+        public SearchResult(string directory, string file, int line, string fullPath)
+        {
+            Directoty = directory;
+            File = file;
+            Line = line;
+            FullPath = fullPath;
+        }
+
+        #endregion
     }
 }

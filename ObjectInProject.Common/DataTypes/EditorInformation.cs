@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectInProject.Common
+﻿namespace ObjectInProject.Common
 {
     public class EditorInformation
-    {
-        public EditorInformation(string path, Editors editor, bool exists)
-        {
-            Path = path;
-            Editor = editor;
-            Exists = exists;
-        }
+    {        
+        #region Properties
 
         public string Path
         {
@@ -31,6 +20,19 @@ namespace ObjectInProject.Common
         {
             get;
             set;
-        }
+        } 
+
+        #endregion
+
+        #region Constructor
+
+        public EditorInformation(string path, Editors editor, bool exists)
+        {
+            Path = path;
+            Editor = editor;
+            Exists = exists;
+        } 
+
+        #endregion
     }
 }

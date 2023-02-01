@@ -1,19 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ObjectInProject.Common
 {
     public class FileSearchResults
     {
-        private List<FileSearchResult> Results;
+        #region Data Members
+
+        private List<FileSearchResult> Results; 
+
+        #endregion
+
+        #region Constructor
 
         public FileSearchResults()
         {
             Results = new List<FileSearchResult>();
-        }
+        } 
+
+        #endregion
+
+        #region Public Methods
 
         public bool AddFileSearchResult(FileSearchResult fileSearchJobResult)
         {
@@ -32,6 +39,8 @@ namespace ObjectInProject.Common
         public List<FileSearchResult> GetFileSearchResults()
         {
             return Results;
-        }
+        } 
+
+        #endregion
     }
 }

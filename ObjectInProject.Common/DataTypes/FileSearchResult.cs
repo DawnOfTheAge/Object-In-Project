@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectInProject.Common
+﻿namespace ObjectInProject.Common
 {
     public class FileSearchResult
     {
-        public FileSearchResult(int line)
-        {
-            Line = line;
-        }
+        #region Properties
 
         public int Line
         {
             get;
             set;
         }
+
+        #endregion
+
+        #region Constructor
+
+        public FileSearchResult(int line)
+        {
+            Line = line;
+        } 
+
+        #endregion
     }
 }

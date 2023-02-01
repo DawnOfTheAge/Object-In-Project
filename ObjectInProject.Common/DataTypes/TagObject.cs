@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectInProject.Common
+﻿namespace ObjectInProject.Common
 {
     public class TagObject
-    {
+    {        
+        #region Properties
+
+        public TagObjectType TagType { get; set; }
+
+        public object Object { get; set; } 
+
+        #endregion
+
+        #region Constructors
+
         public TagObject(TagObjectType type)
         {
             TagType = type;
@@ -25,7 +29,6 @@ namespace ObjectInProject.Common
             Object = tagObject;
         }
 
-        public TagObjectType TagType { get; set; }
-        public object Object { get; set; }
+        #endregion
     }
 }

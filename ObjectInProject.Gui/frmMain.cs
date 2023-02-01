@@ -1,6 +1,12 @@
-﻿using System;
+﻿using General.Common;
+using General.Log;
+using Microsoft.Build.Construction;
+using Newtonsoft.Json;
+using ObjectInProject.Common;
+using ObjectInProject.EditorsInformation;
+using ObjectInProject.Search;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
@@ -10,13 +16,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using General.Common;
-using General.Log;
-using Microsoft.Build.Construction;
-using Newtonsoft.Json;
-using ObjectInProject.Common;
-using ObjectInProject.EditorsInformation;
-using ObjectInProject.Search;
 
 namespace ObjectInProject.Gui
 {

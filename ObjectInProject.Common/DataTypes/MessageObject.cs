@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ObjectInProject.Common
+﻿namespace ObjectInProject.Common
 {
     public class MessageObject
-    {
+    {        
+        #region Properties
+
+        public IoAction Action { get; set; }
+
+        public object Data { get; set; }
+
+        #endregion
+        
+        #region Constructors
+
         public MessageObject(IoAction action)
         {
             Action = action;
@@ -20,7 +24,6 @@ namespace ObjectInProject.Common
             Data = data;
         }
 
-        public IoAction Action { get; set; }
-        public object Data { get; set; }
+        #endregion
     }
 }

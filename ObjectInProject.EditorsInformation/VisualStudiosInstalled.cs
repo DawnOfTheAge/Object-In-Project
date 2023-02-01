@@ -1,13 +1,12 @@
-﻿using System;
+﻿using General.Common;
+using General.Log;
+using ObjectInProject.Common;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Text;
-using General.Common;
-using General.Log;
-using ObjectInProject.Common;
 
 namespace ObjectInProject.EditorsInformation
 {
@@ -469,6 +468,10 @@ namespace ObjectInProject.EditorsInformation
                         break;
 
                     case Editors.VisualStudio2019:
+                        visualStudio = Marshal.GetActiveObject("VisualStudio.DTE");
+                        break;
+
+                    case Editors.VisualStudio2022:
                         visualStudio = Marshal.GetActiveObject("VisualStudio.DTE");
                         break;
 
