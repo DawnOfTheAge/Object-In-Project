@@ -20,12 +20,6 @@ namespace ObjectInProject.Gui
 {
     public partial class frmMain : Form
     {
-        #region Local Constants
-
-        private static readonly string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
-
-        #endregion
-
         #region Data Members        
 
         private bool searchCaseSensitive;
@@ -166,6 +160,11 @@ namespace ObjectInProject.Gui
 
                 if (LoadConfiguration(out result))
                 {
+                    if (m_Configuration.AuditSettings == null)
+                    {
+                        m_Configuration.AuditSettings = new AuditProperties(true);
+                    }
+
                     if (!InitializeGui(out result))
                     {
                         return false;
