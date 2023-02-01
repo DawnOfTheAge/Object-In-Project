@@ -88,28 +88,28 @@
             this.mnuClearResults.Name = "mnuClearResults";
             this.mnuClearResults.Size = new System.Drawing.Size(180, 22);
             this.mnuClearResults.Text = "Clear Results";
-            this.mnuClearResults.Click += new System.EventHandler(this.mnuClearResults_Click);
+            this.mnuClearResults.Click += new System.EventHandler(this.MnuClearResults_Click);
             // 
             // mnuClearSearchHistory
             // 
             this.mnuClearSearchHistory.Name = "mnuClearSearchHistory";
             this.mnuClearSearchHistory.Size = new System.Drawing.Size(180, 22);
             this.mnuClearSearchHistory.Text = "Clear Search History";
-            this.mnuClearSearchHistory.Click += new System.EventHandler(this.mnuClearSearchHistory_Click);
+            this.mnuClearSearchHistory.Click += new System.EventHandler(this.MnuClearSearchHistory_Click);
             // 
             // mnuSearchProjects
             // 
             this.mnuSearchProjects.Name = "mnuSearchProjects";
             this.mnuSearchProjects.Size = new System.Drawing.Size(107, 20);
             this.mnuSearchProjects.Text = "Projects Explorer";
-            this.mnuSearchProjects.Click += new System.EventHandler(this.mnuShowSearchProjectsTree_Click);
+            this.mnuSearchProjects.Click += new System.EventHandler(this.MnuShowSearchProjectsTree_Click);
             // 
             // mnuExit
             // 
             this.mnuExit.Name = "mnuExit";
             this.mnuExit.Size = new System.Drawing.Size(38, 20);
             this.mnuExit.Text = "Exit";
-            this.mnuExit.Click += new System.EventHandler(this.mnuExit_Click);
+            this.mnuExit.Click += new System.EventHandler(this.MnuExit_Click);
             // 
             // btnFind
             // 
@@ -122,7 +122,7 @@
             this.btnFind.TabIndex = 4;
             this.btnFind.Text = "Find";
             this.btnFind.UseVisualStyleBackColor = true;
-            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
+            this.btnFind.Click += new System.EventHandler(this.BtnFind_Click);
             // 
             // lvResults
             // 
@@ -132,7 +132,7 @@
             this.lvResults.Size = new System.Drawing.Size(1109, 415);
             this.lvResults.TabIndex = 6;
             this.lvResults.UseCompatibleStateImageBehavior = false;
-            this.lvResults.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lvResults_MouseDoubleClick);
+            this.lvResults.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LvResults_MouseDoubleClick);
             // 
             // txtFind
             // 
@@ -143,7 +143,7 @@
             this.txtFind.Name = "txtFind";
             this.txtFind.Size = new System.Drawing.Size(814, 21);
             this.txtFind.TabIndex = 18;
-            this.txtFind.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtFind_KeyDown);
+            this.txtFind.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtFind_KeyDown);
             // 
             // btnLoadSearchedItemsFromFile
             // 
@@ -156,7 +156,7 @@
             this.btnLoadSearchedItemsFromFile.Size = new System.Drawing.Size(40, 33);
             this.btnLoadSearchedItemsFromFile.TabIndex = 23;
             this.btnLoadSearchedItemsFromFile.UseVisualStyleBackColor = false;
-            this.btnLoadSearchedItemsFromFile.Click += new System.EventHandler(this.btnLoadSearchedItemsFromFile_Click);
+            this.btnLoadSearchedItemsFromFile.Click += new System.EventHandler(this.BtnLoadSearchedItemsFromFile_Click);
             // 
             // statusStrip
             // 
@@ -313,7 +313,7 @@
             this.chkCaseSensitive.TabIndex = 29;
             this.chkCaseSensitive.Text = "Case Sensitive";
             this.chkCaseSensitive.UseVisualStyleBackColor = true;
-            this.chkCaseSensitive.CheckedChanged += new System.EventHandler(this.chkCaseSensitive_CheckedChanged);
+            this.chkCaseSensitive.CheckedChanged += new System.EventHandler(this.ChkCaseSensitive_CheckedChanged);
             // 
             // cboFileTypeFilters
             // 
@@ -343,7 +343,7 @@
             this.btnClear.TabIndex = 32;
             this.btnClear.Text = "Clear";
             this.btnClear.UseVisualStyleBackColor = true;
-            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
             // 
             // frmMain
             // 
@@ -364,9 +364,9 @@
             this.MainMenuStrip = this.mnuMain;
             this.Name = "frmMain";
             this.Text = "Object In Solution Browser";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmMain_FormClosed);
-            this.Load += new System.EventHandler(this.frmMain_Load);
-            this.Resize += new System.EventHandler(this.frmMain_Resize);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
+            this.Resize += new System.EventHandler(this.FrmMain_Resize);
             this.mnuMain.ResumeLayout(false);
             this.mnuMain.PerformLayout();
             this.statusStrip.ResumeLayout(false);

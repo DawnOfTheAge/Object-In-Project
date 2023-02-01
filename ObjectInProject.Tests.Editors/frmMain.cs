@@ -14,6 +14,7 @@ using ObjectInProject.Common;
 using ObjectInProject.EditorsInformation;
 using System.IO;
 using System.Reflection;
+using ObjectInProject.Utils;
 
 namespace ObjectInProject.Tests.Editors
 {
@@ -146,7 +147,7 @@ namespace ObjectInProject.Tests.Editors
 
                 Common.Editors editor;
 
-                editor = Utils.EditorToEnum(dgvFiles.Rows[dgvFiles.SelectedRows[0].Index].Cells[0].Value.ToString());
+                editor = EditorUtils.EditorToEnum(dgvFiles.Rows[dgvFiles.SelectedRows[0].Index].Cells[0].Value.ToString());
 
                 if (!VisualStudiosInstalled.OpenFileAtLine(txtFilePath.Text, (int)nudLine.Value, editor, out string result))
                 {

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using ObjectInProject.Common;
 using ObjectInProject.EditorsInformation;
 using ObjectInProject.Search;
+using ObjectInProject.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,7 +24,7 @@ namespace ObjectInProject.Gui
     {
         #region Local Constants
 
-        private static string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
+        private static readonly string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
 
         #endregion
 
@@ -75,10 +76,9 @@ namespace ObjectInProject.Gui
 
         #region Close
         
-        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+        private void FrmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             string method = MethodBase.GetCurrentMethod().Name;
-            string result;
 
             try
             {
@@ -86,7 +86,7 @@ namespace ObjectInProject.Gui
 
                 if (dialogResult == DialogResult.Yes)
                 {
-                    SaveConfiguration(out result);
+                    SaveConfiguration(out string result);
                 }
             }
             catch (Exception ex)
@@ -100,16 +100,15 @@ namespace ObjectInProject.Gui
 
         #region Initialize
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
-            string result;
             string method = MethodBase.GetCurrentMethod().Name;
 
             try
             {
                 Location = Cursor.Position;
 
-                if (!Initialize(out result))
+                if (!Initialize(out string result))
                 {
                     Audit(result, method, AuditSeverity.Warning, Log.LINE());
                     MessageBox.Show(result, "Initialize Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -182,15 +181,12 @@ namespace ObjectInProject.Gui
                                     {
                                         directories.Add(directory);
 
-                                        int numberOfFiles;
-                                        int numberOfTestFiles;
-
                                         string criteriaList = string.IsNullOrEmpty(m_ActiveSearchProject.FileTypeFilter) ? m_ActiveSearchProject.FileTypeFilter : "*.*";
 
                                         if (FindCriteriaFilesNumbers(directory,
                                                                      criteriaList,
-                                                                     out numberOfFiles,
-                                                                     out numberOfTestFiles,
+                                                                     out int numberOfFiles,
+                                                                     out int numberOfTestFiles,
                                                                      out result))
                                         {
                                             m_numberOfFiles += numberOfFiles;
@@ -274,17 +270,16 @@ namespace ObjectInProject.Gui
         {
             #region Data Members
 
-            Project project;
-
             string method = MethodBase.GetCurrentMethod().Name;
 
             #endregion
 
-            result = "";
+            result = string.Empty;
 
-            solution = new Solution();
-
-            solution.Name = solutionFilename;
+            solution = new Solution
+            {
+                Name = solutionFilename
+            };
 
             try
             {
@@ -292,7 +287,7 @@ namespace ObjectInProject.Gui
 
                 foreach (var currentProjectFile in _solutionFile.ProjectsInOrder)
                 {
-                    if (ParseProjectFile(currentProjectFile.AbsolutePath, out project, out result))
+                    if (ParseProjectFile(currentProjectFile.AbsolutePath, out Project project, out result))
                     {
                         solution.Projects.Add(project);
                         solution.Projects[solution.Projects.Count - 1].Id = solution.Projects.Count;
@@ -331,7 +326,7 @@ namespace ObjectInProject.Gui
 
             #endregion
 
-            result = "";
+            result = string.Empty;
 
             List<string> lines;
 
@@ -385,12 +380,13 @@ namespace ObjectInProject.Gui
                                     break;
                                 }
 
-                                CsFile csFile = new CsFile();
+                                CsFile csFile = new CsFile
+                                {
+                                    Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CS_PROPERTY.Length + 1),
+                                                                                              endCsIndex - startCsIndex - (ObjectInProjectConstants.CS_PROPERTY.Length - ObjectInProjectConstants.CS_FILE_EXTENSION.Length + 1))
+                                };
 
-                                csFile.Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CS_PROPERTY.Length + 1), 
-                                                                                                 endCsIndex - startCsIndex - (ObjectInProjectConstants.CS_PROPERTY.Length - ObjectInProjectConstants.CS_FILE_EXTENSION.Length + 1));
-
-                                if (Utils.ReadFileLines(csFile.Name, out lines, out result))
+                                if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
                                 {
                                     csFile.Lines = lines;
 
@@ -431,12 +427,13 @@ namespace ObjectInProject.Gui
                                     break;
                                 }
 
-                                CsFile csFile = new CsFile();
+                                CsFile csFile = new CsFile
+                                {
+                                    Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length + 1),
+                                                                                                 endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION.Length + 1))
+                                };
 
-                                csFile.Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length + 1), 
-                                                                                                 endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION.Length + 1));
-
-                                if (Utils.ReadFileLines(csFile.Name, out lines, out result))
+                                if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
                                 {
                                     csFile.Lines = lines;
 
@@ -472,12 +469,13 @@ namespace ObjectInProject.Gui
                                     break;
                                 }
 
-                                CsFile csFile = new CsFile();
+                                CsFile csFile = new CsFile
+                                {
+                                    Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length + 1),
+                                                                                              endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION.Length + 1))
+                                };
 
-                                csFile.Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length + 1), 
-                                                                                                 endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION.Length + 1));
-
-                                if (Utils.ReadFileLines(csFile.Name, out lines, out result))
+                                if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
                                 {
                                     csFile.Lines = lines;
 
@@ -579,7 +577,7 @@ namespace ObjectInProject.Gui
 
         #region GUI
 
-        private void frmMain_Resize(object sender, EventArgs e)
+        private void FrmMain_Resize(object sender, EventArgs e)
         {
             string method = MethodBase.GetCurrentMethod().Name;
 
@@ -608,24 +606,22 @@ namespace ObjectInProject.Gui
 
         #region Main menu
 
-        private void mnuClearResults_Click(object sender, EventArgs e)
+        private void MnuClearResults_Click(object sender, EventArgs e)
         {
             lvResults.Items.Clear();
             txtNumberOfHits.Text = "0";
             pbFiles.Value = 0;
         }
 
-        private void mnuClearSearchHistory_Click(object sender, EventArgs e)
+        private void MnuClearSearchHistory_Click(object sender, EventArgs e)
         {
             txtFind.Items.Clear();
             txtFind.Text = "";
         }
 
-        private void mnuShowSearchProjectsTree_Click(object sender, EventArgs e)
+        private void MnuShowSearchProjectsTree_Click(object sender, EventArgs e)
         {
-            string result;
-
-            if (!GetActiveEditors(m_VisualStudio, out m_ActiveEditors, out result))
+            if (!GetActiveEditors(m_VisualStudio, out m_ActiveEditors, out string result))
             {
                 MessageBox.Show(result, "Active Editors Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
@@ -639,8 +635,6 @@ namespace ObjectInProject.Gui
 
         private bool SearchProjectsTree_Message(object message, out object reply, out string result)
         {
-            result = string.Empty;
-
             reply = null;
 
             try
@@ -705,7 +699,7 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void mnuExit_Click(object sender, EventArgs e)
+        private void MnuExit_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -721,8 +715,6 @@ namespace ObjectInProject.Gui
             string method = MethodBase.GetCurrentMethod().Name;
 
             #endregion
-
-            result = string.Empty;
 
             try
             {
@@ -743,7 +735,7 @@ namespace ObjectInProject.Gui
                     return false;
                 }
 
-                frmMain_Resize(null, null);
+                FrmMain_Resize(null, null);
 
                 return true;
             }
@@ -835,7 +827,7 @@ namespace ObjectInProject.Gui
 
                 if ((m_ActiveSearchProject != null) && (!string.IsNullOrEmpty(m_ActiveSearchProject.Editor)))
                 {
-                    EDITOR_USED = Utils.EditorToEnum(m_ActiveSearchProject.Editor);
+                    EDITOR_USED = EditorUtils.EditorToEnum(m_ActiveSearchProject.Editor);
                 }
                 else
                 {
@@ -872,8 +864,8 @@ namespace ObjectInProject.Gui
 
                 if (m_ActiveSearchProject != null)
                 {
-                    txtNumberOfProjects.Visible = (m_ActiveSearchProject.Type == SearchProjectType.SolutionsProject) ? true : false;
-                    lblNumberOfProjects.Visible = (m_ActiveSearchProject.Type == SearchProjectType.SolutionsProject) ? true : false;
+                    txtNumberOfProjects.Visible = (m_ActiveSearchProject.Type == SearchProjectType.SolutionsProject);
+                    lblNumberOfProjects.Visible = (m_ActiveSearchProject.Type == SearchProjectType.SolutionsProject);
                 }
                 else
                 {
@@ -935,7 +927,6 @@ namespace ObjectInProject.Gui
             #region Data Members
 
             string method = MethodBase.GetCurrentMethod().Name;
-            string result;
 
             #endregion
 
@@ -945,7 +936,7 @@ namespace ObjectInProject.Gui
 
                 txtActiveSearchJob.Text = selectedSearchJob.Text;
 
-                if (!m_Configuration.SetAsActive(txtActiveSearchJob.Text, out result))
+                if (!m_Configuration.SetAsActive(txtActiveSearchJob.Text, out string result))
                 {
                     Audit(result, method, AuditSeverity.Warning, Log.LINE());
                 }
@@ -996,7 +987,7 @@ namespace ObjectInProject.Gui
             }
         }
         
-        private void chkCaseSensitive_CheckedChanged(object sender, EventArgs e)
+        private void ChkCaseSensitive_CheckedChanged(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -1018,19 +1009,19 @@ namespace ObjectInProject.Gui
             }
         }
     
-        private void txtFind_KeyDown(object sender, KeyEventArgs e)
+        private void TxtFind_KeyDown(object sender, KeyEventArgs e)
         {
             string method = MethodBase.GetCurrentMethod().Name;
 
             if (e.KeyCode == Keys.Enter)
             {
-                btnFind_Click(null, null);
+                BtnFind_Click(null, null);
 
                 txtFind.Items.Add(txtFind.Text);
             }
         }
 
-        private void cboSearchType_SelectedIndexChanged(object sender, EventArgs e)
+        private void CboSearchType_SelectedIndexChanged(object sender, EventArgs e)
         {
             string method = MethodBase.GetCurrentMethod().Name;
 
@@ -1106,7 +1097,7 @@ namespace ObjectInProject.Gui
             }
         }
          
-        private void lvResults_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void LvResults_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             #region Data Members
 
@@ -1169,7 +1160,7 @@ namespace ObjectInProject.Gui
 
         #region Buttons
         
-        private void btnFind_Click(object sender, EventArgs e)
+        private void BtnFind_Click(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -1293,7 +1284,7 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        private void BtnClear_Click(object sender, EventArgs e)
         {
             #region Data Members
 
@@ -1313,14 +1304,11 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void btnLoadSearchedItemsFromFile_Click(object sender, EventArgs e)
+        private void BtnLoadSearchedItemsFromFile_Click(object sender, EventArgs e)
         {
             #region Data Members
 
             string method = MethodBase.GetCurrentMethod().Name;
-            string result;
-
-            List<string> lines;
 
             int i;
 
@@ -1336,7 +1324,7 @@ namespace ObjectInProject.Gui
 
                     if (openFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        if (!Utils.ReadFileLines(openFileDialog.FileName, out lines, out result))
+                        if (!FilesUtils.ReadFileLines(openFileDialog.FileName, out List<string> lines, out string result))
                         {
                             Audit(result, method, AuditSeverity.Error, Log.LINE());
                             MessageBox.Show(result, "Failed Loading List Of Searched Items", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1394,7 +1382,7 @@ namespace ObjectInProject.Gui
                         if (!OpenWithNotepad(file, line, out result))
                         {
                             Audit(result, method, AuditSeverity.Warning, Log.LINE());
-                            MessageBox.Show(result, "Failed Openning File '" + file + "' With " + Utils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         break;
 
@@ -1402,7 +1390,7 @@ namespace ObjectInProject.Gui
                         if (!OpenWithNotepadPlusPlus(file, line, out result))
                         {
                             Audit(result, method, AuditSeverity.Warning, Log.LINE());
-                            MessageBox.Show(result, "Failed Openning File '" + file + "' With " + Utils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         break;
 
@@ -1414,7 +1402,7 @@ namespace ObjectInProject.Gui
                         if (!OpenWithVisualStudio(file, line, out result))
                         {
                             Audit(result, method, AuditSeverity.Warning, Log.LINE());
-                            MessageBox.Show(result, "Failed Openning File '" + file +"' With " + Utils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(result, "Failed Openning File '" + file +"' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                         break;
 
@@ -1528,7 +1516,7 @@ namespace ObjectInProject.Gui
 
             #endregion
 
-            result = "";
+            result = string.Empty;
 
             try
             {
@@ -1621,7 +1609,7 @@ namespace ObjectInProject.Gui
                 foreach (Process process in pname)
                 {
                     string runningVisualStudio = process.MainModule.FileVersionInfo.FileDescription;
-                    string editorUsed = Utils.EditorToString(EDITOR_USED);
+                    string editorUsed = EditorUtils.EditorToString(EDITOR_USED);
 
                     if (runningVisualStudio.IndexOf(editorUsed) != Constants.NONE)
                     {
@@ -1641,7 +1629,7 @@ namespace ObjectInProject.Gui
             catch (Exception e)
             {
                 Audit(e.Message, method, AuditSeverity.Error, Log.LINE());
-                result = string.Format("Failed Ensuring Editor '{0}' Active. {1}.", Utils.EditorToString(EDITOR_USED), e.Message);
+                result = string.Format("Failed Ensuring Editor '{0}' Active. {1}.", EditorUtils.EditorToString(EDITOR_USED), e.Message);
 
                 return false;
             }
@@ -1671,12 +1659,13 @@ namespace ObjectInProject.Gui
                 if (File.Exists(batchFilename))
                 {
                     Process process = new Process();
-                    ProcessStartInfo startInfo = new ProcessStartInfo();
-
-                    startInfo.UseShellExecute = false;
-                    startInfo.RedirectStandardOutput = true;
-                    startInfo.FileName = batchFilename;
-                    startInfo.Arguments = EDITOR_USED.ToString().Substring(12);
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        FileName = batchFilename,
+                        Arguments = EDITOR_USED.ToString().Substring(12)
+                    };
 
                     process.StartInfo = startInfo;
                     process.Start();
@@ -1694,7 +1683,7 @@ namespace ObjectInProject.Gui
                         message = "Visual Studio Execution File Does Not Exist";
 
                         Audit(message, method, AuditSeverity.Error, Log.LINE());
-                        result = string.Format("Failed Starting '{0}'. {1}.", Utils.EditorToString(EDITOR_USED), message);
+                        result = string.Format("Failed Starting '{0}'. {1}.", EditorUtils.EditorToString(EDITOR_USED), message);
 
                         openFailed = true;
 
@@ -1710,7 +1699,7 @@ namespace ObjectInProject.Gui
                     message = "'" + batchFilename + "' does not exist";
 
                     Audit(message, method, AuditSeverity.Error, Log.LINE());
-                    result = string.Format("Failed Starting '{0}'. {1}.", Utils.EditorToString(EDITOR_USED), message);
+                    result = string.Format("Failed Starting '{0}'. {1}.", EditorUtils.EditorToString(EDITOR_USED), message);
 
                     openFailed = true;
 
@@ -1721,7 +1710,7 @@ namespace ObjectInProject.Gui
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Failed Openning '" + Utils.EditorToString(EDITOR_USED) + "'", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(e.Message, "Failed Openning '" + EditorUtils.EditorToString(EDITOR_USED) + "'", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 openFailed = true;
 

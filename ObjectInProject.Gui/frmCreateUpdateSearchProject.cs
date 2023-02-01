@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using General.Common;
 using General.Log;
 using ObjectInProject.Common;
+using ObjectInProject.Utils;
 
 namespace ObjectInProject.Gui
 {
@@ -83,7 +84,7 @@ namespace ObjectInProject.Gui
             {
                 Location = Cursor.Position;
 
-                Text = $"{crudAction} {Utils.GetEnumDescription(projectType)}";
+                Text = $"{crudAction} {GeneralUtils.GetEnumDescription(projectType)}";
 
                 switch (projectType)
                 {
@@ -464,7 +465,7 @@ namespace ObjectInProject.Gui
 
             try
             {
-                Editors editor =  Utils.EditorToEnum(editorString);
+                Editors editor = EditorUtils.EditorToEnum(editorString);
 
                 int index = cboEditor.Items.IndexOf(editor.ToString());
                 if (index == Constants.NONE)

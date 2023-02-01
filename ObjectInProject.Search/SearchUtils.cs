@@ -1,14 +1,13 @@
-﻿using System;
+﻿using General.Common;
+using General.Common.Utils;
+using General.Log;
+using ObjectInProject.Common;
+using ObjectInProject.Utils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using General.Common;
-using General.Common.Utils;
-using General.Log;
-using ObjectInProject.Common;
 
 namespace ObjectInProject.Search
 {
@@ -16,7 +15,7 @@ namespace ObjectInProject.Search
     {
         #region Local Constants
 
-        private static string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
+        private static readonly string module = MethodBase.GetCurrentMethod().DeclaringType.Name;
 
         #endregion
 
@@ -29,13 +28,10 @@ namespace ObjectInProject.Search
 
             string method = MethodBase.GetCurrentMethod().Name;
 
-            List<string> fileTypeFilterList;
-
             int fileCounter = 0;
 
             #endregion
 
-            result = string.Empty;
             serachResults = null;
 
             try
@@ -49,7 +45,7 @@ namespace ObjectInProject.Search
                     return false;
                 }
 
-                if (!StringUtils.Split(configuration.FileTypeFilter, ';', out fileTypeFilterList, out result))
+                if (!StringUtils.Split(configuration.FileTypeFilter, ';', out List<string> fileTypeFilterList, out result))
                 {
                     return false;
                 }
@@ -271,11 +267,7 @@ namespace ObjectInProject.Search
 
             string method = MethodBase.GetCurrentMethod().Name;
 
-            List<string> fileTypeFilterList;
-
             #endregion
-
-            result = string.Empty;
 
             searchResults = null;
 
@@ -290,7 +282,7 @@ namespace ObjectInProject.Search
                     return false;
                 }
 
-                if (!StringUtils.Split(configuration.FileTypeFilter, ';', out fileTypeFilterList, out result))
+                if (!StringUtils.Split(configuration.FileTypeFilter, ';', out List<string> fileTypeFilterList, out result))
                 {
                     return false;
                 }
@@ -311,15 +303,20 @@ namespace ObjectInProject.Search
 
                 #endregion
 
-                SearchedFilesList searchedFilesList;
-                List<FileOrigin> listOfFiles;
-
-                if (!GetFilesList(configuration.Type, configuration.Workspace, configuration.FileTypeFilter, out listOfFiles, out result))
+                if (!GetFilesList(configuration.Type, 
+                                  configuration.Workspace, 
+                                  configuration.FileTypeFilter, 
+                                  out List<FileOrigin>listOfFiles, 
+                                  out result))
                 {
                     return false;
                 }
 
-                if (!SearchInListOfFiles(listOfFiles, tokens, configuration.Logic, configuration.CaseSensitive, out searchedFilesList, out result))
+                if (!SearchInListOfFiles(listOfFiles, tokens, 
+                                         configuration.Logic, 
+                                         configuration.CaseSensitive, 
+                                         out SearchedFilesList searchedFilesList, 
+                                         out result))
                 { 
                     return false;
                 }
@@ -358,8 +355,7 @@ namespace ObjectInProject.Search
                 searchResults = new List<SearchResult>();
                 foreach (SearchedFile searchedFile in searchedFilesList.Files)
                 {
-                    List<SearchResult> currentSearchResults;
-                    if (!searchedFile.GetSearchResults(out currentSearchResults, out result))
+                    if (!searchedFile.GetSearchResults(out List<SearchResult> currentSearchResults, out result))
                     {
                         continue;
                     }
@@ -383,8 +379,6 @@ namespace ObjectInProject.Search
                                          out List<FileOrigin> listOfFiles, 
                                          out string result)
         {
-            result = string.Empty;
-
             listOfFiles = null;
 
             try
@@ -444,8 +438,7 @@ namespace ObjectInProject.Search
                         continue;
                     }
 
-                    List<string> projectFiles;
-                    if (!ParseFile.ParseSolutionFile(solution, out projectFiles, out result))
+                    if (!ParseFile.ParseSolutionFile(solution, out List<string> projectFiles, out result))
                     {
                         continue;
                     }
@@ -456,12 +449,11 @@ namespace ObjectInProject.Search
                     }
 
                     listOfFiles = new List<FileOrigin>();
-                    List<string> codeFiles;
                     foreach (string projectFile in projectFiles)
                     {
                         if (File.Exists(projectFile))
                         {
-                            if (!ParseFile.ParseProjectFile(projectFile, out codeFiles, out result))
+                            if (!ParseFile.ParseProjectFile(projectFile, out List<string> codeFiles, out result))
                             {
                                 //  Some Audit
                             }
@@ -481,7 +473,7 @@ namespace ObjectInProject.Search
                                 }
                             }
                         }
-                    }                    
+                    }
                 }
 
                 return true;
@@ -517,9 +509,8 @@ namespace ObjectInProject.Search
                 listOfFiles = new List<FileOrigin>();
                 foreach (string path in paths)
                 {
-                    List<FileOrigin> currentListOfFiles;
-                    if (!GetPathFilesList(path, searchPattern, out currentListOfFiles, out result))
-                    { 
+                    if (!GetPathFilesList(path, searchPattern, out List<FileOrigin> currentListOfFiles, out result))
+                    {
                     }
 
                     if ((currentListOfFiles == null) || (currentListOfFiles.Count == 0))
@@ -610,8 +601,7 @@ namespace ObjectInProject.Search
 
                 foreach (FileOrigin file in files)
                 {
-                    SearchedFile searchedFile;
-                    if (!SearchInFile(file, tokens, searchLogic, caseSensitive, out searchedFile, out result))
+                    if (!SearchInFile(file, tokens, searchLogic, caseSensitive, out SearchedFile searchedFile, out result))
                     {
                         //  some Audit
 
@@ -645,8 +635,6 @@ namespace ObjectInProject.Search
                                         out SearchedFile searchedFile, 
                                         out string result)
         {
-            result = string.Empty;
-
             searchedFile = null;
 
             try
@@ -657,8 +645,6 @@ namespace ObjectInProject.Search
 
                     return false;
                 }
-
-                List<string> lines;
 
                 switch (file.ProjectType)
                 {
@@ -676,7 +662,7 @@ namespace ObjectInProject.Search
                         return false;
                 }
 
-                if (Utils.ReadFileLines(file.Path, out lines, out result))
+                if (FilesUtils.ReadFileLines(file.Path, out List<string> lines, out result))
                 {
                     if (lines != null)
                     {
@@ -716,8 +702,6 @@ namespace ObjectInProject.Search
 
         public static bool SearchInLine(string line, List<string> tokens, SearchLogic searchLogic, bool caseSensitive, out string result)
         {
-            result = string.Empty;
-
             try
             {
                 switch (searchLogic)

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ObjectInProject.Common</RootNamespace>
     <AssemblyName>ObjectInProject.Common</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -70,7 +70,6 @@
     <Compile Include="Enums\TagObjectType.cs" />
     <Compile Include="ObjectInProjects.Constants.cs" />
     <Compile Include="ObjectInProjects.Delegates.cs" />
-    <Compile Include="ObjectInProjects.Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

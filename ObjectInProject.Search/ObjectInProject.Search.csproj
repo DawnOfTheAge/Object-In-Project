@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ObjectInProject.Search</RootNamespace>
     <AssemblyName>ObjectInProject.Search</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
@@ -65,6 +65,10 @@
     <ProjectReference Include="..\ObjectInProject.Common\ObjectInProject.Common.csproj">
       <Project>{91a2ae62-0650-4e8d-88ef-6d0543a2d9ae}</Project>
       <Name>ObjectInProject.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectInProject.Utils\ObjectInProject.Utils.csproj">
+      <Project>{2A9FB722-2134-41E5-ABEC-5BE77F122DC0}</Project>
+      <Name>ObjectInProject.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

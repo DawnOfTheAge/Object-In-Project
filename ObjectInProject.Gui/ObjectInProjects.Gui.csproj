@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ObjectInProject.Gui</RootNamespace>
     <AssemblyName>ObjectInProject.Gui</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -136,6 +136,10 @@
     <ProjectReference Include="..\ObjectInProject.Search\ObjectInProject.Search.csproj">
       <Project>{ec88d2dd-62ec-49ca-b681-ec265eac39b7}</Project>
       <Name>ObjectInProject.Search</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ObjectInProject.Utils\ObjectInProject.Utils.csproj">
+      <Project>{2A9FB722-2134-41E5-ABEC-5BE77F122DC0}</Project>
+      <Name>ObjectInProject.Utils</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

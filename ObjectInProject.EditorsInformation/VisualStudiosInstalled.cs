@@ -1,6 +1,7 @@
 ﻿using General.Common;
 using General.Log;
 using ObjectInProject.Common;
+using ObjectInProject.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -140,7 +141,7 @@ namespace ObjectInProject.EditorsInformation
                     case Editors.Notepad:
                         if (!OpenWithNotepad(file, line, out result))
                         {
-                            result = $"Failed Openning File '{file}' With '{Utils.EditorToString(editor)}'";
+                            result = $"Failed Openning File '{file}' With '{EditorUtils.EditorToString(editor)}'";
 
                             return false;
                         }
@@ -149,7 +150,7 @@ namespace ObjectInProject.EditorsInformation
                     case Editors.NotepadPlusPlus:
                         if (!OpenWithNotepadPlusPlus(file, line, out result))
                         {
-                            result = $"Failed Openning File '{file}' With '{Utils.EditorToString(editor)}'";
+                            result = $"Failed Openning File '{file}' With '{EditorUtils.EditorToString(editor)}'";
                          
                             return false;
                         }
@@ -163,14 +164,14 @@ namespace ObjectInProject.EditorsInformation
                     case Editors.VisualStudio2019:
                         if (!OpenWithVisualStudio(file, line, editor, out result))
                         {
-                            result = $"Failed Openning File '{file}' With '{Utils.EditorToString(editor)}'";
+                            result = $"Failed Openning File '{file}' With '{EditorUtils.EditorToString(editor)}'";
 
                             return false;
                         }
                         break;
 
                     default:
-                        result = $"Wrong Editor '{Utils.EditorToString(editor)}'";
+                        result = $"Wrong Editor '{EditorUtils.EditorToString(editor)}'";
 
                         return false;
                 }

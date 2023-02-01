@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using General.Common;
 using General.Log;
 using ObjectInProject.Common;
+using ObjectInProject.Utils;
 
 namespace ObjectInProject.Gui
 {
@@ -541,7 +542,7 @@ namespace ObjectInProject.Gui
                 {
                     case SearchProjectType.DirectoriesProject:
                     case SearchProjectType.SolutionsProject:
-                        deleteQuestionString = $"Delete All {Utils.GetEnumDescription(projectType)}s";
+                        deleteQuestionString = $"Delete All {GeneralUtils.GetEnumDescription(projectType)}s";
                         break;
 
                     default:
