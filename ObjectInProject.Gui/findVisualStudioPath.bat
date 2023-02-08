@@ -2,7 +2,7 @@
 setlocal 
 call:vs%1 2>nul
 if "%n%" == "" (
-    echo Visual studio is not supported.
+    echo Visual Studio Is Not Supported.
     exit /b
 )
 for /f "tokens=1,2*" %%a in ('reg query "HKLM\SOFTWARE\Wow6432Node\Microsoft\VisualStudio\SxS\VS7" /v "%n%.0" 2^>nul') do set "VSPATH=%%c"

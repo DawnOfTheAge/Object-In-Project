@@ -131,6 +131,11 @@ namespace ObjectInProject.Gui
 
             try
             {
+                if (!Prologue(out result))
+                { 
+                    return false;
+                }
+
                 #region Initialize Variables
 
                 m_SearchType = ContainsAll;
@@ -139,7 +144,7 @@ namespace ObjectInProject.Gui
                 fileTypeFilter = new List<string>();
 
                 m_Path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                m_FullFilename = m_Path + "\\" + ObjectInProjectConstants.APPLICATION_NAME + ObjectInProjectConstants.JSON_EXTENSION;
+                m_FullFilename = $@"{m_Path}\{ObjectInProjectConstants.APPLICATION_NAME}{ObjectInProjectConstants.JSON_EXTENSION}";
 
                 m_numberOfProjects = 0;
                 m_numberOfFiles = 0;
@@ -154,7 +159,7 @@ namespace ObjectInProject.Gui
                 visualStudiosInstalled = new VisualStudiosInstalled();
                 if (!visualStudiosInstalled.GetVisualStudiosInstalled(out m_VisualStudio, out result))
                 {
-                    result = string.Format("Visual Studios Detection Failure. {0}.", result);
+                    result = $"Visual Studios Detection Failure. {result}";
                     Audit(result, method, LINE(), AuditSeverity.Information);
                 }
 
@@ -198,7 +203,7 @@ namespace ObjectInProject.Gui
                                     else
                                     {
                                         Audit(result, method, LINE(), AuditSeverity.Information);
-                                        result = string.Format("Path '{0}' Does Not Exist", directory);
+                                        result = $"Path '{directory}' Does Not Exist";
 
                                         return false;
                                     }
@@ -221,7 +226,7 @@ namespace ObjectInProject.Gui
                                         if (!ParseSolutionFileText(currentSolutionFile, solutionFileText, out solution, out result))
                                         {
                                             Audit(result, method, LINE(), AuditSeverity.Information);
-                                            result = string.Format("Solution File '{0}' Parse Error", currentSolutionFile);
+                                            result = $"Solution File '{currentSolutionFile}' Parse Error";
 
                                             return false;
                                         }
@@ -239,7 +244,7 @@ namespace ObjectInProject.Gui
                                 message = "Wrong Search Type";
 
                                 Audit(message, method, LINE(), AuditSeverity.Error);
-                                result = string.Format("Initialization Error. {0}.", message);
+                                //result = $"Initialization Error. {message}";
 
                                 return false;
                         }
@@ -253,12 +258,49 @@ namespace ObjectInProject.Gui
                     return false;
                 }
 
+                if (!Epilogue(out result))
+                {
+                    return false;
+                }
+
                 return true;
             }
             catch (Exception ex)
             {
                 Audit(ex.Message, method, LINE(), AuditSeverity.Error);
                 result = string.Format("Initialize Error. {0}.",ex.Message);
+
+                return false;
+            }
+        }
+
+        private bool Prologue(out string result)
+        {
+            result = string.Empty;
+
+            try
+            {
+                return true;
+            }
+            catch (Exception e)
+            {
+                result = e.Message;
+
+                return false;
+            }
+        }
+
+        private bool Epilogue(out string result)
+        {
+            result = string.Empty;
+
+            try
+            {
+                return true;
+            }
+            catch (Exception e)
+            {
+                result = e.Message;
 
                 return false;
             }
@@ -285,9 +327,7 @@ namespace ObjectInProject.Gui
 
             try
             {
-                var _solutionFile = SolutionFile.Parse(solutionFilename);
-
-                foreach (var currentProjectFile in _solutionFile.ProjectsInOrder)
+                foreach (ProjectInSolution currentProjectFile in SolutionFile.Parse(solutionFilename).ProjectsInOrder)
                 {
                     if (ParseProjectFile(currentProjectFile.AbsolutePath, out Project project, out result))
                     {
@@ -836,9 +876,12 @@ namespace ObjectInProject.Gui
                     EDITOR_USED = Editors.Notepad;
                 }
 
+                Audit($"Editor Used: {EDITOR_USED}", method, LINE(), AuditSeverity.Information);
+
+
                 if (!EnsureEditorActive(out result))
                 {
-                    result = string.Format("Editor Definition Error. {0}.", result);
+                    result = $"Editor Definition Error. {result}.";
                     Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
@@ -1614,20 +1657,34 @@ namespace ObjectInProject.Gui
                 if ((EDITOR_USED == Editors.Notepad) || (EDITOR_USED == Editors.NotepadPlusPlus))
                 {
                     return true;
-                }                
+                }
 
                 Process[] pname = Process.GetProcessesByName("devenv");
 
                 foreach (Process process in pname)
                 {
+                    ProcessModule processModule = process.MainModule;
+
+                    string fullPath = process.MainModule.FileName;
                     string runningVisualStudio = process.MainModule.FileVersionInfo.FileDescription;
                     string editorUsed = EditorUtils.EditorToString(EDITOR_USED);
 
-                    if (runningVisualStudio.IndexOf(editorUsed) != ObjectInProjectConstants.NONE)
+                    if (!runningVisualStudio.Contains(editorUsed))
                     {
-                        result = string.Format("Running Visual Studio[{0}] Is Not The Editor Used[{1}]", runningVisualStudio, editorUsed);
+                        continue;
+                    }
+                    else
+                    {
+                        Audit($"Running Visual Studio[{runningVisualStudio}] Editor Used[{editorUsed}]", 
+                              method, 
+                              LINE(), 
+                              AuditSeverity.Information);
+                        Audit($"DevEnv.exe Full Path[{fullPath}]",
+                              method,
+                              LINE(),
+                              AuditSeverity.Information);
 
-                        return false;
+                        return true;
                     }
                 }
 
@@ -1684,18 +1741,18 @@ namespace ObjectInProject.Gui
 
                     batchFileOutput = process.StandardOutput.ReadToEnd();
 
-                    batchFileOutput = batchFileOutput.Replace("\r", String.Empty);
-                    batchFileOutput = batchFileOutput.Replace("\t", String.Empty);
-                    batchFileOutput = batchFileOutput.Replace("\n", String.Empty);
+                    batchFileOutput = batchFileOutput.Replace("\r", string.Empty);
+                    batchFileOutput = batchFileOutput.Replace("\t", string.Empty);
+                    batchFileOutput = batchFileOutput.Replace("\n", string.Empty);
 
-                    visualStudioExePath = batchFileOutput + ObjectInProjectConstants.DEVENV_PATH_SUFFIX;
+                    visualStudioExePath = $"{batchFileOutput}{ObjectInProjectConstants.DEVENV_PATH_SUFFIX}";
 
                     if (!File.Exists(visualStudioExePath))
                     {
                         message = "Visual Studio Execution File Does Not Exist";
 
                         Audit(message, method, LINE(), AuditSeverity.Error);
-                        result = string.Format("Failed Starting '{0}'. {1}.", EditorUtils.EditorToString(EDITOR_USED), message);
+                        result = $"Failed Starting '{EditorUtils.EditorToString(EDITOR_USED)}'. {message}";
 
                         openFailed = true;
 
@@ -1708,10 +1765,10 @@ namespace ObjectInProject.Gui
                 }
                 else
                 {
-                    message = "'" + batchFilename + "' does not exist";
+                    message = $"'{batchFilename}' Does Not Exist";
 
                     Audit(message, method, LINE(), AuditSeverity.Error);
-                    result = string.Format("Failed Starting '{0}'. {1}.", EditorUtils.EditorToString(EDITOR_USED), message);
+                    result = $"Failed Starting '{EditorUtils.EditorToString(EDITOR_USED)}'. {message}";
 
                     openFailed = true;
 

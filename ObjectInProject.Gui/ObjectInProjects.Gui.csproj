@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,33 +59,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmCreateUpdateSearchProject.cs">
+    <Compile Include="Forms\frmCreateUpdateSearchProject.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateUpdateSearchProject.Designer.cs">
+    <Compile Include="Forms\frmCreateUpdateSearchProject.Designer.cs">
       <DependentUpon>frmCreateUpdateSearchProject.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSearchProjectsTree.cs">
+    <Compile Include="Forms\frmSearchProjectsTree.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSearchProjectsTree.Designer.cs">
+    <Compile Include="Forms\frmSearchProjectsTree.Designer.cs">
       <DependentUpon>frmSearchProjectsTree.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmMain.cs">
+    <Compile Include="Forms\frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmMain.Designer.cs">
+    <Compile Include="Forms\frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmCreateUpdateSearchProject.resx">
+    <EmbeddedResource Include="Forms\frmCreateUpdateSearchProject.resx">
       <DependentUpon>frmCreateUpdateSearchProject.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmMain.resx">
+    <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSearchProjectsTree.resx">
+    <EmbeddedResource Include="Forms\frmSearchProjectsTree.resx">
       <DependentUpon>frmSearchProjectsTree.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
