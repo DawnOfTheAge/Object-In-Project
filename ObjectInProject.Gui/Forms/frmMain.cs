@@ -385,172 +385,184 @@ namespace ObjectInProject.Gui
 
             try
             {
-                if (!string.IsNullOrEmpty(projectFile))
+                if (string.IsNullOrEmpty(projectFile))
                 {
-                    projectFileDataFilename = projectFile;
+                    result = "Project File Is Null Or Empty";
 
-                    if (!File.Exists(projectFileDataFilename))
-                    {
-                        result = "File '" + projectFileDataFilename + "' does not exist";
+                    return false;
+                }
 
-                        Audit(result, method, LINE(), AuditSeverity.Warning);
+                if (!projectFileExtension.ToLower().Equals(ObjectInProjectConstants.CS_PROJECT_FILE_EXTENSION) &&
+                    !projectFileExtension.ToLower().Equals(ObjectInProjectConstants.CS_PROJECT_FILE_EXTENSION))
+                {
+                    result = $"'{project}' Not A Project File";
+
+                    return false;
+                }
+
+                projectFileDataFilename = projectFile;
+
+                if (!File.Exists(projectFileDataFilename))
+                {
+                    result = $"File '{projectFileDataFilename}' Does Not Exist";
+
+                    Audit(result, method, LINE(), AuditSeverity.Warning);
+
+                    return false;
+                }
+
+                Audit($"Parsing '{projectFileDataFilename}' ...", method, LINE(), AuditSeverity.Information);
+
+                projectFilePath = Path.GetDirectoryName(projectFileDataFilename);
+
+                project.Name = projectFileDataFilename;
+
+                projectFileData = File.ReadAllText(projectFileDataFilename);
+
+                projectFileTextIndex = 0;
+
+                switch (projectFileExtension.ToLower())
+                {
+                    case ObjectInProjectConstants.CS_PROJECT_FILE_EXTENSION:
+                        #region C# File
+
+                        while (goOn)
+                        {
+                            startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_PROPERTY, projectFileTextIndex);
+                            if (startCsIndex == ObjectInProjectConstants.NONE)
+                            {
+                                break;
+                            }
+
+                            endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_FILE_EXTENSION, startCsIndex);
+                            if (endCsIndex == ObjectInProjectConstants.NONE)
+                            {
+                                break;
+                            }
+
+                            CsFile csFile = new CsFile
+                            {
+                                Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CS_PROPERTY.Length + 1),
+                                                                                          endCsIndex - startCsIndex - (ObjectInProjectConstants.CS_PROPERTY.Length - ObjectInProjectConstants.CS_FILE_EXTENSION.Length + 1))
+                            };
+
+                            if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
+                            {
+                                csFile.Lines = lines;
+
+                                project.Files.Add(csFile);
+
+                                m_numberOfFiles++;
+                                if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
+                                {
+                                    m_numberOfTestFiles++;
+                                }
+                            }
+
+                            projectFileTextIndex = endCsIndex + 3;
+
+                            if (projectFileTextIndex >= projectFileData.Length)
+                            {
+                                goOn = false;
+                            }
+                        }
+
+                        #endregion
+                        break;
+
+                    case ObjectInProjectConstants.CPP_PROJECT_FILE_EXTENSION:
+                        #region C++ Files CPP/H
+
+                        while (goOn)
+                        {
+                            startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY, projectFileTextIndex);
+                            if (startCsIndex == ObjectInProjectConstants.NONE)
+                            {
+                                break;
+                            }
+
+                            endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION, startCsIndex);
+                            if (endCsIndex == ObjectInProjectConstants.NONE)
+                            {
+                                break;
+                            }
+
+                            CsFile csFile = new CsFile
+                            {
+                                Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length + 1),
+                                                                                             endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION.Length + 1))
+                            };
+
+                            if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
+                            {
+                                csFile.Lines = lines;
+
+                                project.Files.Add(csFile);
+
+                                m_numberOfFiles++;
+                                if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
+                                {
+                                    m_numberOfTestFiles++;
+                                }
+                            }
+
+                            projectFileTextIndex = endCsIndex + 3;
+
+                            if (projectFileTextIndex >= projectFileData.Length)
+                            {
+                                goOn = false;
+                            }
+                        }
+
+                        goOn = true;
+                        while (goOn)
+                        {
+                            startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY, projectFileTextIndex);
+                            if (startCsIndex == ObjectInProjectConstants.NONE)
+                            {
+                                break;
+                            }
+
+                            endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION, startCsIndex);
+                            if (endCsIndex == ObjectInProjectConstants.NONE)
+                            {
+                                break;
+                            }
+
+                            CsFile csFile = new CsFile
+                            {
+                                Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length + 1),
+                                                                                          endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION.Length + 1))
+                            };
+
+                            if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
+                            {
+                                csFile.Lines = lines;
+
+                                project.Files.Add(csFile);
+
+                                m_numberOfFiles++;
+                                if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
+                                {
+                                    m_numberOfTestFiles++;
+                                }
+                            }
+
+                            projectFileTextIndex = endCsIndex + 3;
+
+                            if (projectFileTextIndex >= projectFileData.Length)
+                            {
+                                goOn = false;
+                            }
+                        }
+
+                        #endregion
+                        break;
+
+                    default:
+                        result = $"Wrong Project Type '{projectFileExtension}'";
 
                         return false;
-                    }
-
-                    Audit("Parsing '" + projectFileDataFilename + "' ...", method, LINE(), AuditSeverity.Information);
-
-                    projectFilePath = Path.GetDirectoryName(projectFileDataFilename);
-
-                    project.Name = projectFileDataFilename;
-
-                    projectFileData = File.ReadAllText(projectFileDataFilename);
-
-                    projectFileTextIndex = 0;
-
-                    switch (projectFileExtension.ToLower())
-                    {
-                        case ObjectInProjectConstants.CS_PROJECT_FILE_EXTENSION:
-                            #region C# File
-
-                            while (goOn)
-                            {
-                                startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_PROPERTY, projectFileTextIndex);
-                                if (startCsIndex == ObjectInProjectConstants.NONE)
-                                {
-                                    break;
-                                }
-
-                                endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CS_FILE_EXTENSION, startCsIndex);
-                                if (endCsIndex == ObjectInProjectConstants.NONE)
-                                {
-                                    break;
-                                }
-
-                                CsFile csFile = new CsFile
-                                {
-                                    Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CS_PROPERTY.Length + 1),
-                                                                                              endCsIndex - startCsIndex - (ObjectInProjectConstants.CS_PROPERTY.Length - ObjectInProjectConstants.CS_FILE_EXTENSION.Length + 1))
-                                };
-
-                                if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
-                                {
-                                    csFile.Lines = lines;
-
-                                    project.Files.Add(csFile);
-
-                                    m_numberOfFiles++;
-                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
-                                    {
-                                        m_numberOfTestFiles++;
-                                    }
-                                }
-
-                                projectFileTextIndex = endCsIndex + 3;
-
-                                if (projectFileTextIndex >= projectFileData.Length)
-                                {
-                                    goOn = false;
-                                }
-                            }
-
-                            #endregion
-                            break;
-
-                        case ObjectInProjectConstants.CPP_PROJECT_FILE_EXTENSION:
-                            #region C++ Files CPP/H
-
-                            while (goOn)
-                            {
-                                startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY, projectFileTextIndex);
-                                if (startCsIndex == ObjectInProjectConstants.NONE)
-                                {
-                                    break;
-                                }
-
-                                endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION, startCsIndex);
-                                if (endCsIndex == ObjectInProjectConstants.NONE)
-                                {
-                                    break;
-                                }
-
-                                CsFile csFile = new CsFile
-                                {
-                                    Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length + 1),
-                                                                                                 endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_INCLUDE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_INCLUDE_FILE_EXTENSION.Length + 1))
-                                };
-
-                                if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
-                                {
-                                    csFile.Lines = lines;
-
-                                    project.Files.Add(csFile);
-
-                                    m_numberOfFiles++;
-                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
-                                    {
-                                        m_numberOfTestFiles++;
-                                    }
-                                }
-
-                                projectFileTextIndex = endCsIndex + 3;
-
-                                if (projectFileTextIndex >= projectFileData.Length)
-                                {
-                                    goOn = false;
-                                }
-                            }
-
-                            goOn = true;
-                            while (goOn)
-                            {
-                                startCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY, projectFileTextIndex);
-                                if (startCsIndex == ObjectInProjectConstants.NONE)
-                                {
-                                    break;
-                                }
-
-                                endCsIndex = projectFileData.IndexOf(ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION, startCsIndex);
-                                if (endCsIndex == ObjectInProjectConstants.NONE)
-                                {
-                                    break;
-                                }
-
-                                CsFile csFile = new CsFile
-                                {
-                                    Name = projectFilePath + "\\" + projectFileData.Substring(startCsIndex + (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length + 1),
-                                                                                              endCsIndex - startCsIndex - (ObjectInProjectConstants.CPP_SOURCE_FILE_PROPERTY.Length - ObjectInProjectConstants.CPP_SOURCE_FILE_EXTENSION.Length + 1))
-                                };
-
-                                if (FilesUtils.ReadFileLines(csFile.Name, out lines, out result))
-                                {
-                                    csFile.Lines = lines;
-
-                                    project.Files.Add(csFile);
-
-                                    m_numberOfFiles++;
-                                    if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
-                                    {
-                                        m_numberOfTestFiles++;
-                                    }
-                                }
-
-                                projectFileTextIndex = endCsIndex + 3;
-
-                                if (projectFileTextIndex >= projectFileData.Length)
-                                {
-                                    goOn = false;
-                                }
-                            }
-
-                            #endregion
-                            break;
-
-                        default:
-                            result = "Wrong Project Type '" + projectFileExtension + "'";
-
-                            return false;
-                    }
                 }
 
                 return true;
