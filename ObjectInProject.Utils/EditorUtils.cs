@@ -1,6 +1,7 @@
 ﻿using ObjectInProject.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -196,6 +197,36 @@ namespace ObjectInProject.Utils
 
                         return false;
                 }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                result = e.Message;
+
+                return false;
+            }
+        }
+
+        public static bool OpenVisualStudio(string visualStudioPath, string file, int line, out string result)
+        {
+            result = string.Empty;
+
+            try
+            {
+                Process process = new Process();
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    FileName = visualStudioPath,
+                    Arguments = $"\"{file}\" /command \"Edit.Goto {line}\""
+                };
+
+                process.StartInfo = startInfo;
+                process.Start();
+
+                string output = process.StandardOutput.ReadToEnd();
 
                 return true;
             }

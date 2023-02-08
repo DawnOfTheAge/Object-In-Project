@@ -280,6 +280,11 @@ namespace ObjectInProject.Gui
 
             try
             {
+                //bool success = EditorUtils.OpenVisualStudio(@"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.exe",
+                //                                            @"C:\Projects\Object In Project Browser\ObjectInProject.Gui\Forms\frmMain.cs", 
+                //                                            283, 
+                //                                            out result);
+
                 return true;
             }
             catch (Exception e)
@@ -1420,12 +1425,8 @@ namespace ObjectInProject.Gui
 
         private void OpenFileAtLine(string file, int line)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
             string result;
-
-            #endregion
 
             try
             {
@@ -1435,7 +1436,10 @@ namespace ObjectInProject.Gui
                         if (!OpenWithNotepad(file, out result))
                         {
                             Audit(result, method, LINE(), AuditSeverity.Warning);
-                            MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(result, 
+                                            $"Failed Openning File '{file}' With {EditorUtils.EditorToString(EDITOR_USED)}", 
+                                            MessageBoxButtons.OK, 
+                                            MessageBoxIcon.Warning);
                         }
                         break;
 
@@ -1443,7 +1447,10 @@ namespace ObjectInProject.Gui
                         if (!OpenWithNotepadPlusPlus(file, line, out result))
                         {
                             Audit(result, method, LINE(), AuditSeverity.Warning);
-                            MessageBox.Show(result, "Failed Openning File '" + file + "' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(result,
+                                            $"Failed Openning File '{file}' With {EditorUtils.EditorToString(EDITOR_USED)}",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Warning);
                         }
                         break;
 
@@ -1454,10 +1461,13 @@ namespace ObjectInProject.Gui
                     case Editors.VisualStudio2017:
                     case Editors.VisualStudio2019:
                     case Editors.VisualStudio2022:
-                        if (!OpenWithVisualStudio(file, line, out result))
+                        if (!OpenWithVisualStudio(EDITOR_USED, file, line, out result))
                         {
                             Audit(result, method, LINE(), AuditSeverity.Warning);
-                            MessageBox.Show(result, "Failed Openning File '" + file +"' With " + EditorUtils.EditorToString(EDITOR_USED), MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(result,
+                                            $"Failed Openning File '{file}' With {EditorUtils.EditorToString(EDITOR_USED)}",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Warning);
                         }
                         break;
 
@@ -1485,7 +1495,7 @@ namespace ObjectInProject.Gui
 
             #endregion
 
-            result = "";
+            result = string.Empty;
 
             try
             {
@@ -1515,8 +1525,16 @@ namespace ObjectInProject.Gui
                         visualStudio = Marshal.GetActiveObject("VisualStudio.DTE");
                         break;
 
+                    case Editors.VisualStudio2019:
+                        visualStudio = Marshal.GetActiveObject("VisualStudio.DTE");
+                        break;
+
+                    case Editors.VisualStudio2022:
+                        visualStudio = Marshal.GetActiveObject("VisualStudio.DTE");
+                        break;
+
                     default:
-                        result = "Unknown editor type";
+                        result = $"Unknown Editor Type[{EDITOR_USED}]";
                         return false;
                 }
 
@@ -1524,6 +1542,44 @@ namespace ObjectInProject.Gui
                 window = ops.GetType().InvokeMember("OpenFile", BindingFlags.InvokeMethod, null, ops, new object[] { file });
                 selection = window.GetType().InvokeMember("Selection", BindingFlags.GetProperty, null, window, null);
                 selection.GetType().InvokeMember("GotoLine", BindingFlags.InvokeMethod, null, selection, new object[] { line, true });
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                result = e.Message;
+
+                Audit(result, method, LINE(), AuditSeverity.Error);
+
+                return false;
+            }
+        }
+
+        private bool OpenWithVisualStudio(Editors editor, string file, int line, out string result)
+        {
+            string method = MethodBase.GetCurrentMethod().Name;
+
+            result = string.Empty;
+            try
+            {
+                if (!EditorUtils.VisualStudioPath(editor, out string visualStudioPath, out result))
+                {
+                    return false;
+                }
+
+                if (!File.Exists(visualStudioPath))
+                {
+                    result = $"'{visualStudioPath}' Does Not Exist";
+
+                    return false;
+                }
+
+                if (!EditorUtils.OpenVisualStudio(visualStudioPath, file, line, out result))
+                {
+                    result = $"Failed Openning {editor}. {result}";
+
+                    return false;
+                }
 
                 return true;
             }
