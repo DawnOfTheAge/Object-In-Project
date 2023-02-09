@@ -252,7 +252,7 @@ namespace ObjectInProject.Gui
                 }
                 else
                 {
-                    result = string.Format("Initialize Error. {0}.", result);
+                    result = $"Initialize Error. {result}";
                     Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
@@ -268,8 +268,8 @@ namespace ObjectInProject.Gui
             catch (Exception ex)
             {
                 Audit(ex.Message, method, LINE(), AuditSeverity.Error);
-                result = string.Format("Initialize Error. {0}.",ex.Message);
-
+                result = $"Initialize Error. {ex.Message}";
+                
                 return false;
             }
         }
@@ -769,11 +769,7 @@ namespace ObjectInProject.Gui
 
         private bool InitializeGui(out string result)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
-
-            #endregion
 
             try
             {
@@ -781,7 +777,7 @@ namespace ObjectInProject.Gui
 
                 if ((m_Configuration == null) || (m_Configuration.SearchProjectsList == null))
                 {
-                    result = string.Format("Configuration Error. No Configuration Defined.");
+                    result = $"Configuration Error. No Configuration Defined";
                     Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
@@ -810,11 +806,7 @@ namespace ObjectInProject.Gui
 
         private bool InitializeStatusStrip(out string result)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
-
-            #endregion
 
             result = string.Empty;
 
@@ -853,7 +845,7 @@ namespace ObjectInProject.Gui
                 {
                     m_ActiveSearchProject = null;
 
-                    result = string.Format("Configuration Error. No Active Search Project Defined.");
+                    result = $"Configuration Error. No Active Search Project Defined";
                     Audit(result, method, LINE(), AuditSeverity.Error);
 
                     //return false;
@@ -878,7 +870,7 @@ namespace ObjectInProject.Gui
 
                 if (!BuildListView(out result))
                 {
-                    result = string.Format("Build List View Error. {0}.", result);
+                    result = $"Initialize Error. {result}";
                     Audit(result, method, LINE(), AuditSeverity.Warning);
 
                     return false;
@@ -1766,7 +1758,7 @@ namespace ObjectInProject.Gui
             catch (Exception e)
             {
                 Audit(e.Message, method, LINE(), AuditSeverity.Error);
-                result = string.Format("Failed Ensuring Editor '{0}' Active. {1}.", EditorUtils.EditorToString(EDITOR_USED), e.Message);
+                result = $"Failed Ensuring Editor '{EditorUtils.EditorToString(EDITOR_USED)}' Active. {e.Message}";
 
                 return false;
             }
