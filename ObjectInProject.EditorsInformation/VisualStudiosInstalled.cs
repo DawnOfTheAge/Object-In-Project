@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -60,22 +61,22 @@ namespace ObjectInProject.EditorsInformation
                 process.Start();
 
                 string standardOutput = process.StandardOutput.ReadToEnd();
-                string[] paths = standardOutput.Split(new[] { "\r\n" }, StringSplitOptions.None);
+                List<string> paths = standardOutput.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
                 #endregion
 
-                if ((paths != null) && (paths.Length > 0))
+                if ((paths != null) && (paths.Count > 0))
                 {
                     lVsStutio = new List<EditorInformation>();
 
                     if (NotepadExists())
                     {
-                        lVsStutio.Add(new EditorInformation($"{EditorsInformationConstants.NOTEPAD_STRING}", Common.Editors.Notepad, true));
+                        lVsStutio.Add(new EditorInformation($"{EditorsInformationConstants.NOTEPAD_STRING}", Editors.Notepad, true));
                     }
 
                     if (NotepadPlusPlusExists())
                     {
-                        lVsStutio.Add(new EditorInformation($"{EditorsInformationConstants.NOTEPAD_PLUS_PLUS_STRING}", Common.Editors.NotepadPlusPlus, true));
+                        lVsStutio.Add(new EditorInformation($"{EditorsInformationConstants.NOTEPAD_PLUS_PLUS_STRING}", Editors.NotepadPlusPlus, true));
                     }
 
                     foreach (string path in paths)
@@ -337,47 +338,52 @@ namespace ObjectInProject.EditorsInformation
 
             try
             {
-                if (finalPath.IndexOf("2019") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("2022"))
+                {
+                    return Editors.VisualStudio2022;
+                }
+
+                if (finalPath.Contains("2019"))
                 {
                     return Editors.VisualStudio2019;
                 }
 
-                if (finalPath.IndexOf("2017") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("2017"))
                 {
                     return Editors.VisualStudio2017;
                 }
 
-                if (finalPath.IndexOf("8.0") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("8.0"))
                 {
                     return Editors.VisualStudio2005;
                 }
 
-                if (finalPath.IndexOf("9.0") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("9.0"))
                 {
                     return Editors.VisualStudio2008;
                 }
 
-                if (finalPath.IndexOf("10.0") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("10.0"))
                 {
                     return Editors.VisualStudio2010;
                 }
 
-                if (finalPath.IndexOf("11.0") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("11.0"))
                 {
                     return Editors.VisualStudio2012;
                 }
 
-                if (finalPath.IndexOf("12.0") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("12.0"))
                 {
                     return Editors.VisualStudio2013;
                 }
 
-                if (finalPath.IndexOf("14.0") != ObjectInProjectConstants.NONE)
+                if (finalPath.Contains("14.0"))
                 {
                     return Editors.VisualStudio2015;
                 }
 
-                result = "No visual studio found";
+                result = "No Visual Studio Found";
 
                 return Editors.Unknown;
             }

@@ -119,13 +119,8 @@ namespace ObjectInProject.Gui
 
         private bool Initialize(out string result)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
-            string message;
             string solutionFileText = string.Empty;
-
-            #endregion
 
             result = string.Empty;
 
@@ -152,111 +147,68 @@ namespace ObjectInProject.Gui
 
                 string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
-                #endregion
-
                 searchUtils = new SearchUtils();
 
                 visualStudiosInstalled = new VisualStudiosInstalled();
+
+                #endregion
+                
+                #region Configuration
+
+                if (!LoadConfiguration(out result))
+                {
+                    result = $"Failed Loading Configuration. {result}";
+
+                    return false;
+                }
+
+                if (m_Configuration.AuditSettings == null)
+                {
+                    m_Configuration.AuditSettings = new AuditProperties(true);
+                }
+
+                #endregion
+
+                #region Visual Studios Installed
+
                 if (!visualStudiosInstalled.GetVisualStudiosInstalled(out m_VisualStudio, out result))
                 {
                     result = $"Visual Studios Detection Failure. {result}";
                     Audit(result, method, LINE(), AuditSeverity.Information);
                 }
 
-                if (LoadConfiguration(out result))
+                if ((m_VisualStudio == null) || (m_VisualStudio.Count == 0))
                 {
-                    if (m_Configuration.AuditSettings == null)
-                    {
-                        m_Configuration.AuditSettings = new AuditProperties(true);
-                    }
-
-                    if (!InitializeGui(out result))
-                    {
-                        return false;
-                    }
-
-                    if (m_ActiveSearchProject != null)
-                    {
-                        switch (m_ActiveSearchProject.Type)
-                        {
-                            case SearchProjectType.DirectoriesProject:
-                                #region All Files
-
-                                foreach (string directory in m_ActiveSearchProject.Workspace)
-                                {
-                                    if (Directory.Exists(directory))
-                                    {
-                                        directories.Add(directory);
-
-                                        string criteriaList = string.IsNullOrEmpty(m_ActiveSearchProject.FileTypeFilter) ? m_ActiveSearchProject.FileTypeFilter : "*.*";
-
-                                        if (FindCriteriaFilesNumbers(directory,
-                                                                     criteriaList,
-                                                                     out int numberOfFiles,
-                                                                     out int numberOfTestFiles,
-                                                                     out result))
-                                        {
-                                            m_numberOfFiles += numberOfFiles;
-                                            m_numberOfTestFiles += numberOfTestFiles;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Audit(result, method, LINE(), AuditSeverity.Information);
-                                        result = $"Path '{directory}' Does Not Exist";
-
-                                        return false;
-                                    }
-                                }
-
-                                #endregion
-                                break;
-
-                            case SearchProjectType.SolutionsProject:
-                                #region Solutions & Projects
-
-                                Solution solution;
-
-                                foreach (string currentSolutionFile in m_ActiveSearchProject.Workspace)
-                                {
-                                    if (File.Exists(currentSolutionFile))
-                                    {
-                                        solutionFileText = File.ReadAllText(currentSolutionFile);
-
-                                        if (!ParseSolutionFileText(currentSolutionFile, solutionFileText, out solution, out result))
-                                        {
-                                            Audit(result, method, LINE(), AuditSeverity.Information);
-                                            result = $"Solution File '{currentSolutionFile}' Parse Error";
-
-                                            return false;
-                                        }
-                                        else
-                                        {
-                                            m_ActiveSearchProject.SolutionsInformation.Add(solution);
-                                        }
-                                    }
-                                }
-
-                                #endregion
-                                break;
-
-                            default:
-                                message = "Wrong Search Type";
-
-                                Audit(message, method, LINE(), AuditSeverity.Error);
-                                //result = $"Initialization Error. {message}";
-
-                                return false;
-                        }
-                    }
-                }
-                else
-                {
-                    result = $"Initialize Error. {result}";
-                    Audit(result, method, LINE(), AuditSeverity.Warning);
+                    result = "No Editors Installed";
 
                     return false;
                 }
+
+                Audit($"{m_VisualStudio.Count} Editors Installed", method, LINE(), AuditSeverity.Information);
+
+                foreach (EditorInformation editor in m_VisualStudio)
+                {
+                    Audit($"'{editor.Editor}' Installed", method, LINE(), AuditSeverity.Information);
+                }
+
+                #endregion
+
+                #region Initialize GUI
+
+                if (!InitializeGui(out result))
+                {
+                    return false;
+                }
+
+                Audit("GUI Initialized", method, LINE(), AuditSeverity.Information);
+
+                #endregion
+
+                #region Active Project
+
+                ActiveProject();
+
+                #endregion
 
                 if (!Epilogue(out result))
                 {
@@ -313,9 +265,108 @@ namespace ObjectInProject.Gui
 
         #endregion
 
+        #region Active Project
+
+        private void ActiveProject()
+        {
+            string method = MethodBase.GetCurrentMethod().Name;
+            string result;
+
+            try
+            {
+                if (m_ActiveSearchProject != null)
+                {
+                    Audit($"Active Project '{m_ActiveSearchProject.Name}' Type[{m_ActiveSearchProject.Type}]",
+                          method,
+                          LINE(),
+                          AuditSeverity.Information);
+
+                    switch (m_ActiveSearchProject.Type)
+                    {
+                        case SearchProjectType.DirectoriesProject:
+                            #region All Files
+
+                            foreach (string directory in m_ActiveSearchProject.Workspace)
+                            {
+                                if (Directory.Exists(directory))
+                                {
+                                    directories.Add(directory);
+
+                                    string criteriaList = string.IsNullOrEmpty(m_ActiveSearchProject.FileTypeFilter) ? m_ActiveSearchProject.FileTypeFilter : "*.*";
+
+                                    if (FindCriteriaFilesNumbers(directory,
+                                                                 criteriaList,
+                                                                 out int numberOfFiles,
+                                                                 out int numberOfTestFiles,
+                                                                 out result))
+                                    {
+                                        m_numberOfFiles += numberOfFiles;
+                                        m_numberOfTestFiles += numberOfTestFiles;
+                                    }
+                                }
+                                else
+                                {
+                                    result = $"Path '{directory}' Does Not Exist";
+                                    Audit(result, method, LINE(), AuditSeverity.Information);
+
+                                    return;
+                                }
+                            }
+
+                            #endregion
+                            break;
+
+                        case SearchProjectType.SolutionsProject:
+                            #region Solutions & Projects
+
+                            Solution solution;
+
+                            foreach (string currentSolutionFile in m_ActiveSearchProject.Workspace)
+                            {
+                                if (File.Exists(currentSolutionFile))
+                                {
+                                    string solutionFileText = File.ReadAllText(currentSolutionFile);
+
+                                    if (!ParseSolutionFileText(currentSolutionFile, solutionFileText, out solution, out result))
+                                    {
+                                        Audit(result, method, LINE(), AuditSeverity.Information);
+                                        result = $"Solution File '{currentSolutionFile}' Parse Error";
+
+                                        return;
+                                    }
+                                    else
+                                    {
+                                        m_ActiveSearchProject.SolutionsInformation.Add(solution);
+                                    }
+                                }
+                            }
+
+                            #endregion
+                            break;
+
+                        default:
+
+                            Audit("Wrong Search Type", method, LINE(), AuditSeverity.Error);
+
+                            return;
+                    }
+                }
+                else
+                {
+                    Audit("No Active Project", method, LINE(), AuditSeverity.Information);
+                }
+            }
+            catch (Exception e)
+            {
+                Audit(e.Message, method, LINE(), AuditSeverity.Error);
+            }
+        }
+
+        #endregion
+
         #region Parse        
 
-        private bool ParseSolutionFileText(string solutionFilename, string solutionFileText, out Solution solution, out string result)
+private bool ParseSolutionFileText(string solutionFilename, string solutionFileText, out Solution solution, out string result)
         {
             #region Data Members
 
@@ -359,8 +410,6 @@ namespace ObjectInProject.Gui
 
         private bool ParseProjectFile(string projectFile, out Project project, out string result)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
             string projectFileData;
             string projectFilePath;
@@ -370,8 +419,6 @@ namespace ObjectInProject.Gui
             int projectFileTextIndex;
             int startCsIndex;
             int endCsIndex;
-
-            #endregion
 
             result = string.Empty;
 
@@ -395,7 +442,7 @@ namespace ObjectInProject.Gui
                 if (!projectFileExtension.ToLower().Equals(ObjectInProjectConstants.CS_PROJECT_FILE_EXTENSION) &&
                     !projectFileExtension.ToLower().Equals(ObjectInProjectConstants.CS_PROJECT_FILE_EXTENSION))
                 {
-                    result = $"'{project}' Not A Project File";
+                    result = $"'{projectFile}' Not A Project File";
 
                     return false;
                 }
@@ -785,10 +832,16 @@ namespace ObjectInProject.Gui
 
                 #endregion
 
+                #region Initialize Status Strip
+
                 if (!InitializeStatusStrip(out result))
                 {
+                    result = $"Failed Initializing Status Strip. {result}";
+
                     return false;
                 }
+
+                #endregion
 
                 FrmMain_Resize(null, null);
 
@@ -818,6 +871,8 @@ namespace ObjectInProject.Gui
                 cboSearchType.DropDownItems.Add("OR", null, SelectSearchType_Click);
                 txtSearchType.Text = cboSearchType.DropDownItems[0].Text;
 
+                Audit("Search Types Loaded", method, LINE(), AuditSeverity.Information);
+
                 #endregion
 
                 #region Search Jobs Load & Show And Define Active Search job
@@ -840,15 +895,15 @@ namespace ObjectInProject.Gui
                     searchOrDelimiter = m_ActiveSearchProject.SearchOrDelimiter;
 
                     txtActiveSearchJob.Text = m_ActiveSearchProject.Name;
+
+                    Audit("Search Jobs Loaded", method, LINE(), AuditSeverity.Information);
                 }
                 else
                 {
                     m_ActiveSearchProject = null;
 
-                    result = $"Configuration Error. No Active Search Project Defined";
-                    Audit(result, method, LINE(), AuditSeverity.Error);
-
-                    //return false;
+                    result = $"No Active Search Project Defined";
+                    Audit(result, method, LINE(), AuditSeverity.Information);
                 }
 
                 #endregion
@@ -863,6 +918,8 @@ namespace ObjectInProject.Gui
                 {
                     chkCaseSensitive.Checked = false;
                 }
+
+                Audit("Case Sensitive Set", method, LINE(), AuditSeverity.Information);
 
                 #endregion
 
@@ -888,13 +945,13 @@ namespace ObjectInProject.Gui
                 Audit($"Editor Used: {EDITOR_USED}", method, LINE(), AuditSeverity.Information);
 
 
-                if (!EnsureEditorActive(out result))
-                {
-                    result = $"Editor Definition Error. {result}.";
-                    Audit(result, method, LINE(), AuditSeverity.Warning);
+                //if (!EnsureEditorActive(out result))
+                //{
+                //    result = $"Editor Definition Error. {result}.";
+                //    Audit(result, method, LINE(), AuditSeverity.Warning);
 
-                    return false;
-                }
+                //    return false;
+                //}
 
                 #endregion
 
@@ -911,6 +968,8 @@ namespace ObjectInProject.Gui
                 {
                     cboFileTypeFilters.Text = "*.*";
                 }
+
+                Audit("File Type Filters Loaded", method, LINE(), AuditSeverity.Information);
 
                 #endregion
 
@@ -930,6 +989,8 @@ namespace ObjectInProject.Gui
                 txtNumberOfProjects.Text = m_numberOfProjects.ToString();
                 txtNumberOfFiles.Text = m_numberOfFiles.ToString();
                 txtNumberOfTestFiles.Text = m_numberOfTestFiles.ToString();
+
+                Audit("Projects/Files/Test Files Numbers Initialized", method, LINE(), AuditSeverity.Information);
 
                 #endregion
 
@@ -953,12 +1014,16 @@ namespace ObjectInProject.Gui
                 txtSearchType.BackColor = Color.Green;
                 txtSearchType.ForeColor = Color.White;
 
+                Audit("Colored Status Strip", method, LINE(), AuditSeverity.Information);
+
                 #endregion
 
                 if (m_ActiveSearchProject != null)
                 {
                     pbFiles.Maximum = (m_ActiveSearchProject.NoTests) ? (m_numberOfFiles - m_numberOfTestFiles) : m_numberOfFiles;
                 }
+
+                Audit("Status Strip Initialization Done", method, LINE(), AuditSeverity.Information);
 
                 return true;
             }
