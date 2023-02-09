@@ -74,65 +74,71 @@ namespace ObjectInProject.Search
 
                             if (configuration.NoTests)
                             {
-                                if (solution.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
+                                if (solution.Name.ToLower().Contains(ObjectInProjectConstants.TEST_STRING))
                                 {
                                     continue;
                                 }
                             }
 
-                            if (solution.Projects != null)
+                            if ((solution.Projects == null) || (solution.Projects.Count == 0))
                             {
-                                for (int projectIndex = 0; projectIndex < solution.Projects.Count; projectIndex++)
+                                continue;
+                            }
+
+                            for (int projectIndex = 0; projectIndex < solution.Projects.Count; projectIndex++)
+                            {
+                                Project project = solution.Projects[projectIndex];
+
+                                if (configuration.NoTests)
                                 {
-                                    Project project = solution.Projects[projectIndex];
+                                    if (project.Name.ToLower().Contains(ObjectInProjectConstants.TEST_STRING))
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                if ((project.Files == null) || (project.Files.Count == 0))
+                                {
+                                    continue;
+                                }
+
+                                for (int fileIndex = 0; fileIndex < project.Files.Count; fileIndex++)
+                                {
+                                    CsFile csFile = project.Files[fileIndex];
 
                                     if (configuration.NoTests)
                                     {
-                                        if (project.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
+                                        if (csFile.Name.ToLower().Contains(ObjectInProjectConstants.TEST_STRING))
                                         {
                                             continue;
                                         }
                                     }
 
-                                    if (project.Files != null)
+                                    fileCounter++;
+
+                                    if ((csFile.Lines == null) || (csFile.Lines.Count == 0))
                                     {
-                                        for (int fileIndex = 0; fileIndex < project.Files.Count; fileIndex++)
+                                        continue;
+                                    }
+
+                                    for (int lineIndex = 0; lineIndex < csFile.Lines.Count; lineIndex++)
+                                    {
+                                        string line = csFile.Lines[lineIndex];
+
+                                        if (!configuration.CaseSensitive)
                                         {
-                                            CsFile csFile = project.Files[fileIndex];
+                                            line = line.ToLower();
+                                        }
 
-                                            if (configuration.NoTests)
-                                            {
-                                                if (csFile.Name.ToLower().IndexOf(ObjectInProjectConstants.TEST_STRING) != ObjectInProjectConstants.NONE)
-                                                {
-                                                    continue;
-                                                }
-                                            }
+                                        if (line.Contains(token))
+                                        {
+                                            SearchResult searchResult = new SearchResult(Path.GetFileName(solution.Name),
+                                                                                         Path.GetFileName(project.Name),
+                                                                                         Path.GetFileName(csFile.Name),
+                                                                                         lineIndex + 1,
+                                                                                         csFile.Name);
 
-                                            fileCounter++;
-
-                                            if (csFile.Lines != null)
-                                            {
-                                                for (int lineIndex = 0; lineIndex < csFile.Lines.Count; lineIndex++)
-                                                {
-                                                    string line = csFile.Lines[lineIndex];
-
-                                                    if (!configuration.CaseSensitive)
-                                                    {
-                                                        line = line.ToLower();
-                                                    }
-
-                                                    if (line.IndexOf(token) != ObjectInProjectConstants.NONE)
-                                                    {
-                                                        SearchResult searchResult = new SearchResult(Path.GetFileName(solution.Name),
-                                                                                                     Path.GetFileName(project.Name),
-                                                                                                     Path.GetFileName(csFile.Name),
-                                                                                                     lineIndex + 1,
-                                                                                                     csFile.Name);
-
-                                                        serachResults.Add(searchResult);
-                                                    }
-                                                }
-                                            }
+                                            serachResults.Add(searchResult);
                                         }
                                     }
                                 }

@@ -1285,15 +1285,11 @@ private bool ParseSolutionFileText(string solutionFilename, string solutionFileT
         
         private void BtnFind_Click(object sender, EventArgs e)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
             string result;
             string message;
 
             List<SearchResult> searchResults;
-
-            #endregion
 
             try
             {
