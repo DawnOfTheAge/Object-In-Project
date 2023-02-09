@@ -1226,12 +1226,8 @@ private bool ParseSolutionFileText(string solutionFilename, string solutionFileT
          
         private void LvResults_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
             string message;
-
-            #endregion
 
             try
             {
