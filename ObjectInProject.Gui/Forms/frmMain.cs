@@ -1623,7 +1623,6 @@ private bool ParseSolutionFileText(string solutionFilename, string solutionFileT
         {
             string method = MethodBase.GetCurrentMethod().Name;
 
-            result = string.Empty;
             try
             {
                 if (!EditorUtils.VisualStudioPath(editor, out string visualStudioPath, out result))
