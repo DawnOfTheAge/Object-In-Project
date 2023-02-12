@@ -108,8 +108,6 @@ namespace ObjectInProject.Tests.SolutionFilesList
 
                 if (files.Count > 0)
                 {
-                    bool hasDuplicates = GeneralUtils.HasDuplicates(files);
-
                     if (!FillFiles(files, out result))
                     {
                         MessageBox.Show(result, "Fill Files Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
