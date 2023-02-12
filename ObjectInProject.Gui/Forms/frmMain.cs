@@ -1296,7 +1296,21 @@ namespace ObjectInProject.Gui
             List<SearchResult> searchResults;
 
             try
-            {
+            {                
+                #region Text To Search?
+
+                if (string.IsNullOrEmpty(txtFind.Text))
+                {
+                    message = "No Text To Search";
+
+                    Audit(message, method, LINE(), AuditSeverity.Information);
+                    MessageBox.Show(message, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+
+                #endregion
+
+                #region Active Project Exists?
+
                 if (m_ActiveSearchProject == null)
                 {
                     result = "No Active Search Project Defined";
@@ -1307,100 +1321,92 @@ namespace ObjectInProject.Gui
                     return;
                 }
 
+                #endregion
+
                 txtNumberOfHits.Text = "0";
                 lvResults.Items.Clear();
-
-                if (!string.IsNullOrEmpty(txtFind.Text))
+                
+                if ((string.IsNullOrEmpty(searchAndDelimiter)) || (string.IsNullOrWhiteSpace(searchAndDelimiter)))
                 {
-                    if ((string.IsNullOrEmpty(searchAndDelimiter)) || (string.IsNullOrWhiteSpace(searchAndDelimiter)))
+                    //  no delimiter for AND/OR search
+
+                    if (!searchUtils.FindTokens(new List<string>() { txtFind.Text },
+                                                m_ActiveSearchProject,
+                                                out searchResults,
+                                                out result))
                     {
-                        //  no delimiter for AND/OR search
-
-                        if (!searchUtils.FindTokens(new List<string>() { txtFind.Text }, 
-                                                    m_ActiveSearchProject, 
-                                                    out searchResults, 
-                                                    out result))
-                        {
-                            Audit(result, method, LINE(), AuditSeverity.Error);
-                            MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-                    else
-                    {
-                        //  search with search AND/OR delimiter
-
-                        string[] delimiter = new string[1];
-                        delimiter[0] = searchAndDelimiter;
-
-                        string[] lsText = (txtFind.Text).Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-
-                        List<string> lText = new List<string>();
-
-                        foreach (string lsTextItem in lsText)
-                        {
-                            lText.Add(lsTextItem);
-                        }
-
-                        if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
-                        {
-                            Audit(result, method, LINE(), AuditSeverity.Error);
-                            MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                    }
-
-                    if ((searchResults != null) && (searchResults.Count > 0))
-                    { 
-                        foreach (SearchResult searchResult in searchResults)
-                        {
-                            string[] arr;
-
-                            ListViewItem itm;
-
-                            switch (m_ActiveSearchProject.Type)
-                            {
-                                case SearchProjectType.DirectoriesProject:
-                                    arr = new string[4];
-
-                                    arr[0] = searchResult.Directoty;
-                                    arr[1] = searchResult.File;
-                                    arr[2] = searchResult.Line.ToString();
-                                    arr[3] = searchResult.FullPath;
-                                    break;
-
-                                case SearchProjectType.SolutionsProject:
-                                    arr = new string[5];
-                                        
-                                    arr[0] = searchResult.Solution;
-                                    arr[1] = searchResult.Project;
-                                    arr[2] = searchResult.File;
-                                    arr[3] = searchResult.Line.ToString();
-                                    arr[4] = searchResult.FullPath;
-                                    break;
-
-                                default:
-                                    return;
-                            }
-
-                            itm = new ListViewItem(arr);
-                            lvResults.Items.Add(itm);
-                        }
-
-                        txtNumberOfHits.Text = searchResults.Count.ToString();
-                    }
-                    else
-                    {
-                        message = "No Results";
-
-                        Audit(message, method, LINE(), AuditSeverity.Information);
-                        MessageBox.Show(message, "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Audit(result, method, LINE(), AuditSeverity.Error);
+                        MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    message = "No Text To Search";
+                    //  search with search AND/OR delimiter
+
+                    string[] delimiter = new string[1];
+                    delimiter[0] = searchAndDelimiter;
+
+                    string[] lsText = (txtFind.Text).Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                    List<string> lText = new List<string>();
+
+                    foreach (string lsTextItem in lsText)
+                    {
+                        lText.Add(lsTextItem);
+                    }
+
+                    if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
+                    {
+                        Audit(result, method, LINE(), AuditSeverity.Error);
+                        MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                if ((searchResults != null) && (searchResults.Count > 0))
+                {
+                    foreach (SearchResult searchResult in searchResults)
+                    {
+                        string[] arr;
+
+                        ListViewItem itm;
+
+                        switch (m_ActiveSearchProject.Type)
+                        {
+                            case SearchProjectType.DirectoriesProject:
+                                arr = new string[4];
+
+                                arr[0] = searchResult.Directoty;
+                                arr[1] = searchResult.File;
+                                arr[2] = searchResult.Line.ToString();
+                                arr[3] = searchResult.FullPath;
+                                break;
+
+                            case SearchProjectType.SolutionsProject:
+                                arr = new string[5];
+
+                                arr[0] = searchResult.Solution;
+                                arr[1] = searchResult.Project;
+                                arr[2] = searchResult.File;
+                                arr[3] = searchResult.Line.ToString();
+                                arr[4] = searchResult.FullPath;
+                                break;
+
+                            default:
+                                return;
+                        }
+
+                        itm = new ListViewItem(arr);
+                        lvResults.Items.Add(itm);
+                    }
+
+                    txtNumberOfHits.Text = searchResults.Count.ToString();
+                }
+                else
+                {
+                    message = "No Results";
 
                     Audit(message, method, LINE(), AuditSeverity.Information);
-                    MessageBox.Show(message, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(message, "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
