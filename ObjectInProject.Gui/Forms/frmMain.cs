@@ -1323,21 +1323,21 @@ namespace ObjectInProject.Gui
 
                 #endregion
 
+                #region Initialize Search Hits And Results
+
                 txtNumberOfHits.Text = "0";
                 lvResults.Items.Clear();
-                
+
+                #endregion
+
+                #region Tokens To Search
+
+                List<string> lText = new List<string>();
                 if ((string.IsNullOrEmpty(searchAndDelimiter)) || (string.IsNullOrWhiteSpace(searchAndDelimiter)))
                 {
                     //  no delimiter for AND/OR search
 
-                    if (!searchUtils.FindTokens(new List<string>() { txtFind.Text },
-                                                m_ActiveSearchProject,
-                                                out searchResults,
-                                                out result))
-                    {
-                        Audit(result, method, LINE(), AuditSeverity.Error);
-                        MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    lText.Add(txtFind.Text);
                 }
                 else
                 {
@@ -1347,20 +1347,25 @@ namespace ObjectInProject.Gui
                     delimiter[0] = searchAndDelimiter;
 
                     string[] lsText = (txtFind.Text).Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
-
-                    List<string> lText = new List<string>();
-
                     foreach (string lsTextItem in lsText)
                     {
                         lText.Add(lsTextItem);
                     }
-
-                    if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
-                    {
-                        Audit(result, method, LINE(), AuditSeverity.Error);
-                        MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
                 }
+
+                #endregion
+
+                #region Search
+
+                if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
+                {
+                    Audit(result, method, LINE(), AuditSeverity.Error);
+                    MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                #endregion
+
+                #region Fill Results
 
                 if ((searchResults != null) && (searchResults.Count > 0))
                 {
@@ -1401,6 +1406,11 @@ namespace ObjectInProject.Gui
 
                     txtNumberOfHits.Text = searchResults.Count.ToString();
                 }
+
+                #endregion
+
+                #region No Results
+
                 else
                 {
                     message = "No Results";
@@ -1408,6 +1418,8 @@ namespace ObjectInProject.Gui
                     Audit(message, method, LINE(), AuditSeverity.Information);
                     MessageBox.Show(message, "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
+                #endregion
             }
             catch (Exception ex)
             {
