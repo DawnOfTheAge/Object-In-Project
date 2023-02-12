@@ -9,17 +9,11 @@ using System.Windows.Forms;
 
 namespace ObjectInProject.Tests.File
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
-        #region Data Members
-
-        private SearchUtils searchUtils;
-
-        #endregion
-
         #region Constructor
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -38,8 +32,6 @@ namespace ObjectInProject.Tests.File
             rbOr.Checked = false;
 
             txtTokens.Text = "ttl , ad";
-
-            searchUtils = new SearchUtils();
         }
 
         #endregion
@@ -82,12 +74,12 @@ namespace ObjectInProject.Tests.File
 
                 List<string> lTokens = txtTokens.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                if (!searchUtils.SearchInFile(new FileOrigin(string.Empty, txtFilePath.Text),
-                                              lTokens,
-                                              (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
-                                              chkCaseSensitive.Checked,
-                                              out SearchedFile searchedFile,
-                                              out string result))
+                if (!SearchFile.SearchInFile(new FileOrigin(string.Empty, txtFilePath.Text),
+                                             lTokens,
+                                             (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
+                                             chkCaseSensitive.Checked,
+                                             out SearchedFile searchedFile,
+                                             out string result))
 
                 {
                     MessageBox.Show(result, $"Failed Searching File '{txtFilePath.Text}'", MessageBoxButtons.OK, MessageBoxIcon.Warning);

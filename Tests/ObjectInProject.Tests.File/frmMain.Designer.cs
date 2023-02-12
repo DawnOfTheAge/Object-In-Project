@@ -1,7 +1,7 @@
 ﻿
 namespace ObjectInProject.Tests.File
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
