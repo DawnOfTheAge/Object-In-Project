@@ -9,12 +9,6 @@ namespace ObjectInProject.Tests.FilesList
 {
     public partial class FrmMain : Form
     {
-        #region Data Members
-
-        private SearchUtils searchUtils;
-
-        #endregion
-
         #region Constructor
 
         public FrmMain()
@@ -42,8 +36,6 @@ namespace ObjectInProject.Tests.FilesList
             dgvFiles.Rows.Add(@"C:\Temp\Search File Test 2.txt");
 
             dgvFiles.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
-
-            searchUtils = new SearchUtils();
         }
 
         #endregion
@@ -61,18 +53,14 @@ namespace ObjectInProject.Tests.FilesList
                     files.Add(new FileOrigin(string.Empty, dgvFiles.Rows[i].Cells[0].Value.ToString()));
                 }
 
-                string result;
-
                 List<string> lTokens = txtTokens.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                SearchedFilesList searchedFilesList;
-
-                if (!searchUtils.SearchInListOfFiles(files,
-                                                     lTokens,
-                                                     (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
-                                                     chkCaseSensitive.Checked,
-                                                     out searchedFilesList,
-                                                     out result))
+                if (!SearchListOfFiles.SearchInListOfFiles(files,
+                                                           lTokens,
+                                                           (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
+                                                           chkCaseSensitive.Checked,
+                                                           out SearchedFilesList searchedFilesList,
+                                                           out string result))
 
                 {
                     MessageBox.Show(result, $"Failed Searching Files List. '{result}'", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -88,9 +76,8 @@ namespace ObjectInProject.Tests.FilesList
 
                     return;
                 }
-                
-                List<ExtendedSearchedLine> lines;
-                if (!searchedFilesList.GetLines(out lines, out result))
+
+                if (!searchedFilesList.GetLines(out List<ExtendedSearchedLine> lines, out result))
                 {
                     return;
                 }

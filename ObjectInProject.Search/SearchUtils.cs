@@ -308,12 +308,12 @@ namespace ObjectInProject.Search
                     return false;
                 }
 
-                if (!SearchInListOfFiles(listOfFiles, 
-                                         tokens, 
-                                         configuration.Logic, 
-                                         configuration.CaseSensitive, 
-                                         out SearchedFilesList searchedFilesList, 
-                                         out result))
+                if (!SearchListOfFiles.SearchInListOfFiles(listOfFiles, 
+                                                           tokens, 
+                                                           configuration.Logic, 
+                                                           configuration.CaseSensitive, 
+                                                           out SearchedFilesList searchedFilesList, 
+                                                           out result))
                 { 
                     return false;
                 }
@@ -576,52 +576,52 @@ namespace ObjectInProject.Search
 
         #region Search In List Of Files
 
-        public bool SearchInListOfFiles(List<FileOrigin> files,
-                                        List<string> tokens,
-                                        SearchLogic searchLogic,
-                                        bool caseSensitive,
-                                        out SearchedFilesList searchedFilesList,
-                                        out string result)
-        {
-            result = string.Empty;
+        //public bool SearchInListOfFiles(List<FileOrigin> files,
+        //                                List<string> tokens,
+        //                                SearchLogic searchLogic,
+        //                                bool caseSensitive,
+        //                                out SearchedFilesList searchedFilesList,
+        //                                out string result)
+        //{
+        //    result = string.Empty;
 
-            searchedFilesList = null;
+        //    searchedFilesList = null;
 
-            try
-            {
-                if ((files == null) || (files.Count == 0))
-                {
-                    result = "Files List Is Null Or Empty";
+        //    try
+        //    {
+        //        if ((files == null) || (files.Count == 0))
+        //        {
+        //            result = "Files List Is Null Or Empty";
 
-                    return false;
-                }
+        //            return false;
+        //        }
 
-                searchedFilesList = new SearchedFilesList();
+        //        searchedFilesList = new SearchedFilesList();
 
-                foreach (FileOrigin file in files)
-                {
-                    if (!SearchFile.SearchInFile(file, tokens, searchLogic, caseSensitive, out SearchedFile searchedFile, out result))
-                    {
-                        //  some Audit
+        //        foreach (FileOrigin file in files)
+        //        {
+        //            if (!SearchFile.SearchInFile(file, tokens, searchLogic, caseSensitive, out SearchedFile searchedFile, out result))
+        //            {
+        //                //  some Audit
 
-                        continue;
-                    }
+        //                continue;
+        //            }
 
-                    if (!searchedFilesList.AddFile(searchedFile, out result))
-                    { 
-                        //  some Audit
-                    }
-                }                
+        //            if (!searchedFilesList.AddFile(searchedFile, out result))
+        //            { 
+        //                //  some Audit
+        //            }
+        //        }                
 
-                return true;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        result = e.Message;
 
-                return false;
-            }
-        }
+        //        return false;
+        //    }
+        //}
 
         #endregion
 
