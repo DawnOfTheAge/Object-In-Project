@@ -86,6 +86,10 @@
       <Project>{EC88D2DD-62EC-49CA-B681-EC265EAC39B7}</Project>
       <Name>ObjectInProject.Search</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ObjectInProject.Utils\ObjectInProject.Utils.csproj">
+      <Project>{2A9FB722-2134-41E5-ABEC-5BE77F122DC0}</Project>
+      <Name>ObjectInProject.Utils</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

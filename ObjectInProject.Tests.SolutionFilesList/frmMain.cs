@@ -1,15 +1,11 @@
 ﻿using ObjectInProject.Search;
+using ObjectInProject.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ObjectInProject.Tests.SolutionFilesList
 {
@@ -26,18 +22,19 @@ namespace ObjectInProject.Tests.SolutionFilesList
 
         #region Startup
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             Location = Cursor.Position;
 
-            txtFilePath.Text = @"C:\Temp\Example Projects For Search\CS Example Project For Search\Solution\Solution.sln";
+            txtFilePath.Text = //@"C:\Temp\Example Projects For Search\CS Example Project For Search\Solution\Solution.sln";
+                               @"D:\GitDev\MOPS_WEB\Applications\OpticalAnalysisService\OpticalAnalysisService.sln";
         }
 
         #endregion
 
         #region Gui
 
-        private void btnFilePath_Click(object sender, EventArgs e)
+        private void BtnFilePath_Click(object sender, EventArgs e)
         {
             try
             {
@@ -61,13 +58,11 @@ namespace ObjectInProject.Tests.SolutionFilesList
             }
         }
 
-        private void btnFind_Click(object sender, EventArgs e)
+        private void BtnFind_Click(object sender, EventArgs e)
         {
             try
             {
-                string result;
-
-                List<string> files;                
+                List<string> files;
 
                 if (string.IsNullOrEmpty(txtFilePath.Text))
                 {
@@ -83,8 +78,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
                     return;
                 }
 
-                List<string> projectFiles;
-                if (!ParseFile.ParseSolutionFile(txtFilePath.Text, out projectFiles, out result))
+                if (!ParseFile.ParseSolutionFile(txtFilePath.Text, out List<string> projectFiles, out string result))
                 {
                     MessageBox.Show(result, "Find Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
@@ -114,6 +108,8 @@ namespace ObjectInProject.Tests.SolutionFilesList
 
                 if (files.Count > 0)
                 {
+                    bool hasDuplicates = GeneralUtils.HasDuplicates(files);
+
                     if (!FillFiles(files, out result))
                     {
                         MessageBox.Show(result, "Fill Files Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -161,7 +157,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
 
                 return false;
             }
-        }
+        }        
 
         #endregion
     }

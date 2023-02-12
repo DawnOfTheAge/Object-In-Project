@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using System;
+using System.Collections.Generic;
 
 namespace ObjectInProject.Utils
 {
@@ -50,6 +51,26 @@ namespace ObjectInProject.Utils
             {
                 return "Error. " + e.Message;
             }
+        }
+
+        public static bool HasDuplicates<T>(List<T> list)
+        {
+            if ((list == null) || (list.Count == 0))
+            {
+                return false;
+            }
+
+            HashSet<T> hashSet = new HashSet<T>();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (!hashSet.Add(list[i]))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

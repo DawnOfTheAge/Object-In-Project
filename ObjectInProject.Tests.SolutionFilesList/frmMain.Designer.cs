@@ -41,28 +41,28 @@ namespace ObjectInProject.Tests.SolutionFilesList
             // 
             // btnFind
             // 
-            this.btnFind.Location = new System.Drawing.Point(12, 210);
+            this.btnFind.Location = new System.Drawing.Point(12, 535);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(555, 23);
             this.btnFind.TabIndex = 51;
             this.btnFind.Text = "Find";
             this.btnFind.UseVisualStyleBackColor = true;
-            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
+            this.btnFind.Click += new System.EventHandler(this.BtnFind_Click);
             // 
             // btnFilePath
             // 
             this.btnFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFilePath.Location = new System.Drawing.Point(529, 151);
+            this.btnFilePath.Location = new System.Drawing.Point(529, 476);
             this.btnFilePath.Name = "btnFilePath";
             this.btnFilePath.Size = new System.Drawing.Size(38, 39);
             this.btnFilePath.TabIndex = 50;
             this.btnFilePath.Text = "...";
             this.btnFilePath.UseVisualStyleBackColor = true;
-            this.btnFilePath.Click += new System.EventHandler(this.btnFilePath_Click);
+            this.btnFilePath.Click += new System.EventHandler(this.BtnFilePath_Click);
             // 
             // txtFilePath
             // 
-            this.txtFilePath.Location = new System.Drawing.Point(63, 161);
+            this.txtFilePath.Location = new System.Drawing.Point(63, 486);
             this.txtFilePath.Name = "txtFilePath";
             this.txtFilePath.Size = new System.Drawing.Size(460, 20);
             this.txtFilePath.TabIndex = 49;
@@ -75,7 +75,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
             this.colFile});
             this.dgvFiles.Location = new System.Drawing.Point(12, 12);
             this.dgvFiles.Name = "dgvFiles";
-            this.dgvFiles.Size = new System.Drawing.Size(555, 118);
+            this.dgvFiles.Size = new System.Drawing.Size(555, 443);
             this.dgvFiles.TabIndex = 48;
             // 
             // colFile
@@ -86,7 +86,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
             // lblFilePath
             // 
             this.lblFilePath.AutoSize = true;
-            this.lblFilePath.Location = new System.Drawing.Point(9, 164);
+            this.lblFilePath.Location = new System.Drawing.Point(9, 489);
             this.lblFilePath.Name = "lblFilePath";
             this.lblFilePath.Size = new System.Drawing.Size(48, 13);
             this.lblFilePath.TabIndex = 52;
@@ -95,7 +95,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
             // lblNumberOfFiles
             // 
             this.lblNumberOfFiles.AutoSize = true;
-            this.lblNumberOfFiles.Location = new System.Drawing.Point(9, 133);
+            this.lblNumberOfFiles.Location = new System.Drawing.Point(9, 458);
             this.lblNumberOfFiles.Name = "lblNumberOfFiles";
             this.lblNumberOfFiles.Size = new System.Drawing.Size(37, 13);
             this.lblNumberOfFiles.TabIndex = 53;
@@ -105,7 +105,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(580, 248);
+            this.ClientSize = new System.Drawing.Size(580, 570);
             this.Controls.Add(this.lblNumberOfFiles);
             this.Controls.Add(this.btnFind);
             this.Controls.Add(this.btnFilePath);
@@ -114,7 +114,7 @@ namespace ObjectInProject.Tests.SolutionFilesList
             this.Controls.Add(this.lblFilePath);
             this.Name = "frmMain";
             this.Text = "Solution\'s Files List Test";
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
