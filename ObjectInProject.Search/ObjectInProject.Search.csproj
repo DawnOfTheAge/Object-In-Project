@@ -52,6 +52,7 @@
     <Compile Include="SearchLine.cs" />
     <Compile Include="SearchListOfFiles.cs" />
     <Compile Include="SearchUtils.cs" />
+    <Compile Include="SolutionProjectFiles.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ObjectInProject.Common\ObjectInProject.Common.csproj">

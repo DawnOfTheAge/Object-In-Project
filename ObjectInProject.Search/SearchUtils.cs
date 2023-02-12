@@ -15,6 +15,8 @@ namespace ObjectInProject.Search
         public event AuditMessage Message;
 
         #endregion
+        
+        #region Public Methods
 
         public bool FindToken(string token,
                               SearchProject configuration,
@@ -178,8 +180,8 @@ namespace ObjectInProject.Search
 
                             foreach (string currentFileExtension in fileTypeFilterList)
                             {
-                                List<string> allFiles = Directory.GetFiles(currentDirectory, 
-                                                                           currentFileExtension, 
+                                List<string> allFiles = Directory.GetFiles(currentDirectory,
+                                                                           currentFileExtension,
                                                                            SearchOption.AllDirectories).ToList();
 
                                 if ((allFiles == null) || (allFiles.Count == 0))
@@ -187,9 +189,9 @@ namespace ObjectInProject.Search
                                     continue;
                                 }
 
-                                Audit($"For Extension[{currentFileExtension}] {allFiles.Count} Files Found", 
-                                      method, 
-                                      LINE(), 
+                                Audit($"For Extension[{currentFileExtension}] {allFiles.Count} Files Found",
+                                      method,
+                                      LINE(),
                                       AuditSeverity.Information);
 
                                 //SearchInListOfFiles(allFiles, )
@@ -260,7 +262,7 @@ namespace ObjectInProject.Search
 
         public bool FindTokens(List<string> tokens,
                                SearchProject configuration,
-                               out List<SearchResult> searchResults, 
+                               out List<SearchResult> searchResults,
                                out string result)
         {
             string method = MethodBase.GetCurrentMethod().Name;
@@ -299,22 +301,22 @@ namespace ObjectInProject.Search
 
                 #endregion
 
-                if (!GetFilesList(configuration.Type, 
-                                  configuration.Workspace, 
-                                  configuration.FileTypeFilter, 
-                                  out List<FileOrigin>listOfFiles, 
+                if (!GetFilesList(configuration.Type,
+                                  configuration.Workspace,
+                                  configuration.FileTypeFilter,
+                                  out List<FileOrigin> listOfFiles,
                                   out result))
                 {
                     return false;
                 }
 
-                if (!SearchListOfFiles.SearchInListOfFiles(listOfFiles, 
-                                                           tokens, 
-                                                           configuration.Logic, 
-                                                           configuration.CaseSensitive, 
-                                                           out SearchedFilesList searchedFilesList, 
+                if (!SearchListOfFiles.SearchInListOfFiles(listOfFiles,
+                                                           tokens,
+                                                           configuration.Logic,
+                                                           configuration.CaseSensitive,
+                                                           out SearchedFilesList searchedFilesList,
                                                            out result))
-                { 
+                {
                     return false;
                 }
 
@@ -334,6 +336,10 @@ namespace ObjectInProject.Search
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private bool GetSearchResults(SearchedFilesList searchedFilesList, out List<SearchResult> searchResults, out string result)
         {
             result = string.Empty;
@@ -342,8 +348,8 @@ namespace ObjectInProject.Search
 
             try
             {
-                if ((searchedFilesList == null) || 
-                    (searchedFilesList.Files == null) || 
+                if ((searchedFilesList == null) ||
+                    (searchedFilesList.Files == null) ||
                     (searchedFilesList.Files.Count == 0))
                 {
                     result = "No Results";
@@ -372,10 +378,10 @@ namespace ObjectInProject.Search
             }
         }
 
-        private bool GetFilesList(SearchProjectType type, 
-                                  List<string> paths, 
-                                  string searchPattern, 
-                                  out List<FileOrigin> listOfFiles, 
+        private bool GetFilesList(SearchProjectType type,
+                                  List<string> paths,
+                                  string searchPattern,
+                                  out List<FileOrigin> listOfFiles,
                                   out string result)
         {
             listOfFiles = null;
@@ -392,7 +398,7 @@ namespace ObjectInProject.Search
                         break;
 
                     case SearchProjectType.SolutionsProject:
-                        if (!GetSolutionsFilesList(paths, out listOfFiles, out result))
+                        if (!SolutionProjectFiles.GetSolutionsFilesList(paths, out listOfFiles, out result))
                         {
                             return false;
                         }
@@ -411,79 +417,7 @@ namespace ObjectInProject.Search
 
                 return false;
             }
-        }
-
-        #region Files For Soulution Project
-
-        private bool GetSolutionsFilesList(List<string> solutions, out List<FileOrigin> listOfFiles, out string result)
-        {
-            result = string.Empty;
-
-            listOfFiles = null;
-
-            try
-            {
-                if ((solutions == null) || (solutions.Count == 0))
-                {
-                    result = "No Solutions To Search";
-
-                    return false;
-                }
-
-                foreach (string solution in solutions)
-                {
-                    if (!File.Exists(solution))
-                    {
-                        continue;
-                    }
-
-                    if (!ParseFile.ParseSolutionFile(solution, out List<string> projectFiles, out result))
-                    {
-                        continue;
-                    }
-
-                    if ((projectFiles == null) || (projectFiles.Count == 0))
-                    {
-                        continue;
-                    }
-
-                    listOfFiles = new List<FileOrigin>();
-                    foreach (string projectFile in projectFiles)
-                    {
-                        if (File.Exists(projectFile))
-                        {
-                            if (!ParseFile.ParseProjectFile(projectFile, out List<string> codeFiles, out result))
-                            {
-                                //  Some Audit
-                            }
-                            else
-                            {
-                                if ((codeFiles != null) && (codeFiles.Count > 0))
-                                {
-                                    foreach (string codeFile in codeFiles)
-                                    {
-                                        if (File.Exists(codeFile))
-                                        {
-                                            listOfFiles.Add(new FileOrigin(Path.GetFileName(solution),
-                                                                           Path.GetFileName(projectFile),
-                                                                           codeFile));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
-
-                return false;
-            }
-        }
+        } 
 
         #endregion
 
