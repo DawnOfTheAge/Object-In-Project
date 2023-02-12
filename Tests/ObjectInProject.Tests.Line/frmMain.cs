@@ -7,17 +7,11 @@ using System.Windows.Forms;
 
 namespace ObjectInProject.Tests.Line
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
-        #region Data Members
-
-        private SearchUtils searchUtils;
-
-        #endregion
-
         #region Constructor
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -37,8 +31,6 @@ namespace ObjectInProject.Tests.Line
 
             txtLine.Text = "Yosef Had A Little Lamb";
             txtTokens.Text = "ttl , ad";
-
-            searchUtils = new SearchUtils();
         }
 
         #endregion
@@ -67,7 +59,7 @@ namespace ObjectInProject.Tests.Line
 
                 List<string> lTokens = tokens.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                bool exists = searchUtils.SearchInLine(txtLine.Text,
+                bool exists = SearchLine.SearchInLine(txtLine.Text,
                                                        lTokens,
                                                        (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
                                                        chkCaseSensitive.Checked,

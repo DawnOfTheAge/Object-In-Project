@@ -668,7 +668,7 @@ namespace ObjectInProject.Search
                         int lineNumber = 1;
                         foreach (string line in lines)
                         {
-                            if (SearchInLine(line, tokens, searchLogic, caseSensitive, out result))
+                            if (SearchLine.SearchInLine(line, tokens, searchLogic, caseSensitive, out result))
                             {
                                 if (!searchedFile.AddLine(new SearchedLine(lineNumber, line), out result))
                                 {
@@ -697,128 +697,128 @@ namespace ObjectInProject.Search
 
         #endregion
 
-        #region Search Line
+        //#region Search Line
 
-        public bool SearchInLine(string line, 
-                                 List<string> tokens, 
-                                 SearchLogic searchLogic, 
-                                 bool caseSensitive, 
-                                 out string result)
-        {
-            try
-            {
-                switch (searchLogic)
-                {
-                    case SearchLogic.And:
-                        return SearchInLineAnd(line, tokens, caseSensitive, out result);
+        //public bool SearchInLine(string line, 
+        //                         List<string> tokens, 
+        //                         SearchLogic searchLogic, 
+        //                         bool caseSensitive, 
+        //                         out string result)
+        //{
+        //    try
+        //    {
+        //        switch (searchLogic)
+        //        {
+        //            case SearchLogic.And:
+        //                return SearchInLineAnd(line, tokens, caseSensitive, out result);
 
-                    case SearchLogic.Or:
-                        return SearchInLineOr(line, tokens, caseSensitive, out result);
+        //            case SearchLogic.Or:
+        //                return SearchInLineOr(line, tokens, caseSensitive, out result);
 
-                    default:
-                        result = $"Wrong Search Logic Parameter - '{searchLogic}'";
-                        break;
-                }
+        //            default:
+        //                result = $"Wrong Search Logic Parameter - '{searchLogic}'";
+        //                break;
+        //        }
 
-                return false;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
+        //        return false;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        result = e.Message;
 
-                return false;
-            }
-        }
+        //        return false;
+        //    }
+        //}
 
-        private bool SearchInLineAnd(string line, List<string> tokens, bool caseSensitive, out string result)
-        {            
-            result = string.Empty;
+        //private bool SearchInLineAnd(string line, List<string> tokens, bool caseSensitive, out string result)
+        //{            
+        //    result = string.Empty;
 
-            try
-            {
-                if ((tokens == null) || (tokens.Count == 0))
-                {
-                    return false;
-                }
+        //    try
+        //    {
+        //        if ((tokens == null) || (tokens.Count == 0))
+        //        {
+        //            return false;
+        //        }
 
-                if (!caseSensitive)
-                {
-                    line = line.ToLower();
-                }
+        //        if (!caseSensitive)
+        //        {
+        //            line = line.ToLower();
+        //        }
 
-                bool success = true;
+        //        bool success = true;
 
-                foreach (string token in tokens)
-                {
-                    string currentToken = token;
+        //        foreach (string token in tokens)
+        //        {
+        //            string currentToken = token;
 
-                    if (!caseSensitive)
-                    {
-                        currentToken = currentToken.ToLower();
-                    }
+        //            if (!caseSensitive)
+        //            {
+        //                currentToken = currentToken.ToLower();
+        //            }
 
-                    if (!string.IsNullOrEmpty(currentToken))
-                    {
-                        bool contains = line.Contains(currentToken);
-                        success &= contains;
-                    }
-                }
+        //            if (!string.IsNullOrEmpty(currentToken))
+        //            {
+        //                bool contains = line.Contains(currentToken);
+        //                success &= contains;
+        //            }
+        //        }
 
-                return success;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
+        //        return success;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        result = e.Message;
 
-                return false;
-            }
-        }
+        //        return false;
+        //    }
+        //}
 
-        private bool SearchInLineOr(string line, List<string> tokens, bool caseSensitive, out string result)
-        {            
-            result = string.Empty;
+        //private bool SearchInLineOr(string line, List<string> tokens, bool caseSensitive, out string result)
+        //{            
+        //    result = string.Empty;
 
-            try
-            {
-                if ((tokens == null) || (tokens.Count == 0))
-                {
-                    return false;
-                }
+        //    try
+        //    {
+        //        if ((tokens == null) || (tokens.Count == 0))
+        //        {
+        //            return false;
+        //        }
 
-                if (!caseSensitive)
-                {
-                    line = line.ToLower();
-                }
+        //        if (!caseSensitive)
+        //        {
+        //            line = line.ToLower();
+        //        }
 
-                bool success = false;
+        //        bool success = false;
 
-                foreach (string token in tokens)
-                {
-                    string currentToken = token;
+        //        foreach (string token in tokens)
+        //        {
+        //            string currentToken = token;
 
-                    if (!caseSensitive)
-                    {
-                        currentToken = currentToken.ToLower();
-                    }
+        //            if (!caseSensitive)
+        //            {
+        //                currentToken = currentToken.ToLower();
+        //            }
 
-                    if (!string.IsNullOrEmpty(currentToken))
-                    {
-                        bool contains = line.Contains(currentToken);
-                        success |= contains;
-                    }
-                }
+        //            if (!string.IsNullOrEmpty(currentToken))
+        //            {
+        //                bool contains = line.Contains(currentToken);
+        //                success |= contains;
+        //            }
+        //        }
 
-                return success;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
+        //        return success;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        result = e.Message;
 
-                return false;
-            }
-        }
+        //        return false;
+        //    }
+        //}
 
-        #endregion
+        //#endregion
 
         #region Events Handlers
 
