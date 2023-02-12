@@ -301,6 +301,8 @@ namespace ObjectInProject.Search
 
                 #endregion
 
+                Audit($"Search Projet Name[{configuration.Name}] Type[{configuration.Type}]", method, LINE(), AuditSeverity.Information);
+
                 if (!GetFilesList(configuration.Type,
                                   configuration.Workspace,
                                   configuration.FileTypeFilter,
@@ -309,6 +311,21 @@ namespace ObjectInProject.Search
                 {
                     return false;
                 }
+
+                if ((listOfFiles == null) || (listOfFiles.Count == 0))
+                {
+                    Audit($"No Files Found", method, LINE(), AuditSeverity.Information);
+                    
+                    return true;
+                }
+
+                Audit($"{listOfFiles.Count} Files Found", method, LINE(), AuditSeverity.Information);
+
+
+                Audit($"Tokens To Search[{tokens}] Logic[{configuration.Logic}] Case Sensitive[{configuration.CaseSensitive}]", 
+                      method, 
+                      LINE(), 
+                      AuditSeverity.Information);
 
                 if (!SearchListOfFiles.SearchInListOfFiles(listOfFiles,
                                                            tokens,
@@ -320,6 +337,7 @@ namespace ObjectInProject.Search
                     return false;
                 }
 
+                
 
                 if (!GetSearchResults(searchedFilesList, out searchResults, out result))
                 {
@@ -362,10 +380,15 @@ namespace ObjectInProject.Search
                 {
                     if (!searchedFile.GetSearchResults(out List<SearchResult> currentSearchResults, out result))
                     {
+                        //  some audit
+
                         continue;
                     }
 
-                    searchResults.AddRange(searchResults);
+                    if ((currentSearchResults != null) && (currentSearchResults.Count > 0))
+                    {
+                        searchResults.AddRange(currentSearchResults);
+                    }
                 }
 
                 return true;

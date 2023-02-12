@@ -148,8 +148,10 @@ namespace ObjectInProject.Gui
                 string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
                 searchUtils = new SearchUtils();
+                searchUtils.Message += Audit_Message;
 
                 visualStudiosInstalled = new VisualStudiosInstalled();
+                visualStudiosInstalled.Message += Audit_Message;
 
                 #endregion
                 
@@ -736,6 +738,7 @@ namespace ObjectInProject.Gui
 
             frmSearchProjectsTree searchProjectsTree = new frmSearchProjectsTree(m_Configuration, m_ActiveEditors);
             searchProjectsTree.Reply += SearchProjectsTree_Reply;
+            searchProjectsTree.Message += Audit_Message;
             searchProjectsTree.Show();
         }
 
@@ -2069,7 +2072,7 @@ namespace ObjectInProject.Gui
             }
         }
 
-        private void Settings_Message(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        private void Audit_Message(string message, string method, string module, int line, AuditSeverity auditSeverity)
         {
             try
             {
