@@ -1,20 +1,29 @@
 ﻿using ObjectInProject.Common;
 using System.Collections.Generic;
 using System;
+using System.Reflection;
 
 namespace ObjectInProject.Search
 {
-    public static class SearchListOfFiles
+    public class SearchListOfFiles
     {
+        #region Events
+
+        public event AuditMessage Message;
+
+        #endregion
+
         #region Public Methods
 
-        public static bool SearchInListOfFiles(List<FileOrigin> files,
-                                               List<string> tokens,
-                                               SearchLogic searchLogic,
-                                               bool caseSensitive,
-                                               out SearchedFilesList searchedFilesList,
-                                               out string result)
+        public bool SearchInListOfFiles(List<FileOrigin> files,
+                                        List<string> tokens,
+                                        SearchLogic searchLogic,
+                                        bool caseSensitive,
+                                        out SearchedFilesList searchedFilesList,
+                                        out string result)
         {
+            string method = MethodBase.GetCurrentMethod().Name;
+
             result = string.Empty;
 
             searchedFilesList = null;
@@ -34,14 +43,17 @@ namespace ObjectInProject.Search
                 {
                     if (!SearchFile.SearchInFile(file, tokens, searchLogic, caseSensitive, out SearchedFile searchedFile, out result))
                     {
-                        //  some Audit
+                        Audit($"Failed Searching In File[{file.Path}]. {result}", method, LINE(), AuditSeverity.Warning);
 
                         continue;
                     }
 
-                    if (!searchedFilesList.AddFile(searchedFile, out result))
+                    if ((searchedFile != null) && (searchedFile.Lines != null) && (searchedFile.Lines.Count > 0))
                     {
-                        //  some Audit
+                        if (!searchedFilesList.AddFile(searchedFile, out result))
+                        {
+                            Audit($"Failed Adding File[{searchedFile.Path}]. {result}", method, LINE(), AuditSeverity.Warning);
+                        }
                     }
                 }
 
@@ -53,6 +65,36 @@ namespace ObjectInProject.Search
 
                 return false;
             }
+        }
+
+        #endregion
+
+        #region Events Handlers
+
+        public void OnMessage(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            Message?.Invoke(message, method, module, line, auditSeverity);
+        }
+
+        #endregion
+
+        #region Audit
+
+        private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            OnMessage(message, method, module, line, auditSeverity);
+        }
+
+        private void Audit(string message, string method, int line, AuditSeverity auditSeverity)
+        {
+            string module = "Search List Of Files";
+
+            Audit(message, method, module, line, auditSeverity);
+        }
+
+        public static int LINE([System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            return lineNumber;
         }
 
         #endregion

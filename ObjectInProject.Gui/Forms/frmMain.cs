@@ -870,6 +870,7 @@ namespace ObjectInProject.Gui
             {
                 #region Search Types
 
+                cboSearchType.DropDownItems.Clear();
                 cboSearchType.DropDownItems.Add("AND", null, SelectSearchType_Click);
                 cboSearchType.DropDownItems.Add("OR", null, SelectSearchType_Click);
                 txtSearchType.Text = cboSearchType.DropDownItems[0].Text;

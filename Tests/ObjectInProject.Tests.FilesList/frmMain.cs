@@ -55,7 +55,8 @@ namespace ObjectInProject.Tests.FilesList
 
                 List<string> lTokens = txtTokens.Text.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-                if (!SearchListOfFiles.SearchInListOfFiles(files,
+                SearchListOfFiles searchListOfFiles = new SearchListOfFiles();
+                if (!searchListOfFiles.SearchInListOfFiles(files,
                                                            lTokens,
                                                            (rbAnd.Checked) ? SearchLogic.And : SearchLogic.Or,
                                                            chkCaseSensitive.Checked,

@@ -322,12 +322,14 @@ namespace ObjectInProject.Search
                 Audit($"{listOfFiles.Count} Files Found", method, LINE(), AuditSeverity.Information);
 
 
-                Audit($"Tokens To Search[{tokens}] Logic[{configuration.Logic}] Case Sensitive[{configuration.CaseSensitive}]", 
+                Audit($"Tokens To Search[{string.Join(",", tokens)}] Logic[{configuration.Logic}] Case Sensitive[{configuration.CaseSensitive}]", 
                       method, 
                       LINE(), 
                       AuditSeverity.Information);
 
-                if (!SearchListOfFiles.SearchInListOfFiles(listOfFiles,
+                SearchListOfFiles searchListOfFiles = new SearchListOfFiles();
+                searchListOfFiles.Message += SearchListOfFiles_Message;
+                if (!searchListOfFiles.SearchInListOfFiles(listOfFiles,
                                                            tokens,
                                                            configuration.Logic,
                                                            configuration.CaseSensitive,
@@ -337,12 +339,24 @@ namespace ObjectInProject.Search
                     return false;
                 }
 
-                
+                if ((searchedFilesList == null) || (searchedFilesList.Files == null) || (searchedFilesList.Files.Count == 0))
+                {
+                    Audit($"No Matching Files Found", method, LINE(), AuditSeverity.Information);
+
+                    return true;
+                }
+
+                Audit($"{searchedFilesList.Files.Count} Matching Files Found", method, LINE(), AuditSeverity.Information);
+
 
                 if (!GetSearchResults(searchedFilesList, out searchResults, out result))
                 {
+                    Audit($"Failed Getting Search Results. {result}", method, LINE(), AuditSeverity.Warning);
+
                     return false;
                 }
+
+                Audit($"{searchResults.Count} Matching Lines Found", method, LINE(), AuditSeverity.Information);
 
                 return true;
             }
@@ -360,6 +374,8 @@ namespace ObjectInProject.Search
 
         private bool GetSearchResults(SearchedFilesList searchedFilesList, out List<SearchResult> searchResults, out string result)
         {
+            string method = MethodBase.GetCurrentMethod().Name;
+
             result = string.Empty;
 
             searchResults = null;
@@ -380,7 +396,7 @@ namespace ObjectInProject.Search
                 {
                     if (!searchedFile.GetSearchResults(out List<SearchResult> currentSearchResults, out result))
                     {
-                        //  some audit
+                        Audit($"Failed Getting Search Results. {result}", method, LINE(), AuditSeverity.Warning);
 
                         continue;
                     }
@@ -454,6 +470,11 @@ namespace ObjectInProject.Search
         #endregion
 
         #region Audit
+
+        private void SearchListOfFiles_Message(string message, string method, string module, int line, AuditSeverity auditSeverity)
+        {
+            Audit(message, method, line, auditSeverity);
+        }
 
         private void Audit(string message, string method, string module, int line, AuditSeverity auditSeverity)
         {
