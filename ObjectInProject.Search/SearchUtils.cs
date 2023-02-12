@@ -21,13 +21,10 @@ namespace ObjectInProject.Search
                               out List<SearchResult> serachResults,
                               out string result)
         {
-            #region Data Members
 
             string method = MethodBase.GetCurrentMethod().Name;
 
             int fileCounter = 0;
-
-            #endregion
 
             serachResults = null;
 
@@ -266,11 +263,7 @@ namespace ObjectInProject.Search
                                out List<SearchResult> searchResults, 
                                out string result)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
-
-            #endregion
 
             searchResults = null;
 
@@ -315,7 +308,8 @@ namespace ObjectInProject.Search
                     return false;
                 }
 
-                if (!SearchInListOfFiles(listOfFiles, tokens, 
+                if (!SearchInListOfFiles(listOfFiles, 
+                                         tokens, 
                                          configuration.Logic, 
                                          configuration.CaseSensitive, 
                                          out SearchedFilesList searchedFilesList, 
@@ -348,7 +342,9 @@ namespace ObjectInProject.Search
 
             try
             {
-                if ((searchedFilesList == null) || (searchedFilesList.Files == null) || (searchedFilesList.Files.Count == 0))
+                if ((searchedFilesList == null) || 
+                    (searchedFilesList.Files == null) || 
+                    (searchedFilesList.Files.Count == 0))
                 {
                     result = "No Results";
 
@@ -703,7 +699,11 @@ namespace ObjectInProject.Search
 
         #region Search Line
 
-        public bool SearchInLine(string line, List<string> tokens, SearchLogic searchLogic, bool caseSensitive, out string result)
+        public bool SearchInLine(string line, 
+                                 List<string> tokens, 
+                                 SearchLogic searchLogic, 
+                                 bool caseSensitive, 
+                                 out string result)
         {
             try
             {

@@ -1312,7 +1312,10 @@ private bool ParseSolutionFileText(string solutionFilename, string solutionFileT
                     {
                         //  no delimiter for AND/OR search
 
-                        if (!searchUtils.FindToken(txtFind.Text, m_ActiveSearchProject, out searchResults, out result))
+                        if (!searchUtils.FindTokens(new List<string>() { txtFind.Text }, 
+                                                    m_ActiveSearchProject, 
+                                                    out searchResults, 
+                                                    out result))
                         {
                             Audit(result, method, LINE(), AuditSeverity.Error);
                             MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
