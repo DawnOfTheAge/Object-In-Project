@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DirectoryProjectFiles.cs" />
     <Compile Include="ParseFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchFile.cs" />

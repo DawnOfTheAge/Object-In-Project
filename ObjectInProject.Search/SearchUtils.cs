@@ -385,14 +385,14 @@ namespace ObjectInProject.Search
                 switch (type)
                 {
                     case SearchProjectType.DirectoriesProject:
-                        if (!GetPathsFilesList(paths, searchPattern, out listOfFiles, out result))
+                        if (!DirectoryProjectFiles.GetPathsFilesList(paths, searchPattern, out listOfFiles, out result))
                         {
                             return false;
                         }
                         break;
 
                     case SearchProjectType.SolutionsProject:
-                        if (!GetSolutionshsFilesList(paths, out listOfFiles, out result))
+                        if (!GetSolutionsFilesList(paths, out listOfFiles, out result))
                         {
                             return false;
                         }
@@ -415,7 +415,7 @@ namespace ObjectInProject.Search
 
         #region Files For Soulution Project
 
-        private bool GetSolutionshsFilesList(List<string> solutions, out List<FileOrigin> listOfFiles, out string result)
+        private bool GetSolutionsFilesList(List<string> solutions, out List<FileOrigin> listOfFiles, out string result)
         {
             result = string.Empty;
 
@@ -472,93 +472,6 @@ namespace ObjectInProject.Search
                                 }
                             }
                         }
-                    }
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
-
-                return false;
-            }
-        }
-
-        #endregion
-
-        #region Files For Directory Project 
-
-        private bool GetPathsFilesList(List<string> paths, string searchPattern, out List<FileOrigin> listOfFiles, out string result)
-        {
-            result = string.Empty;
-
-            listOfFiles = null;
-
-            try
-            {
-                if ((paths == null) || (paths.Count == 0))
-                {
-                    result = "No Paths To Search";
-
-                    return false;
-                }
-
-
-                listOfFiles = new List<FileOrigin>();
-                foreach (string path in paths)
-                {
-                    if (!GetPathFilesList(path, searchPattern, out List<FileOrigin> currentListOfFiles, out result))
-                    {
-                    }
-
-                    if ((currentListOfFiles == null) || (currentListOfFiles.Count == 0))
-                    {
-                        continue;
-                    }
-
-                    listOfFiles.AddRange(currentListOfFiles);
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                result = e.Message;
-
-                return false;
-            }
-        }
-
-        private bool GetPathFilesList(string path, string searchPattern, out List<FileOrigin> listOfFiles, out string result)
-        {
-            result = string.Empty;
-
-            listOfFiles = null;
-
-            try
-            {
-                if (!Directory.Exists(path))
-                {
-                    result = $"Path '{path}' Does Not Exist";
-
-                    return false;    
-                }
-
-                List<string> files = Directory.GetFiles(path, searchPattern, SearchOption.AllDirectories).ToList();
-
-                if ((files == null) || (files.Count == 0))
-                {
-                    result = "No Files Found";
-
-                    return false;
-                }
-
-                foreach (string file in files)
-                {
-                    if (File.Exists(file))
-                    {
-                        listOfFiles.Add(new FileOrigin(path, file));
                     }
                 }
 
