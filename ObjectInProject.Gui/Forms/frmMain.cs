@@ -366,7 +366,7 @@ namespace ObjectInProject.Gui
 
         #region Parse        
 
-private bool ParseSolutionFileText(string solutionFilename, string solutionFileText, out Solution solution, out string result)
+        private bool ParseSolutionFileText(string solutionFilename, string solutionFileText, out Solution solution, out string result)
         {
             #region Data Members
 
