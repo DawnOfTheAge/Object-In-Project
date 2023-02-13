@@ -1,6 +1,6 @@
 ﻿namespace ObjectInProject.Gui
 {
-    partial class frmMain
+    partial class FrmMain
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.mnuMain = new System.Windows.Forms.MenuStrip();
             this.mnuClear = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuClearResults = new System.Windows.Forms.ToolStripMenuItem();

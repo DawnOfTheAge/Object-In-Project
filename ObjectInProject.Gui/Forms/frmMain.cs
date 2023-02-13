@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace ObjectInProject.Gui
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
         #region Data Members        
 
@@ -63,7 +63,7 @@ namespace ObjectInProject.Gui
 
         #region Constructor
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
         }
@@ -1140,9 +1140,7 @@ namespace ObjectInProject.Gui
             {
                 if (e.KeyCode == Keys.Enter)
                 {
-                    BtnFind_Click(null, null);
-
-                    txtFind.Items.Add(txtFind.Text);
+                    BtnFind_Click(null, null);                    
                 }
             }
             catch (Exception ex)
@@ -1420,6 +1418,11 @@ namespace ObjectInProject.Gui
                 }
 
                 #endregion
+
+                if (!txtFind.Items.Contains(txtFind.Text))
+                {
+                    txtFind.Items.Add(txtFind.Text);
+                }
             }
             catch (Exception ex)
             {
