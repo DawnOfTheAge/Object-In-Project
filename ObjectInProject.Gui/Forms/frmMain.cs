@@ -1365,57 +1365,52 @@ namespace ObjectInProject.Gui
 
                 #region Fill Results
 
-                if ((searchResults != null) && (searchResults.Count > 0))
-                {
-                    foreach (SearchResult searchResult in searchResults)
-                    {
-                        string[] arr;
-
-                        ListViewItem itm;
-
-                        switch (m_ActiveSearchProject.Type)
-                        {
-                            case SearchProjectType.DirectoriesProject:
-                                arr = new string[4];
-
-                                arr[0] = searchResult.Directoty;
-                                arr[1] = searchResult.File;
-                                arr[2] = searchResult.Line.ToString();
-                                arr[3] = searchResult.FullPath;
-                                break;
-
-                            case SearchProjectType.SolutionsProject:
-                                arr = new string[5];
-
-                                arr[0] = searchResult.Solution;
-                                arr[1] = searchResult.Project;
-                                arr[2] = searchResult.File;
-                                arr[3] = searchResult.Line.ToString();
-                                arr[4] = searchResult.FullPath;
-                                break;
-
-                            default:
-                                return;
-                        }
-
-                        itm = new ListViewItem(arr);
-                        lvResults.Items.Add(itm);
-                    }
-
-                    txtNumberOfHits.Text = searchResults.Count.ToString();
-                }
-
-                #endregion
-
-                #region No Results
-
-                else
+                if ((searchResults == null) || (searchResults.Count == 0))
                 {
                     message = "No Results";
 
                     Audit(message, method, LINE(), AuditSeverity.Information);
                     MessageBox.Show(message, "Search", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    return;
                 }
+
+                foreach (SearchResult searchResult in searchResults)
+                {
+                    string[] arr;
+
+                    ListViewItem itm;
+
+                    switch (m_ActiveSearchProject.Type)
+                    {
+                        case SearchProjectType.DirectoriesProject:
+                            arr = new string[4];
+
+                            arr[0] = searchResult.Directoty;
+                            arr[1] = searchResult.File;
+                            arr[2] = searchResult.Line.ToString();
+                            arr[3] = searchResult.FullPath;
+                            break;
+
+                        case SearchProjectType.SolutionsProject:
+                            arr = new string[5];
+
+                            arr[0] = searchResult.Solution;
+                            arr[1] = searchResult.Project;
+                            arr[2] = searchResult.File;
+                            arr[3] = searchResult.Line.ToString();
+                            arr[4] = searchResult.FullPath;
+                            break;
+
+                        default:
+                            return;
+                    }
+
+                    itm = new ListViewItem(arr);
+                    lvResults.Items.Add(itm);
+                }
+
+                txtNumberOfHits.Text = searchResults.Count.ToString();
 
                 #endregion
 
