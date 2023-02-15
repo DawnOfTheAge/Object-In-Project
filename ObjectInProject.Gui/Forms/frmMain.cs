@@ -691,16 +691,12 @@ namespace ObjectInProject.Gui
 
             try
             {
-                lvResults.Height = Height - lvResults.Top - 90;
-
                 txtFind.Width = (Width / 3) * 2;
-                lvResults.Width = Width - lvResults.Left - 50;
 
                 txtFind.Location = new Point(10, 50);
                 btnFind.Location = new Point(txtFind.Left + txtFind.Width + 10, txtFind.Top -  (btnFind.Height / 3));
                 btnClear.Location = new Point(btnFind.Left + btnFind.Width + 10, btnFind.Top);
                 btnLoadSearchedItemsFromFile.Location = new Point(btnClear.Left + btnClear.Width + 20, btnClear.Top + (btnLoadSearchedItemsFromFile.Height / 2));
-                lvResults.Location = new Point(10, txtFind.Top + txtFind.Height + 30);
                 chkCaseSensitive.Location = new Point(txtFind.Left, txtFind.Top + txtFind.Height + 5);
                 lblFileTypeFilters.Location = new Point(chkCaseSensitive.Left + chkCaseSensitive.Width + 10, chkCaseSensitive.Top);
                 cboFileTypeFilters.Location = new Point(lblFileTypeFilters.Left+ lblFileTypeFilters.Width + 5, lblFileTypeFilters.Top - 2);
@@ -716,7 +712,7 @@ namespace ObjectInProject.Gui
 
         private void MnuClearResults_Click(object sender, EventArgs e)
         {
-            lvResults.Items.Clear();
+            dgvResults.Rows.Clear();
             txtNumberOfHits.Text = "0";
             pbFiles.Value = 0;
         }
@@ -929,7 +925,7 @@ namespace ObjectInProject.Gui
 
                 #region Editor
 
-                if (!BuildListView(out result))
+                if (!BuildResultsDataGrid(out result))
                 {
                     result = $"Initialize Error. {result}";
                     Audit(result, method, LINE(), AuditSeverity.Warning);
@@ -1167,7 +1163,7 @@ namespace ObjectInProject.Gui
 
         #region List View
 
-        private bool BuildListView(out string result)
+        private bool BuildResultsDataGrid(out string result)
         {
             string method = MethodBase.GetCurrentMethod().Name;
 
@@ -1175,28 +1171,26 @@ namespace ObjectInProject.Gui
 
             try
             {
-                lvResults.View = View.Details;
-                lvResults.GridLines = true;
-                lvResults.FullRowSelect = true;
-
                 if (m_ActiveSearchProject != null)
                 {
-                    lvResults.Columns.Clear();
+                    dgvResults.Columns.Clear();
                     switch (m_ActiveSearchProject.Type)
                     {
                         case SearchProjectType.SolutionsProject:
-                            lvResults.Columns.Add("Solution", 200);
-                            lvResults.Columns.Add("Project", 400);
-                            lvResults.Columns.Add("File", 400);
-                            lvResults.Columns.Add("Line", 50);
-                            lvResults.Columns.Add("Full File name", 0);
+                            dgvResults.Columns.Add("colSolution", "Solution");
+                            dgvResults.Columns.Add("colProject", "Project");
+                            dgvResults.Columns.Add("colFile", "File");
+                            dgvResults.Columns.Add("colLine", "Line");
+                            dgvResults.Columns.Add("colFullFileName", "Full File Name");
+                            dgvResults.Columns[4].Visible = false;
                             break;
 
                         case SearchProjectType.DirectoriesProject:
-                            lvResults.Columns.Add("Directory", 400);
-                            lvResults.Columns.Add("File", 400);
-                            lvResults.Columns.Add("Line", 50);
-                            lvResults.Columns.Add("Full File name", 0);
+                            dgvResults.Columns.Add("colDirectory", "Directory");
+                            dgvResults.Columns.Add("colFile", "File");
+                            dgvResults.Columns.Add("colLine", "Line");
+                            dgvResults.Columns.Add("colFullFileName", "Full File Name");
+                            dgvResults.Columns[3].Visible = false;
                             break;
 
                         default:
@@ -1235,7 +1229,7 @@ namespace ObjectInProject.Gui
             {
                 if (e.Button == MouseButtons.Left)
                 {
-                    if (lvResults.SelectedItems != null)
+                    if (dgvResults.SelectedRows != null)
                     {
                         int sourceFilePathIndex;
                         int lineNumberIndex;
@@ -1256,9 +1250,12 @@ namespace ObjectInProject.Gui
                                 return;
                         }
 
-                        string sourceFilePath = lvResults.SelectedItems[0].SubItems[sourceFilePathIndex].Text;
+                        int row = dgvResults.SelectedRows[0].Index;
 
-                        int lineNumber = (int.TryParse(lvResults.SelectedItems[0].SubItems[lineNumberIndex].Text, out lineNumber)) ? lineNumber : ObjectInProjectConstants.NONE;
+                        string sourceFilePath = dgvResults.Rows[row].Cells[sourceFilePathIndex].Value.ToString();
+
+                        int lineNumber = (int.TryParse(dgvResults.Rows[row].Cells[lineNumberIndex].Value.ToString(), 
+                                                       out lineNumber)) ? lineNumber : ObjectInProjectConstants.NONE;
 
                         if (!File.Exists(sourceFilePath))
                         {
@@ -1291,10 +1288,8 @@ namespace ObjectInProject.Gui
             string result;
             string message;
 
-            List<SearchResult> searchResults;
-
             try
-            {                
+            {
                 #region Text To Search?
 
                 if (string.IsNullOrEmpty(txtFind.Text))
@@ -1324,7 +1319,7 @@ namespace ObjectInProject.Gui
                 #region Initialize Search Hits And Results
 
                 txtNumberOfHits.Text = "0";
-                lvResults.Items.Clear();
+                dgvResults.Rows.Clear();
 
                 #endregion
 
@@ -1355,7 +1350,7 @@ namespace ObjectInProject.Gui
 
                 #region Search
 
-                if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out searchResults, out result))
+                if (!searchUtils.FindTokens(lText, m_ActiveSearchProject, out List<SearchResult> searchResults, out result))
                 {
                     Audit(result, method, LINE(), AuditSeverity.Error);
                     MessageBox.Show(result, "Failed Finding", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -1377,38 +1372,31 @@ namespace ObjectInProject.Gui
 
                 foreach (SearchResult searchResult in searchResults)
                 {
-                    string[] arr;
-
-                    ListViewItem itm;
+                    int newRowIndex  = dgvResults.Rows.Add();
 
                     switch (m_ActiveSearchProject.Type)
                     {
                         case SearchProjectType.DirectoriesProject:
-                            arr = new string[4];
-
-                            arr[0] = searchResult.Directoty;
-                            arr[1] = searchResult.File;
-                            arr[2] = searchResult.Line.ToString();
-                            arr[3] = searchResult.FullPath;
+                            dgvResults.Rows[newRowIndex].Cells[0].Value = searchResult.Directoty;
+                            dgvResults.Rows[newRowIndex].Cells[1].Value = searchResult.File;
+                            dgvResults.Rows[newRowIndex].Cells[2].Value = searchResult.Line.ToString();
+                            dgvResults.Rows[newRowIndex].Cells[3].Value = searchResult.FullPath;
                             break;
 
                         case SearchProjectType.SolutionsProject:
-                            arr = new string[5];
-
-                            arr[0] = searchResult.Solution;
-                            arr[1] = searchResult.Project;
-                            arr[2] = searchResult.File;
-                            arr[3] = searchResult.Line.ToString();
-                            arr[4] = searchResult.FullPath;
+                            dgvResults.Rows[newRowIndex].Cells[0].Value = searchResult.Solution;
+                            dgvResults.Rows[newRowIndex].Cells[1].Value = searchResult.Project;
+                            dgvResults.Rows[newRowIndex].Cells[2].Value = searchResult.File;
+                            dgvResults.Rows[newRowIndex].Cells[3].Value = searchResult.Line.ToString();
+                            dgvResults.Rows[newRowIndex].Cells[4].Value = searchResult.FullPath;
                             break;
 
                         default:
                             return;
                     }
-
-                    itm = new ListViewItem(arr);
-                    lvResults.Items.Add(itm);
                 }
+
+                dgvResults.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
 
                 txtNumberOfHits.Text = searchResults.Count.ToString();
 
@@ -1428,16 +1416,12 @@ namespace ObjectInProject.Gui
 
         private void BtnClear_Click(object sender, EventArgs e)
         {
-            #region Data Members
-
             string method = MethodBase.GetCurrentMethod().Name;
-
-            #endregion
 
             try
             {
                 txtFind.Text = string.Empty;
-                lvResults.Items.Clear();    
+                dgvResults.Rows.Clear();    
             }
             catch (Exception ex)
             {

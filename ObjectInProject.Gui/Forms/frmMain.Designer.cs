@@ -36,7 +36,6 @@
             this.mnuSearchProjects = new System.Windows.Forms.ToolStripMenuItem();
             this.mnuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.btnFind = new System.Windows.Forms.Button();
-            this.lvResults = new System.Windows.Forms.ListView();
             this.txtFind = new System.Windows.Forms.ComboBox();
             this.btnLoadSearchedItemsFromFile = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
@@ -66,6 +65,13 @@
             this.colMethod = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colLine = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colMessage = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tableLayoutPanelL1 = new System.Windows.Forms.TableLayoutPanel();
+            this.dgvResults = new System.Windows.Forms.DataGridView();
+            this.tableLayoutPanelL2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanelL32 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel321 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanelL31 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanelL311 = new System.Windows.Forms.TableLayoutPanel();
             this.mnuMain.SuspendLayout();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -73,6 +79,13 @@
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAudit)).BeginInit();
+            this.tableLayoutPanelL1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).BeginInit();
+            this.tableLayoutPanelL2.SuspendLayout();
+            this.tableLayoutPanelL32.SuspendLayout();
+            this.tableLayoutPanel321.SuspendLayout();
+            this.tableLayoutPanelL31.SuspendLayout();
+            this.tableLayoutPanelL311.SuspendLayout();
             this.SuspendLayout();
             // 
             // mnuMain
@@ -129,7 +142,7 @@
             this.btnFind.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources.Refresh;
             this.btnFind.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnFind.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFind.Location = new System.Drawing.Point(832, 10);
+            this.btnFind.Location = new System.Drawing.Point(3, 3);
             this.btnFind.Name = "btnFind";
             this.btnFind.Size = new System.Drawing.Size(60, 60);
             this.btnFind.TabIndex = 4;
@@ -137,24 +150,15 @@
             this.btnFind.UseVisualStyleBackColor = true;
             this.btnFind.Click += new System.EventHandler(this.BtnFind_Click);
             // 
-            // lvResults
-            // 
-            this.lvResults.HideSelection = false;
-            this.lvResults.Location = new System.Drawing.Point(12, 79);
-            this.lvResults.Name = "lvResults";
-            this.lvResults.Size = new System.Drawing.Size(1109, 325);
-            this.lvResults.TabIndex = 6;
-            this.lvResults.UseCompatibleStateImageBehavior = false;
-            this.lvResults.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.LvResults_MouseDoubleClick);
-            // 
             // txtFind
             // 
             this.txtFind.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.txtFind.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.txtFind.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.txtFind.FormattingEnabled = true;
-            this.txtFind.Location = new System.Drawing.Point(12, 31);
+            this.txtFind.Location = new System.Drawing.Point(3, 26);
             this.txtFind.Name = "txtFind";
-            this.txtFind.Size = new System.Drawing.Size(814, 21);
+            this.txtFind.Size = new System.Drawing.Size(645, 21);
             this.txtFind.TabIndex = 18;
             this.txtFind.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtFind_KeyDown);
             // 
@@ -163,10 +167,11 @@
             this.btnLoadSearchedItemsFromFile.BackColor = System.Drawing.SystemColors.Window;
             this.btnLoadSearchedItemsFromFile.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources._3Dots;
             this.btnLoadSearchedItemsFromFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnLoadSearchedItemsFromFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnLoadSearchedItemsFromFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLoadSearchedItemsFromFile.Location = new System.Drawing.Point(964, 22);
+            this.btnLoadSearchedItemsFromFile.Location = new System.Drawing.Point(47, 34);
             this.btnLoadSearchedItemsFromFile.Name = "btnLoadSearchedItemsFromFile";
-            this.btnLoadSearchedItemsFromFile.Size = new System.Drawing.Size(40, 33);
+            this.btnLoadSearchedItemsFromFile.Size = new System.Drawing.Size(38, 25);
             this.btnLoadSearchedItemsFromFile.TabIndex = 23;
             this.btnLoadSearchedItemsFromFile.UseVisualStyleBackColor = false;
             this.btnLoadSearchedItemsFromFile.Click += new System.EventHandler(this.BtnLoadSearchedItemsFromFile_Click);
@@ -320,7 +325,7 @@
             // chkCaseSensitive
             // 
             this.chkCaseSensitive.AutoSize = true;
-            this.chkCaseSensitive.Location = new System.Drawing.Point(12, 56);
+            this.chkCaseSensitive.Location = new System.Drawing.Point(3, 3);
             this.chkCaseSensitive.Name = "chkCaseSensitive";
             this.chkCaseSensitive.Size = new System.Drawing.Size(96, 17);
             this.chkCaseSensitive.TabIndex = 29;
@@ -331,17 +336,18 @@
             // cboFileTypeFilters
             // 
             this.cboFileTypeFilters.FormattingEnabled = true;
-            this.cboFileTypeFilters.Location = new System.Drawing.Point(200, 54);
+            this.cboFileTypeFilters.Location = new System.Drawing.Point(433, 3);
             this.cboFileTypeFilters.Name = "cboFileTypeFilters";
-            this.cboFileTypeFilters.Size = new System.Drawing.Size(244, 21);
+            this.cboFileTypeFilters.Size = new System.Drawing.Size(209, 21);
             this.cboFileTypeFilters.TabIndex = 30;
             // 
             // lblFileTypeFilters
             // 
             this.lblFileTypeFilters.AutoSize = true;
-            this.lblFileTypeFilters.Location = new System.Drawing.Point(114, 57);
+            this.lblFileTypeFilters.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblFileTypeFilters.Location = new System.Drawing.Point(347, 0);
             this.lblFileTypeFilters.Name = "lblFileTypeFilters";
-            this.lblFileTypeFilters.Size = new System.Drawing.Size(80, 13);
+            this.lblFileTypeFilters.Size = new System.Drawing.Size(80, 44);
             this.lblFileTypeFilters.TabIndex = 31;
             this.lblFileTypeFilters.Text = "File Type Filters";
             // 
@@ -350,7 +356,7 @@
             this.btnClear.BackgroundImage = global::ObjectInProject.Gui.Properties.Resources.Clear;
             this.btnClear.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.btnClear.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnClear.Location = new System.Drawing.Point(898, 10);
+            this.btnClear.Location = new System.Drawing.Point(165, 3);
             this.btnClear.Name = "btnClear";
             this.btnClear.Size = new System.Drawing.Size(60, 60);
             this.btnClear.TabIndex = 32;
@@ -367,14 +373,7 @@
             // 
             // splitContainer.Panel1
             // 
-            this.splitContainer.Panel1.Controls.Add(this.lvResults);
-            this.splitContainer.Panel1.Controls.Add(this.btnClear);
-            this.splitContainer.Panel1.Controls.Add(this.btnFind);
-            this.splitContainer.Panel1.Controls.Add(this.lblFileTypeFilters);
-            this.splitContainer.Panel1.Controls.Add(this.txtFind);
-            this.splitContainer.Panel1.Controls.Add(this.cboFileTypeFilters);
-            this.splitContainer.Panel1.Controls.Add(this.btnLoadSearchedItemsFromFile);
-            this.splitContainer.Panel1.Controls.Add(this.chkCaseSensitive);
+            this.splitContainer.Panel1.Controls.Add(this.tableLayoutPanelL1);
             // 
             // splitContainer.Panel2
             // 
@@ -430,7 +429,115 @@
             this.colMessage.HeaderText = "Message";
             this.colMessage.Name = "colMessage";
             // 
-            // frmMain
+            // tableLayoutPanelL1
+            // 
+            this.tableLayoutPanelL1.ColumnCount = 1;
+            this.tableLayoutPanelL1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelL1.Controls.Add(this.dgvResults, 0, 1);
+            this.tableLayoutPanelL1.Controls.Add(this.tableLayoutPanelL2, 0, 0);
+            this.tableLayoutPanelL1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelL1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanelL1.Name = "tableLayoutPanelL1";
+            this.tableLayoutPanelL1.RowCount = 2;
+            this.tableLayoutPanelL1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25.35211F));
+            this.tableLayoutPanelL1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 74.64789F));
+            this.tableLayoutPanelL1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanelL1.Size = new System.Drawing.Size(1133, 444);
+            this.tableLayoutPanelL1.TabIndex = 33;
+            // 
+            // dgvResults
+            // 
+            this.dgvResults.AllowUserToAddRows = false;
+            this.dgvResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvResults.Location = new System.Drawing.Point(3, 115);
+            this.dgvResults.Name = "dgvResults";
+            this.dgvResults.Size = new System.Drawing.Size(1127, 326);
+            this.dgvResults.TabIndex = 0;
+            // 
+            // tableLayoutPanelL2
+            // 
+            this.tableLayoutPanelL2.ColumnCount = 2;
+            this.tableLayoutPanelL2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 58.33333F));
+            this.tableLayoutPanelL2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 41.66667F));
+            this.tableLayoutPanelL2.Controls.Add(this.tableLayoutPanelL32, 1, 0);
+            this.tableLayoutPanelL2.Controls.Add(this.tableLayoutPanelL31, 0, 0);
+            this.tableLayoutPanelL2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelL2.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelL2.Name = "tableLayoutPanelL2";
+            this.tableLayoutPanelL2.RowCount = 1;
+            this.tableLayoutPanelL2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelL2.Size = new System.Drawing.Size(1127, 106);
+            this.tableLayoutPanelL2.TabIndex = 1;
+            // 
+            // tableLayoutPanelL32
+            // 
+            this.tableLayoutPanelL32.ColumnCount = 5;
+            this.tableLayoutPanelL32.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanelL32.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanelL32.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanelL32.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5F));
+            this.tableLayoutPanelL32.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tableLayoutPanelL32.Controls.Add(this.btnFind, 0, 0);
+            this.tableLayoutPanelL32.Controls.Add(this.btnClear, 2, 0);
+            this.tableLayoutPanelL32.Controls.Add(this.tableLayoutPanel321, 4, 0);
+            this.tableLayoutPanelL32.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelL32.Location = new System.Drawing.Point(660, 3);
+            this.tableLayoutPanelL32.Name = "tableLayoutPanelL32";
+            this.tableLayoutPanelL32.RowCount = 1;
+            this.tableLayoutPanelL32.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelL32.Size = new System.Drawing.Size(464, 100);
+            this.tableLayoutPanelL32.TabIndex = 0;
+            // 
+            // tableLayoutPanel321
+            // 
+            this.tableLayoutPanel321.ColumnCount = 3;
+            this.tableLayoutPanel321.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel321.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel321.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel321.Controls.Add(this.btnLoadSearchedItemsFromFile, 1, 1);
+            this.tableLayoutPanel321.Location = new System.Drawing.Point(327, 3);
+            this.tableLayoutPanel321.Name = "tableLayoutPanel321";
+            this.tableLayoutPanel321.RowCount = 3;
+            this.tableLayoutPanel321.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel321.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel321.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel321.Size = new System.Drawing.Size(134, 94);
+            this.tableLayoutPanel321.TabIndex = 33;
+            // 
+            // tableLayoutPanelL31
+            // 
+            this.tableLayoutPanelL31.ColumnCount = 1;
+            this.tableLayoutPanelL31.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelL31.Controls.Add(this.txtFind, 0, 0);
+            this.tableLayoutPanelL31.Controls.Add(this.tableLayoutPanelL311, 0, 1);
+            this.tableLayoutPanelL31.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelL31.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanelL31.Name = "tableLayoutPanelL31";
+            this.tableLayoutPanelL31.RowCount = 2;
+            this.tableLayoutPanelL31.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelL31.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanelL31.Size = new System.Drawing.Size(651, 100);
+            this.tableLayoutPanelL31.TabIndex = 1;
+            // 
+            // tableLayoutPanelL311
+            // 
+            this.tableLayoutPanelL311.ColumnCount = 3;
+            this.tableLayoutPanelL311.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanelL311.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanelL311.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanelL311.Controls.Add(this.chkCaseSensitive, 0, 0);
+            this.tableLayoutPanelL311.Controls.Add(this.lblFileTypeFilters, 1, 0);
+            this.tableLayoutPanelL311.Controls.Add(this.cboFileTypeFilters, 2, 0);
+            this.tableLayoutPanelL311.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanelL311.Location = new System.Drawing.Point(3, 53);
+            this.tableLayoutPanelL311.Name = "tableLayoutPanelL311";
+            this.tableLayoutPanelL311.RowCount = 1;
+            this.tableLayoutPanelL311.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanelL311.Size = new System.Drawing.Size(645, 44);
+            this.tableLayoutPanelL311.TabIndex = 19;
+            // 
+            // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -440,7 +547,7 @@
             this.Controls.Add(this.mnuMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.mnuMain;
-            this.Name = "frmMain";
+            this.Name = "FrmMain";
             this.Text = "Object In Solution Browser";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
             this.Load += new System.EventHandler(this.FrmMain_Load);
@@ -450,11 +557,18 @@
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.splitContainer.Panel1.ResumeLayout(false);
-            this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAudit)).EndInit();
+            this.tableLayoutPanelL1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvResults)).EndInit();
+            this.tableLayoutPanelL2.ResumeLayout(false);
+            this.tableLayoutPanelL32.ResumeLayout(false);
+            this.tableLayoutPanel321.ResumeLayout(false);
+            this.tableLayoutPanelL31.ResumeLayout(false);
+            this.tableLayoutPanelL311.ResumeLayout(false);
+            this.tableLayoutPanelL311.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -466,7 +580,6 @@
         private System.Windows.Forms.ToolStripMenuItem mnuSearchProjects;
         private System.Windows.Forms.ToolStripMenuItem mnuExit;
         private System.Windows.Forms.Button btnFind;
-        private System.Windows.Forms.ListView lvResults;
         private System.Windows.Forms.ToolStripMenuItem mnuClear;
         private System.Windows.Forms.ComboBox txtFind;
         private System.Windows.Forms.ToolStripMenuItem mnuClearResults;
@@ -499,6 +612,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colMethod;
         private System.Windows.Forms.DataGridViewTextBoxColumn colLine;
         private System.Windows.Forms.DataGridViewTextBoxColumn colMessage;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelL1;
+        private System.Windows.Forms.DataGridView dgvResults;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelL2;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelL32;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel321;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelL31;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanelL311;
     }
 }
 
